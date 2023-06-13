@@ -1,0 +1,2 @@
+-module(pubsub_client).
+-export([]).
