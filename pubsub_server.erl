@@ -5,7 +5,7 @@ start() ->
     PubSubEngine = #{clients=>[],topic=>[]},
     spawn(pubsub_server,loop,[PubSubEngine]).
 
-publishMessage(Client,Publisher,Message) ->
+pushMessage(Client,Publisher,Message) ->
     if Client =/= Publisher ->
         Client ! {newmessage,{Message}};
     true -> ok
@@ -23,6 +23,7 @@ loop(PubSubEngine) ->
             CurrentMessages = maps:get(topic,PubSubEngine),
             NewPubSubEngine = maps:update(topic,CurrentMessages ++ [Message],PubSubEngine),
             CurrentClients = maps:get(clients,PubSubEngine),
-            lists:foreach(fun(Subscriber) -> publishMessage(Subscriber,Client,Message) end,CurrentClients),
+            lists:foreach(fun(Subscriber) -> pushMessage(Subscriber,Client,Message) end,CurrentClients),
+            Client ! {ok},
             loop(NewPubSubEngine)
     end.
