@@ -1,0 +1,1 @@
+-record(planemo, {name, gravity, diameter, distance_from_sun}).
