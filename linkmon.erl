@@ -1,10 +1,13 @@
 -module(linkmon).
--export([myproc/0,chain/1]).
+-export([myproc/0,chain/1,testProc/0]).
 
 
 myproc() ->
-    timer:sleep(5000),
+    timer:sleep(2000),
     exit(reason).
+
+testProc() ->
+    io:format("i am a testproc~n").
 
 chain(0) ->
     receive
