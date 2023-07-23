@@ -7,7 +7,7 @@
 
 -module(ppool_supersup).
 -behaviour(supervisor).
--export([start_link/0,stop/0,start_pool/3,stop_pool/1,init/1]).
+-export([start_link/0,start_pool/3,stop_pool/1,init/1]).
 
 %% starts the topmost supervisor
 start_link()->
@@ -31,9 +31,9 @@ stop_pool(Name) ->
 
 
 %% Brutally kills the topmost supervisor
-stop() ->
-    case whereis(ppool) of
-        P when is_pid(P) ->
-            exit(P,kill);
-    _ -> ok
-    end.
+% stop() -> %% now handled by application behaviour
+%     case whereis(ppool) of 
+%         P when is_pid(P) ->
+%             exit(P,kill);
+%     _ -> ok
+%     end.
