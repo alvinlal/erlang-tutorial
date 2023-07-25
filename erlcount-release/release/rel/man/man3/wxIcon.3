@@ -1,0 +1,143 @@
+.TH wxIcon 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxIcon \- Functions for wxIcon class
+.SH DESCRIPTION
+.LP
+An icon is a small rectangular bitmap usually used for denoting a minimized application\&.
+.LP
+It differs from a \fIwxBitmap\fR\& in always having a mask associated with it for transparent drawing\&. On some platforms, icons and bitmaps are implemented identically, since there is no real distinction between a \fIwxBitmap\fR\& with a mask and an icon; and there is no specific icon format on some platforms (X-based applications usually standardize on XPMs for small bitmaps and icons)\&. However, some platforms (such as Windows) make the distinction, so a separate class is provided\&.
+.LP
+Remark: It is usually desirable to associate a pertinent icon with a frame\&. Icons can also be used for other purposes, for example with \fIwxTreeCtrl\fR\& and \fIwxListCtrl\fR\&\&. Icons have different formats on different platforms therefore separate icons will usually be created for the different environments\&. Platform-specific methods for creating a \fIwxIcon\fR\& structure are catered for, and this is an occasion where conditional compilation will probably be required\&. Note that a new icon must be created for every time the icon is to be used for a new window\&. In Windows, the icon will not be reloaded if it has already been used\&. An icon allocated to a frame will be deleted when the frame is deleted\&. For more information please see overview_bitmap\&.
+.LP
+Predefined objects (include wx\&.hrl): ?wxNullIcon
+.LP
+See: Overview bitmap, Overview bitmap, \fIwxIconBundle\fR\&, \fIwxDC:drawIcon/3\fR\&, \fIwxCursor\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxBitmap\fR\&
+.LP
+wxWidgets docs: wxIcon
+.SH DATA TYPES
+.nf
+
+\fBwxIcon()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxIcon()
+.br
+.fi
+.br
+.RS
+.LP
+Default ctor\&.
+.LP
+Constructs an icon object with no data; an assignment or another member function such as \fIwxBitmap:loadFile/3\fR\& must be called subsequently\&.
+.RE
+.LP
+.nf
+
+.B
+new(Name) -> wxIcon()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Icon) -> wxIcon()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Icon = wxIcon()
+.br
+.RE
+.RE
+.RS
+.LP
+Copy ctor\&.
+.RE
+.LP
+.nf
+
+.B
+new(Name, Options :: [Option]) -> wxIcon()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Name = unicode:chardata()
+.br
+Option = 
+.br
+    {type, wx:wx_enum()} |
+.br
+    {desiredWidth, integer()} |
+.br
+    {desiredHeight, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Loads an icon from a file or resource\&.
+.LP
+See: \fIwxBitmap:loadFile/3\fR\& 
+.RE
+.LP
+.nf
+
+.B
+copyFromBitmap(This, Bmp) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxIcon()
+.br
+Bmp = wxBitmap:wxBitmap()
+.br
+.RE
+.RE
+.RS
+.LP
+Copies \fIbmp\fR\& bitmap to this icon\&.
+.LP
+Under MS Windows the bitmap must have mask colour set\&.
+.LP
+See: \fIwxBitmap:loadFile/3\fR\& 
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxIcon()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor\&.
+.LP
+See overview_refcount_destruct for more info\&.
+.LP
+If the application omits to delete the icon explicitly, the icon will be destroyed automatically by wxWidgets when the application exits\&.
+.LP
+Warning: Do not delete an icon that is selected into a memory device context\&.
+.RE

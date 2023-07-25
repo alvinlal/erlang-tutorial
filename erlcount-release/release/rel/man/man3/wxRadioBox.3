@@ -1,0 +1,611 @@
+.TH wxRadioBox 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxRadioBox \- Functions for wxRadioBox class
+.SH DESCRIPTION
+.LP
+A radio box item is used to select one of number of mutually exclusive choices\&. It is displayed as a vertical column or horizontal row of labelled buttons\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+See: Overview events, \fIwxRadioButton\fR\&, \fIwxCheckBox\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxControl\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxRadioBox
+.SH "EVENTS"
+
+.LP
+Event types emitted from this class: \fIcommand_radiobox_selected\fR\&
+.SH DATA TYPES
+.nf
+
+\fBwxRadioBox()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new(Parent, Id, Label, Pos, Size, Choices) -> wxRadioBox()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Label = unicode:chardata()
+.br
+Pos = {X :: integer(), Y :: integer()}
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+Choices = [unicode:chardata()]
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id, Label, Pos, Size, Choices, Options :: [Option]) ->
+.B
+       wxRadioBox()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Label = unicode:chardata()
+.br
+Pos = {X :: integer(), Y :: integer()}
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+Choices = [unicode:chardata()]
+.br
+Option = 
+.br
+    {majorDim, integer()} |
+.br
+    {style, integer()} |
+.br
+    {val, wx:wx_object()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor, creating and showing a radiobox\&.
+.LP
+See: \fIcreate/8\fR\&, \fIwxValidator\fR\& (not implemented in wx)
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxRadioBox()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor, destroying the radiobox item\&.
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id, Label, Pos, Size, Choices) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Label = unicode:chardata()
+.br
+Pos = {X :: integer(), Y :: integer()}
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+Choices = [unicode:chardata()]
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id, Label, Pos, Size, Choices,
+.B
+       Options :: [Option]) ->
+.B
+          boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Label = unicode:chardata()
+.br
+Pos = {X :: integer(), Y :: integer()}
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+Choices = [unicode:chardata()]
+.br
+Option = 
+.br
+    {majorDim, integer()} |
+.br
+    {style, integer()} |
+.br
+    {val, wx:wx_object()}
+.br
+.RE
+.RE
+.RS
+.LP
+Creates the radiobox for two-step construction\&.
+.LP
+See \fInew/7\fR\& for further details\&.
+.RE
+.LP
+.nf
+
+.B
+enable(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+enable(This, N) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+enable(This, N :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+Option = {enable, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Enables or disables the radiobox\&.
+.LP
+See: \fIwxWindow:enable/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+enable(This, N, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+N = integer()
+.br
+Option = {enable, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Enables or disables an individual button in the radiobox\&.
+.LP
+See: \fIwxWindow:enable/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getSelection(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the index of the selected item or \fIwxNOT_FOUND\fR\& if no item is selected\&.
+.LP
+Return: The position of the current selection\&.
+.LP
+Remark: This method can be used with single selection list boxes only, you should use \fIwxListBox:getSelections/1\fR\& for the list boxes with wxLB_MULTIPLE style\&.
+.LP
+See: \fIsetSelection/2\fR\&, \fIwxControlWithItems:getStringSelection/1\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getString(This, N) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+N = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the label of the item with the given index\&.
+.LP
+Return: The label of the item or an empty string if the position was invalid\&.
+.RE
+.LP
+.nf
+
+.B
+setSelection(This, N) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+N = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the selection to the given item\&.
+.LP
+Notice that a radio box always has selection, so \fIn\fR\& must be valid here and passing \fIwxNOT_FOUND\fR\& is not allowed\&.
+.RE
+.LP
+.nf
+
+.B
+show(This, Item) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+Item = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+show(This, Item, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+Item = integer()
+.br
+Option = {show, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Shows or hides individual buttons\&.
+.LP
+Return: true if the item has been shown or hidden or false if nothing was done because it already was in the requested state\&.
+.LP
+See: \fIshow/3\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getColumnCount(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the number of columns in the radiobox\&.
+.RE
+.LP
+.nf
+
+.B
+getItemHelpText(This, Item) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+Item = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the helptext associated with the specified \fIitem\fR\& if any or \fIwxEmptyString\fR\&\&.
+.LP
+See: \fIsetItemHelpText/3\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getItemToolTip(This, Item) -> wxToolTip:wxToolTip()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+Item = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the tooltip associated with the specified \fIitem\fR\& if any or NULL\&.
+.LP
+See: \fIsetItemToolTip/3\fR\&, \fIwxWindow:getToolTip/1\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getItemFromPoint(This, Pt) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+Pt = {X :: integer(), Y :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Returns a radio box item under the point, a zero-based item index, or \fIwxNOT_FOUND\fR\& if no item is under the point\&.
+.RE
+.LP
+.nf
+
+.B
+getRowCount(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the number of rows in the radiobox\&.
+.RE
+.LP
+.nf
+
+.B
+isItemEnabled(This, N) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+N = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the item is enabled or false if it was disabled using \fIenable/3\fR\&\&.
+.LP
+This function is currently only implemented in wxMSW, wxGTK, wxQT and wxUniversal and always returns true in the other ports\&.
+.RE
+.LP
+.nf
+
+.B
+isItemShown(This, N) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+N = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the item is currently shown or false if it was hidden using \fIshow/3\fR\&\&.
+.LP
+Note that this function returns true for an item which hadn\&'t been hidden even if the entire radiobox is not currently shown\&.
+.LP
+This function is currently only implemented in wxMSW, wxGTK, wxQT and wxUniversal and always returns true in the other ports\&.
+.RE
+.LP
+.nf
+
+.B
+setItemHelpText(This, Item, Helptext) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+Item = integer()
+.br
+Helptext = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the helptext for an item\&.
+.LP
+Empty string erases any existing helptext\&.
+.LP
+See: \fIgetItemHelpText/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setItemToolTip(This, Item, Text) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxRadioBox()
+.br
+Item = integer()
+.br
+Text = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the tooltip text for the specified item in the radio group\&.
+.LP
+This function is currently only implemented in wxMSW and wxGTK2 and does nothing in the other ports\&.
+.LP
+See: \fIgetItemToolTip/2\fR\&, \fIwxWindow:setToolTip/2\fR\& 
+.RE

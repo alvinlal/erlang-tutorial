@@ -1,0 +1,240 @@
+.TH wxListView 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxListView \- Functions for wxListView class
+.SH DESCRIPTION
+.LP
+This class currently simply presents a simpler to use interface for the \fIwxListCtrl\fR\& - it can be thought of as a \fIfaçade\fR\& for that complicated class\&.
+.LP
+Using it is preferable to using \fIwxListCtrl\fR\& directly whenever possible because in the future some ports might implement \fIwxListView\fR\& but not the full set of \fIwxListCtrl\fR\& features\&.
+.LP
+Other than different interface, this class is identical to \fIwxListCtrl\fR\&\&. In particular, it uses the same events, same window styles and so on\&.
+.LP
+See: \fIsetColumnImage/3\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxControl\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxListView
+.SH DATA TYPES
+.nf
+
+\fBwxListView()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+clearColumnImage(This, Col) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListView()
+.br
+Col = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Resets the column image - after calling this function, no image will be shown\&.
+.LP
+See: \fIsetColumnImage/3\fR\& 
+.RE
+.LP
+.nf
+
+.B
+focus(This, Index) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListView()
+.br
+Index = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets focus to the item with the given \fIindex\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+getFirstSelected(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListView()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the first selected item in a (presumably) multiple selection control\&.
+.LP
+Together with \fIgetNextSelected/2\fR\& it can be used to iterate over all selected items in the control\&.
+.LP
+Return: The first selected item, if any, -1 otherwise\&.
+.RE
+.LP
+.nf
+
+.B
+getFocusedItem(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListView()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the currently focused item or -1 if none\&.
+.LP
+See: \fIisSelected/2\fR\&, \fIfocus/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getNextSelected(This, Item) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListView()
+.br
+Item = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Used together with \fIgetFirstSelected/1\fR\& to iterate over all selected items in the control\&.
+.LP
+Return: Returns the next selected item or -1 if there are no more of them\&.
+.RE
+.LP
+.nf
+
+.B
+isSelected(This, Index) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListView()
+.br
+Index = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the item with the given \fIindex\fR\& is selected, false otherwise\&.
+.LP
+See: \fIgetFirstSelected/1\fR\&, \fIgetNextSelected/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+select(This, N) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListView()
+.br
+N = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+select(This, N, Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListView()
+.br
+N = integer()
+.br
+Option = {on, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Selects or unselects the given item\&.
+.LP
+Notice that this method inherits the unusual behaviour of \fIwxListCtrl:setItemState/4\fR\& which sends a wxEVT_LIST_ITEM_SELECTED event when it is used to select an item, contrary to the usual rule that only the user actions result in selection\&.
+.RE
+.LP
+.nf
+
+.B
+setColumnImage(This, Col, Image) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListView()
+.br
+Col = Image = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the column image for the specified column\&.
+.LP
+To use the column images, the control must have a valid image list with at least one image\&.
+.RE

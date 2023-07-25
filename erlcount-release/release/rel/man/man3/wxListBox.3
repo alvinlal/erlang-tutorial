@@ -1,0 +1,384 @@
+.TH wxListBox 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxListBox \- Functions for wxListBox class
+.SH DESCRIPTION
+.LP
+A listbox is used to select one or more of a list of strings\&.
+.LP
+The strings are displayed in a scrolling box, with the selected string(s) marked in reverse video\&. A listbox can be single selection (if an item is selected, the previous selection is removed) or multiple selection (clicking an item toggles the item on or off independently of other selections)\&.
+.LP
+List box elements are numbered from zero and while the maximal number of elements is unlimited, it is usually better to use a virtual control, not requiring to add all the items to it at once, such as \fIwxDataViewCtrl\fR\& (not implemented in wx) or \fIwxListCtrl\fR\& with \fIwxLC_VIRTUAL\fR\& style, once more than a few hundreds items need to be displayed because this control is not optimized, neither from performance nor from user interface point of view, for large number of items\&.
+.LP
+Notice that the list box doesn\&'t support control characters other than \fITAB\fR\&\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+See: \fIwxEditableListBox\fR\& (not implemented in wx), \fIwxChoice\fR\&, \fIwxComboBox\fR\&, \fIwxListCtrl\fR\&, \fIwxCommandEvent\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxControlWithItems\fR\& \fIwxControl\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxListBox
+.SH "EVENTS"
+
+.LP
+Event types emitted from this class: \fIcommand_listbox_selected\fR\&, \fIcommand_listbox_doubleclicked\fR\&
+.SH DATA TYPES
+.nf
+
+\fBwxListBox()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxListBox()
+.br
+.fi
+.br
+.RS
+.LP
+Default constructor\&.
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id) -> wxListBox()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id, Options :: [Option]) -> wxListBox()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Option = 
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {choices, [unicode:chardata()]} |
+.br
+    {style, integer()} |
+.br
+    {validator, wx:wx_object()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor, creating and showing a list box\&.
+.LP
+See the other \fInew/3\fR\& constructor; the only difference is that this overload takes a \fIwxArrayString\fR\& (not implemented in wx) instead of a pointer to an array of \fIwxString\fR\& (not implemented in wx)\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxListBox()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor, destroying the list box\&.
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id, Pos, Size, Choices) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListBox()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Pos = {X :: integer(), Y :: integer()}
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+Choices = [unicode:chardata()]
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id, Pos, Size, Choices, Options :: [Option]) ->
+.B
+          boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListBox()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Pos = {X :: integer(), Y :: integer()}
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+Choices = [unicode:chardata()]
+.br
+Option = {style, integer()} | {validator, wx:wx_object()}
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+deselect(This, N) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListBox()
+.br
+N = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Deselects an item in the list box\&.
+.LP
+Remark: This applies to multiple selection listboxes only\&.
+.RE
+.LP
+.nf
+
+.B
+getSelections(This) -> Result
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Result = {Res :: integer(), Selections :: [integer()]}
+.br
+This = wxListBox()
+.br
+.RE
+.RE
+.RS
+.LP
+Fill an array of ints with the positions of the currently selected items\&.
+.LP
+Return: The number of selections\&.
+.LP
+Remark: Use this with a multiple selection listbox\&.
+.LP
+See: \fIwxControlWithItems:getSelection/1\fR\&, \fIwxControlWithItems:getStringSelection/1\fR\&, \fIwxControlWithItems:setSelection/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+insertItems(This, Items, Pos) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListBox()
+.br
+Items = [unicode:chardata()]
+.br
+Pos = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Insert the given number of strings before the specified position\&.
+.RE
+.LP
+.nf
+
+.B
+isSelected(This, N) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListBox()
+.br
+N = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Determines whether an item is selected\&.
+.LP
+Return: true if the given item is selected, false otherwise\&.
+.RE
+.LP
+.nf
+
+.B
+set(This, Items) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListBox()
+.br
+Items = [unicode:chardata()]
+.br
+.RE
+.RE
+.RS
+.LP
+Replaces the current control contents with the given items\&.
+.LP
+Notice that calling this method is usually much faster than appending them one by one if you need to add a lot of items\&.
+.RE
+.LP
+.nf
+
+.B
+hitTest(This, Point) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListBox()
+.br
+Point = {X :: integer(), Y :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the item located at \fIpoint\fR\&, or \fIwxNOT_FOUND\fR\& if there is no item located at \fIpoint\fR\&\&.
+.LP
+It is currently implemented for wxMSW, wxMac and wxGTK2 ports\&.
+.LP
+Return: Item located at point, or wxNOT_FOUND if unimplemented or the item does not exist\&.
+.LP
+Since: 2\&.7\&.0
+.RE
+.LP
+.nf
+
+.B
+hitTest(This, X, Y) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListBox()
+.br
+X = Y = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+This is an overloaded member function, provided for convenience\&. It differs from the above function only in what argument(s) it accepts\&.
+.RE
+.LP
+.nf
+
+.B
+setFirstItem(This, N) -> ok
+.br
+.fi
+.br
+.nf
+
+.B
+setFirstItem(This, String) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListBox()
+.br
+String = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Set the specified item to be the first visible item\&.
+.RE

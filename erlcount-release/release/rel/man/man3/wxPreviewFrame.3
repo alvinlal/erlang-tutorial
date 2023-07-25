@@ -1,0 +1,179 @@
+.TH wxPreviewFrame 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxPreviewFrame \- Functions for wxPreviewFrame class
+.SH DESCRIPTION
+.LP
+This class provides the default method of managing the print preview interface\&. Member functions may be overridden to replace functionality, or the class may be used without derivation\&.
+.LP
+See: \fIwxPreviewCanvas\fR\&, \fIwxPreviewControlBar\fR\&, \fIwxPrintPreview\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxFrame\fR\& \fIwxTopLevelWindow\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxPreviewFrame
+.SH DATA TYPES
+.nf
+
+\fBwxPreviewFrame()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new(Preview, Parent) -> wxPreviewFrame()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Preview = wxPrintPreview:wxPrintPreview()
+.br
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Preview, Parent, Options :: [Option]) -> wxPreviewFrame()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Preview = wxPrintPreview:wxPrintPreview()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Option = 
+.br
+    {title, unicode:chardata()} |
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor\&.
+.LP
+Pass a print preview object plus other normal frame arguments\&. The print preview object will be destroyed by the frame when it closes\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxPreviewFrame()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor\&.
+.RE
+.LP
+.nf
+
+.B
+createControlBar(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPreviewFrame()
+.br
+.RE
+.RE
+.RS
+.LP
+Creates a \fIwxPreviewControlBar\fR\&\&.
+.LP
+Override this function to allow a user-defined preview control bar object to be created\&.
+.RE
+.LP
+.nf
+
+.B
+createCanvas(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPreviewFrame()
+.br
+.RE
+.RE
+.RS
+.LP
+Creates a \fIwxPreviewCanvas\fR\&\&.
+.LP
+Override this function to allow a user-defined preview canvas object to be created\&.
+.RE
+.LP
+.nf
+
+.B
+initialize(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPreviewFrame()
+.br
+.RE
+.RE
+.RS
+.LP
+Initializes the frame elements and prepares for showing it\&.
+.LP
+Calling this method is equivalent to calling \fIInitializeWithModality()\fR\& (not implemented in wx) with wxPreviewFrame_AppModal argument, please see its documentation for more details\&.
+.LP
+Please notice that this function is virtual mostly for backwards compatibility only, there is no real need to override it as it\&'s never called by wxWidgets itself\&.
+.RE
+.LP
+.nf
+
+.B
+onCloseWindow(This, Event) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPreviewFrame()
+.br
+Event = wxCloseEvent:wxCloseEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Enables any disabled frames in the application, and deletes the print preview object, implicitly deleting any printout objects associated with the print preview object\&.
+.RE

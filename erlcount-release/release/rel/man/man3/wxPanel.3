@@ -1,0 +1,151 @@
+.TH wxPanel 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxPanel \- Functions for wxPanel class
+.SH DESCRIPTION
+.LP
+A panel is a window on which controls are placed\&. It is usually placed within a frame\&. Its main feature over its parent class \fIwxWindow\fR\& is code for handling child windows and TAB traversal, which is implemented natively if possible (e\&.g\&. in wxGTK) or by wxWidgets itself otherwise\&.
+.LP
+Note: Tab traversal is implemented through an otherwise undocumented intermediate wxControlContainer class from which any class can derive in addition to the normal \fIwxWindow\fR\& base class\&. Please see and to find out how this is achieved\&.
+.LP
+Note: if not all characters are being intercepted by your OnKeyDown or OnChar handler, it may be because you are using the \fIwxTAB_TRAVERSAL\fR\& style, which grabs some keypresses for use by child controls\&.
+.LP
+Remark: By default, a panel has the same colouring as a dialog\&.
+.LP
+See: \fIwxDialog\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxPanel
+.SH "EVENTS"
+
+.LP
+Event types emitted from this class: \fInavigation_key\fR\&
+.SH DATA TYPES
+.nf
+
+\fBwxPanel()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxPanel()
+.br
+.fi
+.br
+.RS
+.LP
+Default constructor\&.
+.RE
+.LP
+.nf
+
+.B
+new(Parent) -> wxPanel()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Options :: [Option]) -> wxPanel()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Option = 
+.br
+    {winid, integer()} |
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor\&.
+.LP
+See: \fICreate()\fR\& (not implemented in wx)
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxPanel()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor\&.
+.LP
+Deletes any child windows before deleting the physical window\&.
+.RE
+.LP
+.nf
+
+.B
+initDialog(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPanel()
+.br
+.RE
+.RE
+.RS
+.LP
+Sends a \fIwxInitDialogEvent\fR\&, which in turn transfers data to the dialog via validators\&.
+.LP
+See: \fIwxInitDialogEvent\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setFocusIgnoringChildren(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPanel()
+.br
+.RE
+.RE
+.RS
+.LP
+In contrast to \fIwxWindow:setFocus/1\fR\& (see above) this will set the focus to the panel even if there are child windows in the panel\&.
+.LP
+This is only rarely needed\&.
+.RE

@@ -1,0 +1,62 @@
+.TH wxClientDC 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxClientDC \- Functions for wxClientDC class
+.SH DESCRIPTION
+.LP
+\fIwxClientDC\fR\& is primarily useful for obtaining information about the window from outside EVT_PAINT() handler\&.
+.LP
+Typical use of this class is to obtain the extent of some text string in order to allocate enough size for a window, e\&.g\&.
+.LP
+Note: While \fIwxClientDC\fR\& may also be used for drawing on the client area of a window from outside an EVT_PAINT() handler in some ports, this does \fInot\fR\& work on all platforms (neither wxOSX nor wxGTK with GTK 3 Wayland backend support this, so drawing using \fIwxClientDC\fR\& simply doesn\&'t have any effect there) and the only portable way of drawing is via \fIwxPaintDC\fR\&\&. To redraw a small part of the window, use \fIwxWindow:refreshRect/3\fR\& to invalidate just this part and check \fIwxWindow:getUpdateRegion/1\fR\& in the paint event handler to redraw this part only\&.
+.LP
+\fIwxClientDC\fR\& objects should normally be constructed as temporary stack objects, i\&.e\&. don\&'t store a \fIwxClientDC\fR\& object\&.
+.LP
+A \fIwxClientDC\fR\& object is initialized to use the same font and colours as the window it is associated with\&.
+.LP
+See: \fIwxDC\fR\&, \fIwxMemoryDC\fR\&, \fIwxPaintDC\fR\&, \fIwxWindowDC\fR\&, \fIwxScreenDC\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxWindowDC\fR\& \fIwxDC\fR\&
+.LP
+wxWidgets docs: wxClientDC
+.SH DATA TYPES
+.nf
+
+\fBwxClientDC()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new(Window) -> wxClientDC()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Window = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor\&.
+.LP
+Pass a pointer to the window on which you wish to paint\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxClientDC()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

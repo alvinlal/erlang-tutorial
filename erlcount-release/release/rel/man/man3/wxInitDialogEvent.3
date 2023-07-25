@@ -1,0 +1,38 @@
+.TH wxInitDialogEvent 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxInitDialogEvent \- Functions for wxInitDialogEvent class
+.SH DESCRIPTION
+.LP
+A \fIwxInitDialogEvent\fR\& is sent as a dialog or panel is being initialised\&. Handlers for this event can transfer data to the window\&.
+.LP
+The default handler calls \fIwxWindow:transferDataToWindow/1\fR\&\&.
+.LP
+See: Overview events 
+.LP
+This class is derived (and can use functions) from: \fIwxEvent\fR\&
+.LP
+wxWidgets docs: wxInitDialogEvent
+.SH "EVENTS"
+
+.LP
+Use \fIwxEvtHandler:connect/3\fR\& with \fIwxInitDialogEventType\fR\& to subscribe to events of this type\&.
+.SH DATA TYPES
+.nf
+
+\fBwxInitDialogEvent()\fR\& = wx:wx_object()
+.br
+.fi
+.nf
+
+\fBwxInitDialog()\fR\& = 
+.br
+    #wxInitDialog{type =
+.br
+                      wxInitDialogEvent:wxInitDialogEventType()}
+.br
+.fi
+.nf
+
+\fBwxInitDialogEventType()\fR\& = init_dialog
+.br
+.fi

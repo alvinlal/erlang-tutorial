@@ -1,0 +1,75 @@
+.TH wxControl 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxControl \- Functions for wxControl class
+.SH DESCRIPTION
+.LP
+This is the base class for a control or "widget"\&.
+.LP
+A control is generally a small window which processes user input and/or displays one or more item of data\&.
+.LP
+See: \fIwxValidator\fR\& (not implemented in wx)
+.LP
+This class is derived (and can use functions) from: \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxControl
+.SH "EVENTS"
+
+.LP
+Event types emitted from this class: \fIcommand_text_copy\fR\&, \fIcommand_text_cut\fR\&, \fIcommand_text_paste\fR\&
+.SH DATA TYPES
+.nf
+
+\fBwxControl()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+getLabel(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxControl()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the control\&'s label, as it was passed to \fIsetLabel/2\fR\&\&.
+.LP
+Note that the returned string may contains mnemonics ("&" characters) if they were passed to the \fIsetLabel/2\fR\& function; use \fIGetLabelText()\fR\& (not implemented in wx) if they are undesired\&.
+.LP
+Also note that the returned string is always the string which was passed to \fIsetLabel/2\fR\& but may be different from the string passed to \fISetLabelText()\fR\& (not implemented in wx) (since this last one escapes mnemonic characters)\&.
+.RE
+.LP
+.nf
+
+.B
+setLabel(This, Label) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxControl()
+.br
+Label = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the control\&'s label\&.
+.LP
+All "&" characters in the \fIlabel\fR\& are special and indicate that the following character is a \fImnemonic\fR\& for this control and can be used to activate it from the keyboard (typically by using \fIAlt\fR\& key in combination with it)\&. To insert a literal ampersand character, you need to double it, i\&.e\&. use "&&"\&. If this behaviour is undesirable, use \fISetLabelText()\fR\& (not implemented in wx) instead\&.
+.RE

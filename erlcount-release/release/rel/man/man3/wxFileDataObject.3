@@ -1,0 +1,87 @@
+.TH wxFileDataObject 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxFileDataObject \- Functions for wxFileDataObject class
+.SH DESCRIPTION
+.LP
+\fIwxFileDataObject\fR\& is a specialization of \fIwxDataObject\fR\& for file names\&. The program works with it just as if it were a list of absolute file names, but internally it uses the same format as Explorer and other compatible programs under Windows or GNOME/KDE file manager under Unix which makes it possible to receive files from them using this class\&.
+.LP
+See: \fIwxDataObject\fR\&, \fIwxDataObjectSimple\fR\& (not implemented in wx), \fIwxTextDataObject\fR\&, \fIwxBitmapDataObject\fR\&, \fIwxDataObject\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxDataObject\fR\&
+.LP
+wxWidgets docs: wxFileDataObject
+.SH DATA TYPES
+.nf
+
+\fBwxFileDataObject()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxFileDataObject()
+.br
+.fi
+.br
+.RS
+.LP
+Constructor\&.
+.RE
+.LP
+.nf
+
+.B
+addFile(This, File) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDataObject()
+.br
+File = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Adds a file to the file list represented by this data object (Windows only)\&.
+.RE
+.LP
+.nf
+
+.B
+getFilenames(This) -> [unicode:charlist()]
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDataObject()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the array of file names\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxFileDataObject()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

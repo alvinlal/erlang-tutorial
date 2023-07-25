@@ -1,0 +1,769 @@
+.TH wxBitmap 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxBitmap \- Functions for wxBitmap class
+.SH DESCRIPTION
+.LP
+This class encapsulates the concept of a platform-dependent bitmap, either monochrome or colour or colour with alpha channel support\&.
+.LP
+If you need direct access the bitmap data instead going through drawing to it using \fIwxMemoryDC\fR\& you need to use the \fIwxPixelData\fR\& (not implemented in wx) class (either wxNativePixelData for RGB bitmaps or wxAlphaPixelData for bitmaps with an additionally alpha channel)\&.
+.LP
+Note that many \fIwxBitmap\fR\& functions take a \fItype\fR\& parameter, which is a value of the ?wxBitmapType enumeration\&. The validity of those values depends however on the platform where your program is running and from the wxWidgets configuration\&. If all possible wxWidgets settings are used:
+.LP
+In addition, \fIwxBitmap\fR\& can load and save all formats that \fIwxImage\fR\& can; see \fIwxImage\fR\& for more info\&. Of course, you must have loaded the \fIwxImage\fR\& handlers (see ?wxInitAllImageHandlers() and \fIwxImage::AddHandler\fR\& (not implemented in wx))\&. Note that all available wxBitmapHandlers for a given wxWidgets port are automatically loaded at startup so you won\&'t need to use \fIwxBitmap::AddHandler\fR\& (not implemented in wx)\&.
+.LP
+More on the difference between \fIwxImage\fR\& and \fIwxBitmap\fR\&: \fIwxImage\fR\& is just a buffer of RGB bytes with an optional buffer for the alpha bytes\&. It is all generic, platform independent and image file format independent code\&. It includes generic code for scaling, resizing, clipping, and other manipulations of the image data\&. OTOH, \fIwxBitmap\fR\& is intended to be a wrapper of whatever is the native image format that is quickest/easiest to draw to a DC or to be the target of the drawing operations performed on a \fIwxMemoryDC\fR\&\&. By splitting the responsibilities between wxImage/wxBitmap like this then it\&'s easier to use generic code shared by all platforms and image types for generic operations and platform specific code where performance or compatibility is needed\&.
+.LP
+Predefined objects (include wx\&.hrl): ?wxNullBitmap
+.LP
+See: Overview bitmap, Overview bitmap, \fIwxDC:blit/6\fR\&, \fIwxIcon\fR\&, \fIwxCursor\fR\&, \fIwxMemoryDC\fR\&, \fIwxImage\fR\&, \fIwxPixelData\fR\& (not implemented in wx)
+.LP
+wxWidgets docs: wxBitmap
+.SH DATA TYPES
+.nf
+
+\fBwxBitmap()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxBitmap()
+.br
+.fi
+.br
+.RS
+.LP
+Default constructor\&.
+.LP
+Constructs a bitmap object with no data; an assignment or another member function such as \fIcreate/4\fR\& or \fIloadFile/3\fR\& must be called subsequently\&.
+.RE
+.LP
+.nf
+
+.B
+new(Name) -> wxBitmap()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Sz) -> wxBitmap()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Img) -> wxBitmap()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Img = wxImage:wxImage() | wxBitmap:wxBitmap()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+new(Width, Height) -> wxBitmap()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Name, Height :: [Option]) -> wxBitmap()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Sz, Height :: [Option]) -> wxBitmap()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Img, Height :: [Option]) -> wxBitmap()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Img = wxImage:wxImage()
+.br
+Option = {depth, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Creates this bitmap object from the given image\&.
+.LP
+This has to be done to actually display an image as you cannot draw an image directly on a window\&.
+.LP
+The resulting bitmap will use the provided colour depth (or that of the current system if depth is ?wxBITMAP_SCREEN_DEPTH) which entails that a colour reduction may take place\&.
+.LP
+On Windows, if there is a palette present (set with SetPalette), it will be used when creating the \fIwxBitmap\fR\& (most useful in 8-bit display mode)\&. On other platforms, the palette is currently ignored\&.
+.RE
+.LP
+.nf
+
+.B
+new(Bits, Width, Height) -> wxBitmap()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Width, Height, Height :: [Option]) -> wxBitmap()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Width = Height = integer()
+.br
+Option = {depth, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Creates a new bitmap\&.
+.LP
+A depth of ?wxBITMAP_SCREEN_DEPTH indicates the depth of the current screen or visual\&.
+.LP
+Some platforms only support 1 for monochrome and ?wxBITMAP_SCREEN_DEPTH for the current colour setting\&.
+.LP
+A depth of 32 including an alpha channel is supported under MSW, Mac and GTK+\&.
+.RE
+.LP
+.nf
+
+.B
+new(Bits, Width, Height, Options :: [Option]) -> wxBitmap()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Bits = binary()
+.br
+Width = Height = integer()
+.br
+Option = {depth, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Creates a bitmap from the given array \fIbits\fR\&\&.
+.LP
+You should only use this function for monochrome bitmaps (depth 1) in portable programs: in this case the bits parameter should contain an XBM image\&.
+.LP
+For other bit depths, the behaviour is platform dependent: under Windows, the data is passed without any changes to the underlying CreateBitmap() API\&. Under other platforms, only monochrome bitmaps may be created using this constructor and \fIwxImage\fR\& should be used for creating colour bitmaps from static data\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxBitmap()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Creates bitmap corresponding to the given cursor\&.
+.LP
+This can be useful to display a cursor as it cannot be drawn directly on a window\&.
+.LP
+This constructor only exists in wxMSW and wxGTK (where it is implemented for GTK+ 2\&.8 or later) only\&.
+.LP
+Since: 3\&.1\&.0 Destructor\&. See overview_refcount_destruct for more info\&.
+.LP
+If the application omits to delete the bitmap explicitly, the bitmap will be destroyed automatically by wxWidgets when the application exits\&.
+.LP
+Warning: Do not delete a bitmap that is selected into a memory device context\&.
+.RE
+.LP
+.nf
+
+.B
+convertToImage(This) -> wxImage:wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+.RE
+.RE
+.RS
+.LP
+Creates an image from a platform-dependent bitmap\&.
+.LP
+This preserves mask information so that bitmaps and images can be converted back and forth without loss in that respect\&.
+.RE
+.LP
+.nf
+
+.B
+copyFromIcon(This, Icon) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+Icon = wxIcon:wxIcon()
+.br
+.RE
+.RE
+.RS
+.LP
+Creates the bitmap from an icon\&.
+.RE
+.LP
+.nf
+
+.B
+create(This, Sz) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+Sz = {W :: integer(), H :: integer()}
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+create(This, Width, Height) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+create(This, Sz, Height :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+Sz = {W :: integer(), H :: integer()}
+.br
+Option = {depth, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+This is an overloaded member function, provided for convenience\&. It differs from the above function only in what argument(s) it accepts\&.
+.RE
+.LP
+.nf
+
+.B
+create(This, Width, Height, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+create(This, Width, Height, Dc) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+Width = Height = integer()
+.br
+Dc = wxDC:wxDC()
+.br
+.RE
+.RE
+.RS
+.LP
+Create a bitmap compatible with the given DC, inheriting its magnification factor\&.
+.LP
+Return: true if the creation was successful\&.
+.LP
+Since: 3\&.1\&.0
+.RE
+.LP
+.nf
+
+.B
+getDepth(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the colour depth of the bitmap\&.
+.LP
+A value of 1 indicates a monochrome bitmap\&.
+.RE
+.LP
+.nf
+
+.B
+getHeight(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the height of the bitmap in pixels\&.
+.LP
+See: \fIgetWidth/1\fR\&, \fIGetSize()\fR\& (not implemented in wx)
+.RE
+.LP
+.nf
+
+.B
+getPalette(This) -> wxPalette:wxPalette()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the associated palette (if any) which may have been loaded from a file or set for the bitmap\&.
+.LP
+See: \fIwxPalette\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getMask(This) -> wxMask:wxMask()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the associated mask (if any) which may have been loaded from a file or set for the bitmap\&.
+.LP
+See: \fIsetMask/2\fR\&, \fIwxMask\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getWidth(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the width of the bitmap in pixels\&.
+.LP
+See: \fIgetHeight/1\fR\&, \fIGetSize()\fR\& (not implemented in wx)
+.RE
+.LP
+.nf
+
+.B
+getSubBitmap(This, Rect) -> wxBitmap()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+Rect = 
+.br
+    {X :: integer(),
+.br
+     Y :: integer(),
+.br
+     W :: integer(),
+.br
+     H :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Returns a sub bitmap of the current one as long as the rect belongs entirely to the bitmap\&.
+.LP
+This function preserves bit depth and mask information\&.
+.RE
+.LP
+.nf
+
+.B
+loadFile(This, Name) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+Name = unicode:chardata()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+loadFile(This, Name, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+Name = unicode:chardata()
+.br
+Option = {type, wx:wx_enum()}
+.br
+.RE
+.RE
+.RS
+.LP
+Loads a bitmap from a file or resource\&.
+.LP
+Return: true if the operation succeeded, false otherwise\&.
+.LP
+Remark: A palette may be associated with the bitmap if one exists (especially for colour Windows bitmaps), and if the code supports it\&. You can check if one has been created by using the \fIgetPalette/1\fR\& member\&.
+.LP
+See: \fIsaveFile/4\fR\& 
+.RE
+.LP
+.nf
+
+.B
+ok(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+.RE
+.RE
+.RS
+.LP
+See: \fIisOk/1\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+isOk(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if bitmap data is present\&.
+.RE
+.LP
+.nf
+
+.B
+saveFile(This, Name, Type) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+Name = unicode:chardata()
+.br
+Type = wx:wx_enum()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+saveFile(This, Name, Type, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+Name = unicode:chardata()
+.br
+Type = wx:wx_enum()
+.br
+Option = {palette, wxPalette:wxPalette()}
+.br
+.RE
+.RE
+.RS
+.LP
+Saves a bitmap in the named file\&.
+.LP
+Return: true if the operation succeeded, false otherwise\&.
+.LP
+Remark: Depending on how wxWidgets has been configured, not all formats may be available\&.
+.LP
+See: \fIloadFile/3\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setDepth(This, Depth) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+Depth = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Deprecated: This function is deprecated since version 3\&.1\&.2, dimensions and depth can only be set at construction time\&.
+.LP
+Sets the depth member (does not affect the bitmap data)\&.
+.RE
+.LP
+.nf
+
+.B
+setHeight(This, Height) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+Height = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Deprecated: This function is deprecated since version 3\&.1\&.2, dimensions and depth can only be set at construction time\&.
+.LP
+Sets the height member (does not affect the bitmap data)\&.
+.RE
+.LP
+.nf
+
+.B
+setMask(This, Mask) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+Mask = wxMask:wxMask()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the mask for this bitmap\&.
+.LP
+Remark: The bitmap object owns the mask once this has been called\&.
+.LP
+Note: A mask can be set also for bitmap with an alpha channel but doing so under wxMSW is not recommended because performance of drawing such bitmap is not very good\&.
+.LP
+See: \fIgetMask/1\fR\&, \fIwxMask\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setPalette(This, Palette) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+Palette = wxPalette:wxPalette()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the associated palette\&.
+.LP
+(Not implemented under GTK+)\&.
+.LP
+See: \fIwxPalette\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setWidth(This, Width) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmap()
+.br
+Width = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Deprecated: This function is deprecated since version 3\&.1\&.2, dimensions and depth can only be set at construction time\&.
+.LP
+Sets the width member (does not affect the bitmap data)\&.
+.RE

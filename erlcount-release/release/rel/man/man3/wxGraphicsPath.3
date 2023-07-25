@@ -1,0 +1,562 @@
+.TH wxGraphicsPath 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxGraphicsPath \- Functions for wxGraphicsPath class
+.SH DESCRIPTION
+.LP
+A \fIwxGraphicsPath\fR\& is a native representation of a geometric path\&. The contents are specific and private to the respective renderer\&. Instances are reference counted and can therefore be assigned as usual\&. The only way to get a valid instance is by using \fIwxGraphicsContext:createPath/1\fR\& or \fIwxGraphicsRenderer:createPath/1\fR\&\&.
+.LP
+This class is derived (and can use functions) from: \fIwxGraphicsObject\fR\&
+.LP
+wxWidgets docs: wxGraphicsPath
+.SH DATA TYPES
+.nf
+
+\fBwxGraphicsPath()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+moveToPoint(This, P) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+P = {X :: float(), Y :: float()}
+.br
+.RE
+.RE
+.RS
+.LP
+Begins a new subpath at \fIp\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+moveToPoint(This, X, Y) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+X = Y = number()
+.br
+.RE
+.RE
+.RS
+.LP
+Begins a new subpath at (\fIx\fR\&,\fIy\fR\&)\&.
+.RE
+.LP
+.nf
+
+.B
+addArc(This, C, R, StartAngle, EndAngle, Clockwise) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+C = {X :: float(), Y :: float()}
+.br
+R = StartAngle = EndAngle = number()
+.br
+Clockwise = boolean()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+addArc(This, X, Y, R, StartAngle, EndAngle, Clockwise) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+X = Y = R = StartAngle = EndAngle = number()
+.br
+Clockwise = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+Adds an arc of a circle\&.
+.LP
+The circle is defined by the coordinates of its centre (\fIx\fR\&, \fIy\fR\&) or \fIc\fR\& and its radius \fIr\fR\&\&. The arc goes from the starting angle \fIstartAngle\fR\& to \fIendAngle\fR\& either clockwise or counter-clockwise depending on the value of \fIclockwise\fR\& argument\&.
+.LP
+The angles are measured in radians but, contrary to the usual mathematical convention, are always \fIclockwise\fR\& from the horizontal axis\&.
+.LP
+If for clockwise arc \fIendAngle\fR\& is less than \fIstartAngle\fR\& it will be progressively increased by 2*pi until it is greater than \fIstartAngle\fR\&\&. If for counter-clockwise arc \fIendAngle\fR\& is greater than \fIstartAngle\fR\& it will be progressively decreased by 2*pi until it is less than \fIstartAngle\fR\&\&.
+.LP
+If there is a current point set, an initial line segment will be added to the path to connect the current point to the beginning of the arc\&.
+.RE
+.LP
+.nf
+
+.B
+addArcToPoint(This, X1, Y1, X2, Y2, R) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+X1 = Y1 = X2 = Y2 = R = number()
+.br
+.RE
+.RE
+.RS
+.LP
+Adds an arc (of a circle with radius \fIr\fR\&) that is tangent to the line connecting current point and (\fIx1\fR\&, \fIy1\fR\&) and to the line connecting (\fIx1\fR\&, \fIy1\fR\&) and (\fIx2\fR\&, \fIy2\fR\&)\&.
+.LP
+If the current point and the starting point of the arc are different, a straight line connecting these points is also appended\&. If there is no current point before the call to \fIaddArcToPoint/6\fR\& this function will behave as if preceded by a call to MoveToPoint(0, 0)\&. After this call the current point will be at the ending point of the arc\&.
+.RE
+.LP
+.nf
+
+.B
+addCircle(This, X, Y, R) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+X = Y = R = number()
+.br
+.RE
+.RE
+.RS
+.LP
+Appends a circle around (\fIx\fR\&,\fIy\fR\&) with radius \fIr\fR\& as a new closed subpath\&.
+.LP
+After this call the current point will be at (x+\fIr\fR\&, \fIy\fR\&)\&.
+.RE
+.LP
+.nf
+
+.B
+addCurveToPoint(This, C1, C2, E) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+C1 = C2 = E = {X :: float(), Y :: float()}
+.br
+.RE
+.RE
+.RS
+.LP
+Adds a cubic bezier curve from the current point, using two control points and an end point\&.
+.LP
+If there is no current point before the call to \fIaddCurveToPoint/7\fR\& this function will behave as if preceded by a call to MoveToPoint(\fIc1\fR\&)\&.
+.RE
+.LP
+.nf
+
+.B
+addCurveToPoint(This, Cx1, Cy1, Cx2, Cy2, X, Y) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+Cx1 = Cy1 = Cx2 = Cy2 = X = Y = number()
+.br
+.RE
+.RE
+.RS
+.LP
+Adds a cubic bezier curve from the current point, using two control points and an end point\&.
+.LP
+If there is no current point before the call to \fIaddCurveToPoint/7\fR\& this function will behave as if preceded by a call to MoveToPoint(\fIcx1\fR\&, \fIcy1\fR\&)\&.
+.RE
+.LP
+.nf
+
+.B
+addEllipse(This, X, Y, W, H) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+X = Y = W = H = number()
+.br
+.RE
+.RE
+.RS
+.LP
+Appends an ellipse fitting into the passed in rectangle as a new closed subpath\&.
+.LP
+After this call the current point will be at (x+\fIw\fR\&, y+\fIh/2\fR\&)\&.
+.RE
+.LP
+.nf
+
+.B
+addLineToPoint(This, P) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+P = {X :: float(), Y :: float()}
+.br
+.RE
+.RE
+.RS
+.LP
+Adds a straight line from the current point to \fIp\fR\&\&.
+.LP
+If current point is not yet set before the call to \fIaddLineToPoint/3\fR\& this function will behave as \fImoveToPoint/3\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+addLineToPoint(This, X, Y) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+X = Y = number()
+.br
+.RE
+.RE
+.RS
+.LP
+Adds a straight line from the current point to (\fIx\fR\&,\fIy\fR\&)\&.
+.LP
+If current point is not yet set before the call to \fIaddLineToPoint/3\fR\& this function will behave as \fImoveToPoint/3\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+addPath(This, Path) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = Path = wxGraphicsPath()
+.br
+.RE
+.RE
+.RS
+.LP
+Adds another path onto the current path\&.
+.LP
+After this call the current point will be at the added path\&'s current point\&. For Direct2D the path being appended shouldn\&'t contain a started non-empty subpath when this function is called\&.
+.RE
+.LP
+.nf
+
+.B
+addQuadCurveToPoint(This, Cx, Cy, X, Y) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+Cx = Cy = X = Y = number()
+.br
+.RE
+.RE
+.RS
+.LP
+Adds a quadratic bezier curve from the current point, using a control point and an end point\&.
+.LP
+If there is no current point before the call to \fIaddQuadCurveToPoint/5\fR\& this function will behave as if preceded by a call to MoveToPoint(\fIcx\fR\&, \fIcy\fR\&)\&.
+.RE
+.LP
+.nf
+
+.B
+addRectangle(This, X, Y, W, H) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+X = Y = W = H = number()
+.br
+.RE
+.RE
+.RS
+.LP
+Appends a rectangle as a new closed subpath\&.
+.LP
+After this call the current point will be at (\fIx\fR\&, \fIy\fR\&)\&.
+.RE
+.LP
+.nf
+
+.B
+addRoundedRectangle(This, X, Y, W, H, Radius) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+X = Y = W = H = Radius = number()
+.br
+.RE
+.RE
+.RS
+.LP
+Appends a rounded rectangle as a new closed subpath\&.
+.LP
+If \fIradius\fR\& equals 0 this function will behave as \fIaddRectangle/5\fR\&, otherwise after this call the current point will be at (x+\fIw\fR\&, y+\fIh/2\fR\&)\&.
+.RE
+.LP
+.nf
+
+.B
+closeSubpath(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+.RE
+.RE
+.RS
+.LP
+Closes the current sub-path\&.
+.LP
+After this call the current point will be at the joined endpoint of the sub-path\&.
+.RE
+.LP
+.nf
+
+.B
+contains(This, C) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+C = {X :: float(), Y :: float()}
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+contains(This, X, Y) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+contains(This, C, Y :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+C = {X :: float(), Y :: float()}
+.br
+Option = {fillStyle, wx:wx_enum()}
+.br
+.RE
+.RE
+.RS
+.LP
+Return: true if the point is within the path\&.
+.RE
+.LP
+.nf
+
+.B
+contains(This, X, Y, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+X = Y = number()
+.br
+Option = {fillStyle, wx:wx_enum()}
+.br
+.RE
+.RE
+.RS
+.LP
+Return: true if the point is within the path\&.
+.RE
+.LP
+.nf
+
+.B
+getBox(This) ->
+.B
+          {X :: float(), Y :: float(), W :: float(), H :: float()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the bounding box enclosing all points (possibly including control points)\&.
+.RE
+.LP
+.nf
+
+.B
+getCurrentPoint(This) -> {X :: float(), Y :: float()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the last point of the current path, (0,0) if not yet set\&.
+.RE
+.LP
+.nf
+
+.B
+transform(This, Matrix) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsPath()
+.br
+Matrix = wxGraphicsMatrix:wxGraphicsMatrix()
+.br
+.RE
+.RE
+.RS
+.LP
+Transforms each point of this path by the matrix\&.
+.LP
+For Direct2D the current path shouldn\&'t contain a started non-empty subpath when this function is called\&.
+.RE

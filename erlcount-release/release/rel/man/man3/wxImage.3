@@ -1,0 +1,2264 @@
+.TH wxImage 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxImage \- Functions for wxImage class
+.SH DESCRIPTION
+.LP
+This class encapsulates a platform-independent image\&.
+.LP
+An image can be created from data, or using \fIwxBitmap:convertToImage/1\fR\&\&. An image can be loaded from a file in a variety of formats, and is extensible to new formats via image format handlers\&. Functions are available to set and get image bits, so it can be used for basic image manipulation\&.
+.LP
+A \fIwxImage\fR\& cannot (currently) be drawn directly to a \fIwxDC\fR\&\&. Instead, a platform-specific \fIwxBitmap\fR\& object must be created from it using the wxBitmap::wxBitmap(wxImage,int depth) constructor\&. This bitmap can then be drawn in a device context, using \fIwxDC:drawBitmap/4\fR\&\&.
+.LP
+More on the difference between \fIwxImage\fR\& and \fIwxBitmap\fR\&: \fIwxImage\fR\& is just a buffer of RGB bytes with an optional buffer for the alpha bytes\&. It is all generic, platform independent and image file format independent code\&. It includes generic code for scaling, resizing, clipping, and other manipulations of the image data\&. OTOH, \fIwxBitmap\fR\& is intended to be a wrapper of whatever is the native image format that is quickest/easiest to draw to a DC or to be the target of the drawing operations performed on a \fIwxMemoryDC\fR\&\&. By splitting the responsibilities between wxImage/wxBitmap like this then it\&'s easier to use generic code shared by all platforms and image types for generic operations and platform specific code where performance or compatibility is needed\&.
+.LP
+One colour value of the image may be used as a mask colour which will lead to the automatic creation of a \fIwxMask\fR\& object associated to the bitmap object\&.
+.LP
+Alpha channel support
+.LP
+Starting from wxWidgets 2\&.5\&.0 \fIwxImage\fR\& supports alpha channel data, that is in addition to a byte for the red, green and blue colour components for each pixel it also stores a byte representing the pixel opacity\&.
+.LP
+An alpha value of 0 corresponds to a transparent pixel (null opacity) while a value of 255 means that the pixel is 100% opaque\&. The constants ?wxIMAGE_ALPHA_TRANSPARENT and ?wxIMAGE_ALPHA_OPAQUE can be used to indicate those values in a more readable form\&.
+.LP
+While all images have RGB data, not all images have an alpha channel\&. Before using \fIgetAlpha/3\fR\& you should check if this image contains an alpha channel with \fIhasAlpha/1\fR\&\&. Currently the BMP, PNG, TGA, and TIFF format handlers have full alpha channel support for loading so if you want to use alpha you have to use one of these formats\&. If you initialize the image alpha channel yourself using \fIsetAlpha/4\fR\&, you should save it in either PNG, TGA, or TIFF format to avoid losing it as these are the only handlers that currently support saving with alpha\&.
+.LP
+Available image handlers
+.LP
+The following image handlers are available\&. wxBMPHandler is always installed by default\&. To use other image formats, install the appropriate handler with \fIwxImage::AddHandler\fR\& (not implemented in wx) or call ?wxInitAllImageHandlers()\&.
+.LP
+When saving in PCX format, \fIwxPCXHandler\fR\& (not implemented in wx) will count the number of different colours in the image; if there are 256 or less colours, it will save as 8 bit, else it will save as 24 bit\&.
+.LP
+Loading PNMs only works for ASCII or raw RGB images\&. When saving in PNM format, \fIwxPNMHandler\fR\& (not implemented in wx) will always save as raw RGB\&.
+.LP
+Saving GIFs requires images of maximum 8 bpp (see \fIwxQuantize\fR\& (not implemented in wx)), and the alpha channel converted to a mask (see \fIconvertAlphaToMask/5\fR\&)\&. Saving an animated GIF requires images of the same size (see \fIwxGIFHandler::SaveAnimation\fR\& (not implemented in wx))
+.LP
+Predefined objects (include wx\&.hrl): ?wxNullImage
+.LP
+See: \fIwxBitmap\fR\&, ?wxInitAllImageHandlers(), \fIwxPixelData\fR\& (not implemented in wx)
+.LP
+wxWidgets docs: wxImage
+.SH DATA TYPES
+.nf
+
+\fBwxImage()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Creates an empty \fIwxImage\fR\& object without an alpha channel\&.
+.RE
+.LP
+.nf
+
+.B
+new(Name) -> wxImage()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Sz) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Sz = {W :: integer(), H :: integer()}
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Width, Height) -> wxImage()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Name, Height :: [Option]) -> wxImage()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Sz, Data) -> wxImage()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Sz, Height :: [Option]) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Sz = {W :: integer(), H :: integer()}
+.br
+Option = {clear, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+This is an overloaded member function, provided for convenience\&. It differs from the above function only in what argument(s) it accepts\&.
+.RE
+.LP
+.nf
+
+.B
+new(Width, Height, Data) -> wxImage()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Width, Height, Data :: [Option]) -> wxImage()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Name, Mimetype, Data :: [Option]) -> wxImage()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Sz, Data, Alpha) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Sz = {W :: integer(), H :: integer()}
+.br
+Data = Alpha = binary()
+.br
+.RE
+.RE
+.RS
+.LP
+This is an overloaded member function, provided for convenience\&. It differs from the above function only in what argument(s) it accepts\&.
+.RE
+.LP
+.nf
+
+.B
+new(Width, Height, Data, Alpha) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Width = Height = integer()
+.br
+Data = Alpha = binary()
+.br
+.RE
+.RE
+.RS
+.LP
+Creates an image from data in memory\&.
+.LP
+If \fIstatic_data\fR\& is false then the \fIwxImage\fR\& will take ownership of the data and free it afterwards\&. For this, it has to be allocated with \fImalloc\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxImage()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor\&.
+.LP
+See reference-counted object destruction for more info\&.
+.RE
+.LP
+.nf
+
+.B
+blur(This, BlurRadius) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+BlurRadius = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Blurs the image in both horizontal and vertical directions by the specified pixel \fIblurRadius\fR\&\&.
+.LP
+This should not be used when using a single mask colour for transparency\&.
+.LP
+See: \fIblurHorizontal/2\fR\&, \fIblurVertical/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+blurHorizontal(This, BlurRadius) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+BlurRadius = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Blurs the image in the horizontal direction only\&.
+.LP
+This should not be used when using a single mask colour for transparency\&.
+.LP
+See: \fIblur/2\fR\&, \fIblurVertical/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+blurVertical(This, BlurRadius) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+BlurRadius = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Blurs the image in the vertical direction only\&.
+.LP
+This should not be used when using a single mask colour for transparency\&.
+.LP
+See: \fIblur/2\fR\&, \fIblurHorizontal/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+convertAlphaToMask(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+convertAlphaToMask(This, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Option = {threshold, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+If the image has alpha channel, this method converts it to mask\&.
+.LP
+If the image has an alpha channel, all pixels with alpha value less than \fIthreshold\fR\& are replaced with the mask colour and the alpha channel is removed\&. Otherwise nothing is done\&.
+.LP
+The mask colour is chosen automatically using \fIfindFirstUnusedColour/2\fR\&, see the overload below if this is not appropriate\&.
+.LP
+Return: Returns true on success, false on error\&.
+.RE
+.LP
+.nf
+
+.B
+convertAlphaToMask(This, Mr, Mg, Mb) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Mr = Mg = Mb = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+convertAlphaToMask(This, Mr, Mg, Mb, Options :: [Option]) ->
+.B
+                      boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Mr = Mg = Mb = integer()
+.br
+Option = {threshold, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+If the image has alpha channel, this method converts it to mask using the specified colour as the mask colour\&.
+.LP
+If the image has an alpha channel, all pixels with alpha value less than \fIthreshold\fR\& are replaced with the mask colour and the alpha channel is removed\&. Otherwise nothing is done\&.
+.LP
+Since: 2\&.9\&.0
+.LP
+Return: Returns true on success, false on error\&.
+.RE
+.LP
+.nf
+
+.B
+convertToGreyscale(This) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns a greyscale version of the image\&.
+.LP
+Since: 2\&.9\&.0
+.RE
+.LP
+.nf
+
+.B
+convertToGreyscale(This, Weight_r, Weight_g, Weight_b) ->
+.B
+                      wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Weight_r = Weight_g = Weight_b = number()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns a greyscale version of the image\&.
+.LP
+The returned image uses the luminance component of the original to calculate the greyscale\&. Defaults to using the standard ITU-T BT\&.601 when converting to YUV, where every pixel equals (R * \fIweight_r\fR\&) + (G * \fIweight_g\fR\&) + (B * \fIweight_b\fR\&)\&.
+.RE
+.LP
+.nf
+
+.B
+convertToMono(This, R, G, B) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+R = G = B = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns monochromatic version of the image\&.
+.LP
+The returned image has white colour where the original has (r,g,b) colour and black colour everywhere else\&.
+.RE
+.LP
+.nf
+
+.B
+copy(This) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns an identical copy of this image\&.
+.RE
+.LP
+.nf
+
+.B
+create(This, Sz) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Sz = {W :: integer(), H :: integer()}
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+create(This, Width, Height) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+create(This, Sz, Data) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+create(This, Sz, Height :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Sz = {W :: integer(), H :: integer()}
+.br
+Option = {clear, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+This is an overloaded member function, provided for convenience\&. It differs from the above function only in what argument(s) it accepts\&.
+.RE
+.LP
+.nf
+
+.B
+create(This, Width, Height, Data) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+create(This, Width, Height, Data :: [Option]) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+create(This, Sz, Data, Alpha) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Sz = {W :: integer(), H :: integer()}
+.br
+Data = Alpha = binary()
+.br
+.RE
+.RE
+.RS
+.LP
+This is an overloaded member function, provided for convenience\&. It differs from the above function only in what argument(s) it accepts\&.
+.RE
+.LP
+.nf
+
+.B
+create(This, Width, Height, Data, Alpha) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Width = Height = integer()
+.br
+Data = Alpha = binary()
+.br
+.RE
+.RE
+.RS
+.LP
+Creates a fresh image\&.
+.LP
+See \fInew/4\fR\& for more info\&.
+.LP
+Return: true if the call succeeded, false otherwise\&.
+.RE
+.LP
+.nf
+
+.B
+\&'Destroy\&'(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Destroys the image data\&.
+.RE
+.LP
+.nf
+
+.B
+findFirstUnusedColour(This) -> Result
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Result = 
+.br
+    {Res :: boolean(),
+.br
+     R :: integer(),
+.br
+     G :: integer(),
+.br
+     B :: integer()}
+.br
+This = wxImage()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+findFirstUnusedColour(This, Options :: [Option]) -> Result
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Result = 
+.br
+    {Res :: boolean(),
+.br
+     R :: integer(),
+.br
+     G :: integer(),
+.br
+     B :: integer()}
+.br
+This = wxImage()
+.br
+Option = 
+.br
+    {startR, integer()} |
+.br
+    {startG, integer()} |
+.br
+    {startB, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Finds the first colour that is never used in the image\&.
+.LP
+The search begins at given initial colour and continues by increasing R, G and B components (in this order) by 1 until an unused colour is found or the colour space exhausted\&.
+.LP
+The parameters \fIr\fR\&, \fIg\fR\&, \fIb\fR\& are pointers to variables to save the colour\&.
+.LP
+The parameters \fIstartR\fR\&, \fIstartG\fR\&, \fIstartB\fR\& define the initial values of the colour\&. The returned colour will have RGB values equal to or greater than these\&.
+.LP
+Return: Returns false if there is no unused colour left, true on success\&.
+.LP
+Note: This method involves computing the histogram, which is a computationally intensive operation\&.
+.RE
+.LP
+.nf
+
+.B
+getImageExtWildcard() -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Iterates all registered \fIwxImageHandler\fR\& (not implemented in wx) objects, and returns a string containing file extension masks suitable for passing to file open/save dialog boxes\&.
+.LP
+Return: The format of the returned string is \fI"(*\&.ext1;*\&.ext2)|*\&.ext1;*\&.ext2"\fR\&\&. It is usually a good idea to prepend a description before passing the result to the dialog\&. Example:
+.LP
+See: \fIwxImageHandler\fR\& (not implemented in wx)
+.RE
+.LP
+.nf
+
+.B
+getAlpha(This) -> binary()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns pointer to the array storing the alpha values for this image\&.
+.LP
+This pointer is NULL for the images without the alpha channel\&. If the image does have it, this pointer may be used to directly manipulate the alpha values which are stored as the RGB ones\&.
+.RE
+.LP
+.nf
+
+.B
+getAlpha(This, X, Y) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+X = Y = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Return alpha value at given pixel location\&.
+.RE
+.LP
+.nf
+
+.B
+getBlue(This, X, Y) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+X = Y = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the blue intensity at the given coordinate\&.
+.RE
+.LP
+.nf
+
+.B
+getData(This) -> binary()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the image data as an array\&.
+.LP
+This is most often used when doing direct image manipulation\&. The return value points to an array of characters in RGBRGBRGB\&.\&.\&. format in the top-to-bottom, left-to-right order, that is the first RGB triplet corresponds to the first pixel of the first row, the second one - to the second pixel of the first row and so on until the end of the first row, with second row following after it and so on\&.
+.LP
+You should not delete the returned pointer nor pass it to \fIsetData/4\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+getGreen(This, X, Y) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+X = Y = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the green intensity at the given coordinate\&.
+.RE
+.LP
+.nf
+
+.B
+getImageCount(Filename) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Filename = unicode:chardata()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+getImageCount(Filename, Options :: [Option]) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Filename = unicode:chardata()
+.br
+Option = {type, wx:wx_enum()}
+.br
+.RE
+.RE
+.RS
+.LP
+If the image file contains more than one image and the image handler is capable of retrieving these individually, this function will return the number of available images\&.
+.LP
+For the overload taking the parameter \fIfilename\fR\&, that\&'s the name of the file to query\&. For the overload taking the parameter \fIstream\fR\&, that\&'s the opened input stream with image data\&.
+.LP
+See \fIwxImageHandler::GetImageCount()\fR\& (not implemented in wx) for more info\&.
+.LP
+The parameter \fItype\fR\& may be one of the following values:
+.LP
+Return: Number of available images\&. For most image handlers, this is 1 (exceptions are TIFF and ICO formats as well as animated GIFs for which this function returns the number of frames in the animation)\&.
+.RE
+.LP
+.nf
+
+.B
+getHeight(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the height of the image in pixels\&.
+.LP
+See: \fIgetWidth/1\fR\&, \fIGetSize()\fR\& (not implemented in wx)
+.RE
+.LP
+.nf
+
+.B
+getMaskBlue(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the blue value of the mask colour\&.
+.RE
+.LP
+.nf
+
+.B
+getMaskGreen(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the green value of the mask colour\&.
+.RE
+.LP
+.nf
+
+.B
+getMaskRed(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the red value of the mask colour\&.
+.RE
+.LP
+.nf
+
+.B
+getOrFindMaskColour(This) -> Result
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Result = 
+.br
+    {Res :: boolean(),
+.br
+     R :: integer(),
+.br
+     G :: integer(),
+.br
+     B :: integer()}
+.br
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Get the current mask colour or find a suitable unused colour that could be used as a mask colour\&.
+.LP
+Returns true if the image currently has a mask\&.
+.RE
+.LP
+.nf
+
+.B
+getPalette(This) -> wxPalette:wxPalette()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the palette associated with the image\&.
+.LP
+Currently the palette is only used when converting to \fIwxBitmap\fR\& under Windows\&.
+.LP
+Some of the \fIwxImage\fR\& handlers have been modified to set the palette if one exists in the image file (usually 256 or less colour images in GIF or PNG format)\&.
+.RE
+.LP
+.nf
+
+.B
+getRed(This, X, Y) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+X = Y = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the red intensity at the given coordinate\&.
+.RE
+.LP
+.nf
+
+.B
+getSubImage(This, Rect) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Rect = 
+.br
+    {X :: integer(),
+.br
+     Y :: integer(),
+.br
+     W :: integer(),
+.br
+     H :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Returns a sub image of the current one as long as the rect belongs entirely to the image\&.
+.RE
+.LP
+.nf
+
+.B
+getWidth(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the width of the image in pixels\&.
+.LP
+See: \fIgetHeight/1\fR\&, \fIGetSize()\fR\& (not implemented in wx)
+.RE
+.LP
+.nf
+
+.B
+hasAlpha(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if this image has alpha channel, false otherwise\&.
+.LP
+See: \fIgetAlpha/3\fR\&, \fIsetAlpha/4\fR\& 
+.RE
+.LP
+.nf
+
+.B
+hasMask(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if there is a mask active, false otherwise\&.
+.RE
+.LP
+.nf
+
+.B
+getOption(This, Name) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Name = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets a user-defined string-valued option\&.
+.LP
+Generic options:
+.LP
+Options specific to \fIwxGIFHandler\fR\& (not implemented in wx):
+.LP
+Return: The value of the option or an empty string if not found\&. Use \fIhasOption/2\fR\& if an empty string can be a valid option value\&.
+.LP
+See: \fIsetOption/3\fR\&, \fIgetOptionInt/2\fR\&, \fIhasOption/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getOptionInt(This, Name) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Name = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets a user-defined integer-valued option\&.
+.LP
+The function is case-insensitive to \fIname\fR\&\&. If the given option is not present, the function returns 0\&. Use \fIhasOption/2\fR\& if 0 is a possibly valid value for the option\&.
+.LP
+Generic options:
+.LP
+Since: 2\&.9\&.3
+.LP
+Options specific to \fIwxPNGHandler\fR\& (not implemented in wx):
+.LP
+Options specific to \fIwxTIFFHandler\fR\& (not implemented in wx):
+.LP
+Options specific to \fIwxGIFHandler\fR\& (not implemented in wx):
+.LP
+Note: Be careful when combining the options \fIwxIMAGE_OPTION_TIFF_SAMPLESPERPIXEL\fR\&, \fIwxIMAGE_OPTION_TIFF_BITSPERSAMPLE\fR\&, and \fIwxIMAGE_OPTION_TIFF_PHOTOMETRIC\fR\&\&. While some measures are taken to prevent illegal combinations and/or values, it is still easy to abuse them and come up with invalid results in the form of either corrupted images or crashes\&.
+.LP
+Return: The value of the option or 0 if not found\&. Use \fIhasOption/2\fR\& if 0 can be a valid option value\&.
+.LP
+See: \fIsetOption/3\fR\&, \fIgetOption/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+hasOption(This, Name) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Name = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the given option is present\&.
+.LP
+The function is case-insensitive to \fIname\fR\&\&.
+.LP
+The lists of the currently supported options are in \fIgetOption/2\fR\& and \fIgetOptionInt/2\fR\& function docs\&.
+.LP
+See: \fIsetOption/3\fR\&, \fIgetOption/2\fR\&, \fIgetOptionInt/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+initAlpha(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Initializes the image alpha channel data\&.
+.LP
+It is an error to call it if the image already has alpha data\&. If it doesn\&'t, alpha data will be by default initialized to all pixels being fully opaque\&. But if the image has a mask colour, all mask pixels will be completely transparent\&.
+.RE
+.LP
+.nf
+
+.B
+initStandardHandlers() -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Internal use only\&.
+.LP
+Adds standard image format handlers\&. It only install wxBMPHandler for the time being, which is used by \fIwxBitmap\fR\&\&.
+.LP
+This function is called by wxWidgets on startup, and shouldn\&'t be called by the user\&.
+.LP
+See: \fIwxImageHandler\fR\& (not implemented in wx), ?wxInitAllImageHandlers(), \fIwxQuantize\fR\& (not implemented in wx)
+.RE
+.LP
+.nf
+
+.B
+isTransparent(This, X, Y) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+X = Y = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+isTransparent(This, X, Y, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+X = Y = integer()
+.br
+Option = {threshold, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the given pixel is transparent, i\&.e\&. either has the mask colour if this image has a mask or if this image has alpha channel and alpha value of this pixel is strictly less than \fIthreshold\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+loadFile(This, Name) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Name = unicode:chardata()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+loadFile(This, Name, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Name = unicode:chardata()
+.br
+Option = {type, wx:wx_enum()} | {index, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Loads an image from a file\&.
+.LP
+If no handler type is provided, the library will try to autodetect the format\&.
+.RE
+.LP
+.nf
+
+.B
+loadFile(This, Name, Mimetype, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Name = Mimetype = unicode:chardata()
+.br
+Option = {index, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Loads an image from a file\&.
+.LP
+If no handler type is provided, the library will try to autodetect the format\&.
+.RE
+.LP
+.nf
+
+.B
+ok(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+See: \fIisOk/1\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+isOk(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if image data is present\&.
+.RE
+.LP
+.nf
+
+.B
+removeHandler(Name) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Name = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Finds the handler with the given name, and removes it\&.
+.LP
+The handler is also deleted\&.
+.LP
+Return: true if the handler was found and removed, false otherwise\&.
+.LP
+See: \fIwxImageHandler\fR\& (not implemented in wx)
+.RE
+.LP
+.nf
+
+.B
+mirror(This) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+mirror(This, Options :: [Option]) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Option = {horizontally, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Returns a mirrored copy of the image\&.
+.LP
+The parameter \fIhorizontally\fR\& indicates the orientation\&.
+.RE
+.LP
+.nf
+
+.B
+replace(This, R1, G1, B1, R2, G2, B2) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+R1 = G1 = B1 = R2 = G2 = B2 = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Replaces the colour specified by \fIr1\fR\&,g1,b1 by the colour \fIr2\fR\&,g2,b2\&.
+.RE
+.LP
+.nf
+
+.B
+rescale(This, Width, Height) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Width = Height = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+rescale(This, Width, Height, Options :: [Option]) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Width = Height = integer()
+.br
+Option = {quality, wx:wx_enum()}
+.br
+.RE
+.RE
+.RS
+.LP
+Changes the size of the image in-place by scaling it: after a call to this function,the image will have the given width and height\&.
+.LP
+For a description of the \fIquality\fR\& parameter, see the \fIscale/4\fR\& function\&. Returns the (modified) image itself\&.
+.LP
+See: \fIscale/4\fR\& 
+.RE
+.LP
+.nf
+
+.B
+resize(This, Size, Pos) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+Pos = {X :: integer(), Y :: integer()}
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+resize(This, Size, Pos, Options :: [Option]) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+Pos = {X :: integer(), Y :: integer()}
+.br
+Option = {r, integer()} | {g, integer()} | {b, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Changes the size of the image in-place without scaling it by adding either a border with the given colour or cropping as necessary\&.
+.LP
+The image is pasted into a new image with the given \fIsize\fR\& and background colour at the position \fIpos\fR\& relative to the upper left of the new image\&.
+.LP
+If \fIred\fR\& = green = blue = -1 then use either the current mask colour if set or find, use, and set a suitable mask colour for any newly exposed areas\&.
+.LP
+Return: The (modified) image itself\&.
+.LP
+See: \fIsize/4\fR\& 
+.RE
+.LP
+.nf
+
+.B
+rotate(This, Angle, RotationCentre) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Angle = number()
+.br
+RotationCentre = {X :: integer(), Y :: integer()}
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+rotate(This, Angle, RotationCentre, Options :: [Option]) ->
+.B
+          wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Angle = number()
+.br
+RotationCentre = {X :: integer(), Y :: integer()}
+.br
+Option = 
+.br
+    {interpolating, boolean()} |
+.br
+    {offset_after_rotation, {X :: integer(), Y :: integer()}}
+.br
+.RE
+.RE
+.RS
+.LP
+Rotates the image about the given point, by \fIangle\fR\& radians\&.
+.LP
+Passing true to \fIinterpolating\fR\& results in better image quality, but is slower\&.
+.LP
+If the image has a mask, then the mask colour is used for the uncovered pixels in the rotated image background\&. Else, black (rgb 0, 0, 0) will be used\&.
+.LP
+Returns the rotated image, leaving this image intact\&.
+.RE
+.LP
+.nf
+
+.B
+rotateHue(This, Angle) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Angle = number()
+.br
+.RE
+.RE
+.RS
+.LP
+Rotates the hue of each pixel in the image by \fIangle\fR\&, which is a double in the range of -1\&.0 to +1\&.0, where -1\&.0 corresponds to -360 degrees and +1\&.0 corresponds to +360 degrees\&.
+.RE
+.LP
+.nf
+
+.B
+rotate90(This) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+rotate90(This, Options :: [Option]) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Option = {clockwise, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Returns a copy of the image rotated 90 degrees in the direction indicated by \fIclockwise\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+saveFile(This, Name) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Name = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Saves an image in the named file\&.
+.LP
+File type is determined from the extension of the file name\&. Note that this function may fail if the extension is not recognized! You can use one of the forms above to save images to files with non-standard extensions\&.
+.RE
+.LP
+.nf
+
+.B
+saveFile(This, Name, Type) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+saveFile(This, Name, Mimetype) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Name = Mimetype = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Saves an image in the named file\&.
+.RE
+.LP
+.nf
+
+.B
+scale(This, Width, Height) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Width = Height = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+scale(This, Width, Height, Options :: [Option]) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Width = Height = integer()
+.br
+Option = {quality, wx:wx_enum()}
+.br
+.RE
+.RE
+.RS
+.LP
+Returns a scaled version of the image\&.
+.LP
+This is also useful for scaling bitmaps in general as the only other way to scale bitmaps is to blit a \fIwxMemoryDC\fR\& into another \fIwxMemoryDC\fR\&\&.
+.LP
+The parameter \fIquality\fR\& determines what method to use for resampling the image, see wxImageResizeQuality documentation\&.
+.LP
+It should be noted that although using \fIwxIMAGE_QUALITY_HIGH\fR\& produces much nicer looking results it is a slower method\&. Downsampling will use the box averaging method which seems to operate very fast\&. If you are upsampling larger images using this method you will most likely notice that it is a bit slower and in extreme cases it will be quite substantially slower as the bicubic algorithm has to process a lot of data\&.
+.LP
+It should also be noted that the high quality scaling may not work as expected when using a single mask colour for transparency, as the scaling will blur the image and will therefore remove the mask partially\&. Using the alpha channel will work\&.
+.LP
+Example:
+.LP
+See: \fIrescale/4\fR\& 
+.RE
+.LP
+.nf
+
+.B
+size(This, Size, Pos) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+Pos = {X :: integer(), Y :: integer()}
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+size(This, Size, Pos, Options :: [Option]) -> wxImage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+Pos = {X :: integer(), Y :: integer()}
+.br
+Option = {r, integer()} | {g, integer()} | {b, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Returns a resized version of this image without scaling it by adding either a border with the given colour or cropping as necessary\&.
+.LP
+The image is pasted into a new image with the given \fIsize\fR\& and background colour at the position \fIpos\fR\& relative to the upper left of the new image\&.
+.LP
+If \fIred\fR\& = green = blue = -1 then the areas of the larger image not covered by this image are made transparent by filling them with the image mask colour (which will be allocated automatically if it isn\&'t currently set)\&.
+.LP
+Otherwise, the areas will be filled with the colour with the specified RGB components\&.
+.LP
+See: \fIresize/4\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setAlpha(This, Alpha) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Alpha = binary()
+.br
+.RE
+.RE
+.RS
+.LP
+This function is similar to \fIsetData/4\fR\& and has similar restrictions\&.
+.LP
+The pointer passed to it may however be NULL in which case the function will allocate the alpha array internally - this is useful to add alpha channel data to an image which doesn\&'t have any\&.
+.LP
+If the pointer is not NULL, it must have one byte for each image pixel and be allocated with malloc()\&. \fIwxImage\fR\& takes ownership of the pointer and will free it unless \fIstatic_data\fR\& parameter is set to true - in this case the caller should do it\&.
+.RE
+.LP
+.nf
+
+.B
+setAlpha(This, X, Y, Alpha) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+X = Y = Alpha = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the alpha value for the given pixel\&.
+.LP
+This function should only be called if the image has alpha channel data, use \fIhasAlpha/1\fR\& to check for this\&.
+.RE
+.LP
+.nf
+
+.B
+setData(This, Data) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Data = binary()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the image data without performing checks\&.
+.LP
+The data given must have the size (width*height*3) or results will be unexpected\&. Don\&'t use this method if you aren\&'t sure you know what you are doing\&.
+.LP
+The data must have been allocated with \fImalloc()\fR\&, \fINOT\fR\& with \fIoperator\fR\& new\&.
+.LP
+If \fIstatic_data\fR\& is false, after this call the pointer to the data is owned by the \fIwxImage\fR\& object, that will be responsible for deleting it\&. Do not pass to this function a pointer obtained through \fIgetData/1\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+setData(This, Data, New_width, New_height) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Data = binary()
+.br
+New_width = New_height = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+This is an overloaded member function, provided for convenience\&. It differs from the above function only in what argument(s) it accepts\&.
+.RE
+.LP
+.nf
+
+.B
+setMask(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+setMask(This, Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Option = {mask, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Specifies whether there is a mask or not\&.
+.LP
+The area of the mask is determined by the current mask colour\&.
+.RE
+.LP
+.nf
+
+.B
+setMaskColour(This, Red, Green, Blue) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Red = Green = Blue = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the mask colour for this image (and tells the image to use the mask)\&.
+.RE
+.LP
+.nf
+
+.B
+setMaskFromImage(This, Mask, Mr, Mg, Mb) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = Mask = wxImage()
+.br
+Mr = Mg = Mb = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets image\&'s mask so that the pixels that have RGB value of mr,mg,mb in mask will be masked in the image\&.
+.LP
+This is done by first finding an unused colour in the image, setting this colour as the mask colour and then using this colour to draw all pixels in the image who corresponding pixel in mask has given RGB value\&.
+.LP
+The parameter \fImask\fR\& is the mask image to extract mask shape from\&. It must have the same dimensions as the image\&.
+.LP
+The parameters \fImr\fR\&, \fImg\fR\&, \fImb\fR\& are the RGB values of the pixels in mask that will be used to create the mask\&.
+.LP
+Return: Returns false if mask does not have same dimensions as the image or if there is no unused colour left\&. Returns true if the mask was successfully applied\&.
+.LP
+Note: Note that this method involves computing the histogram, which is a computationally intensive operation\&.
+.RE
+.LP
+.nf
+
+.B
+setOption(This, Name, Value) -> ok
+.br
+.fi
+.br
+.nf
+
+.B
+setOption(This, Name, Value) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Name = Value = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets a user-defined option\&.
+.LP
+The function is case-insensitive to \fIname\fR\&\&.
+.LP
+For example, when saving as a JPEG file, the option \fIquality\fR\& is used, which is a number between 0 and 100 (0 is terrible, 100 is very good)\&.
+.LP
+The lists of the currently supported options are in \fIgetOption/2\fR\& and \fIgetOptionInt/2\fR\& function docs\&.
+.LP
+See: \fIgetOption/2\fR\&, \fIgetOptionInt/2\fR\&, \fIhasOption/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setPalette(This, Palette) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Palette = wxPalette:wxPalette()
+.br
+.RE
+.RE
+.RS
+.LP
+Associates a palette with the image\&.
+.LP
+The palette may be used when converting \fIwxImage\fR\& to \fIwxBitmap\fR\& (MSW only at present) or in file save operations (none as yet)\&.
+.RE
+.LP
+.nf
+
+.B
+setRGB(This, Rect, Red, Green, Blue) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+Rect = 
+.br
+    {X :: integer(),
+.br
+     Y :: integer(),
+.br
+     W :: integer(),
+.br
+     H :: integer()}
+.br
+Red = Green = Blue = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the colour of the pixels within the given rectangle\&.
+.LP
+This routine performs bounds-checks for the coordinate so it can be considered a safe way to manipulate the data\&.
+.RE
+.LP
+.nf
+
+.B
+setRGB(This, X, Y, R, G, B) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxImage()
+.br
+X = Y = R = G = B = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Set the color of the pixel at the given x and y coordinate\&.
+.RE

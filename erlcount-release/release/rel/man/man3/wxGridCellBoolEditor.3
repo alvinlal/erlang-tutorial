@@ -1,0 +1,99 @@
+.TH wxGridCellBoolEditor 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxGridCellBoolEditor \- Functions for wxGridCellBoolEditor class
+.SH DESCRIPTION
+.LP
+Grid cell editor for boolean data\&.
+.LP
+See: \fIwxGridCellEditor\fR\&, \fIwxGridCellAutoWrapStringEditor\fR\& (not implemented in wx), \fIwxGridCellChoiceEditor\fR\&, \fIwxGridCellEnumEditor\fR\& (not implemented in wx), \fIwxGridCellFloatEditor\fR\&, \fIwxGridCellNumberEditor\fR\&, \fIwxGridCellTextEditor\fR\&, \fIwxGridCellDateEditor\fR\& (not implemented in wx)
+.LP
+This class is derived (and can use functions) from: \fIwxGridCellEditor\fR\&
+.LP
+wxWidgets docs: wxGridCellBoolEditor
+.SH DATA TYPES
+.nf
+
+\fBwxGridCellBoolEditor()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxGridCellBoolEditor()
+.br
+.fi
+.br
+.RS
+.LP
+Default constructor\&.
+.RE
+.LP
+.nf
+
+.B
+isTrueValue(Value) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Value = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the given \fIvalue\fR\& is equal to the string representation of the truth value we currently use (see \fIuseStringValues/1\fR\&)\&.
+.RE
+.LP
+.nf
+
+.B
+useStringValues() -> ok
+.br
+.fi
+.br
+.LP
+.nf
+
+.B
+useStringValues(Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Option = 
+.br
+    {valueTrue, unicode:chardata()} |
+.br
+    {valueFalse, unicode:chardata()}
+.br
+.RE
+.RE
+.RS
+.LP
+This method allows you to customize the values returned by \fIwxGridCellNumberEditor:getValue/1\fR\& for the cell using this editor\&.
+.LP
+By default, the default values of the arguments are used, i\&.e\&. \fI"1"\fR\& is returned if the cell is checked and an empty string otherwise\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxGridCellBoolEditor()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

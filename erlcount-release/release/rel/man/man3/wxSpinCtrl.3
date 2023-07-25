@@ -1,0 +1,324 @@
+.TH wxSpinCtrl 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxSpinCtrl \- Functions for wxSpinCtrl class
+.SH DESCRIPTION
+.LP
+\fIwxSpinCtrl\fR\& combines \fIwxTextCtrl\fR\& and \fIwxSpinButton\fR\& in one control\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+See: \fIwxSpinButton\fR\&, \fIwxSpinCtrlDouble\fR\& (not implemented in wx), \fIwxControl\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxControl\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxSpinCtrl
+.SH "EVENTS"
+
+.LP
+Event types emitted from this class: \fIcommand_spinctrl_updated\fR\&
+.SH DATA TYPES
+.nf
+
+\fBwxSpinCtrl()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxSpinCtrl()
+.br
+.fi
+.br
+.RS
+.LP
+Default constructor\&.
+.RE
+.LP
+.nf
+
+.B
+new(Parent) -> wxSpinCtrl()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Options :: [Option]) -> wxSpinCtrl()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Option = 
+.br
+    {id, integer()} |
+.br
+    {value, unicode:chardata()} |
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()} |
+.br
+    {min, integer()} |
+.br
+    {max, integer()} |
+.br
+    {initial, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor, creating and showing a spin control\&.
+.LP
+If \fIvalue\fR\& is non-empty, it will be shown in the text entry part of the control and if it has numeric value, the initial numeric value of the control, as returned by \fIgetValue/1\fR\& will also be determined by it instead of by \fIinitial\fR\&\&. Hence, it only makes sense to specify \fIinitial\fR\& if \fIvalue\fR\& is an empty string or is not convertible to a number, otherwise \fIinitial\fR\& is simply ignored and the number specified by \fIvalue\fR\& is used\&.
+.LP
+See: \fIcreate/3\fR\& 
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSpinCtrl()
+.br
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSpinCtrl()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Option = 
+.br
+    {id, integer()} |
+.br
+    {value, unicode:chardata()} |
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()} |
+.br
+    {min, integer()} |
+.br
+    {max, integer()} |
+.br
+    {initial, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Creation function called by the spin control constructor\&.
+.LP
+See \fInew/2\fR\& for details\&.
+.RE
+.LP
+.nf
+
+.B
+setValue(This, Value) -> ok
+.br
+.fi
+.br
+.nf
+
+.B
+setValue(This, Text) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSpinCtrl()
+.br
+Text = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the value of the spin control\&.
+.LP
+It is recommended to use the overload taking an integer value instead\&.
+.LP
+Notice that, unlike \fIwxTextCtrl:setValue/2\fR\&, but like most of the other setter methods in wxWidgets, calling this method does not generate any events as events are only generated for the user actions\&.
+.RE
+.LP
+.nf
+
+.B
+getValue(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSpinCtrl()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the value of the spin control\&.
+.RE
+.LP
+.nf
+
+.B
+setRange(This, MinVal, MaxVal) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSpinCtrl()
+.br
+MinVal = MaxVal = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets range of allowable values\&.
+.LP
+Notice that calling this method may change the value of the control if it\&'s not inside the new valid range, e\&.g\&. it will become \fIminVal\fR\& if it is less than it now\&. However no \fIwxEVT_SPINCTRL\fR\& event is generated, even if it the value does change\&.
+.LP
+Note: Setting a range including negative values is silently ignored if current base is set to 16\&.
+.RE
+.LP
+.nf
+
+.B
+setSelection(This, From, To) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSpinCtrl()
+.br
+From = To = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Select the text in the text part of the control between positions \fIfrom\fR\& (inclusive) and \fIto\fR\& (exclusive)\&.
+.LP
+This is similar to \fIwxTextCtrl:setSelection/3\fR\&\&.
+.LP
+Note: this is currently only implemented for Windows and generic versions of the control\&.
+.RE
+.LP
+.nf
+
+.B
+getMin(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSpinCtrl()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets minimal allowable value\&.
+.RE
+.LP
+.nf
+
+.B
+getMax(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSpinCtrl()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets maximal allowable value\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxSpinCtrl()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

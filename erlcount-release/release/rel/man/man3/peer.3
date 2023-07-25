@@ -1,0 +1,568 @@
+.TH peer 3 "stdlib 4.3.1" "Maxim Fedorov, WhatsApp Inc." "Erlang Module Definition"
+.SH NAME
+peer \- Start and control linked Erlang nodes.
+  
+.SH DESCRIPTION
+.LP
+This module provides functions for starting linked Erlang nodes\&. The node spawning new nodes is called \fIorigin\fR\&, and newly started nodes are \fIpeer\fR\& nodes, or peers\&. A peer node automatically terminates when it loses the \fIcontrol connection\fR\& to the origin\&. This connection could be an Erlang distribution connection, or an alternative - TCP or standard I/O\&. The alternative connection provides a way to execute remote procedure calls even when Erlang Distribution is not available, allowing to test the distribution itself\&.
+.LP
+Peer node terminal input/output is relayed through the origin\&. If a standard I/O alternative connection is requested, console output also goes via the origin, allowing debugging of node startup and boot script execution (see \fI-init_debug\fR\&)\&. File I/O is not redirected, contrary to \fIslave(3)\fR\& behaviour\&.
+.LP
+The peer node can start on the same or a different host (via \fIssh\fR\&) or in a separate container (for example Docker)\&. When the peer starts on the same host as the origin, it inherits the current directory and environment variables from the origin\&.
+.LP
+
+.RS -4
+.B
+Note:
+.RE
+This module is designed to facilitate multi-node testing with Common Test\&. Use the \fI?CT_PEER()\fR\& macro to start a linked peer node according to Common Test conventions: crash dumps written to specific location, node name prefixed with module name, calling function, and origin OS process ID)\&. Use \fIrandom_name/1\fR\& to create sufficiently unique node names if you need more control\&.
+.LP
+A peer node started without alternative connection behaves similarly to \fIslave(3)\fR\&\&. When an alternative connection is requested, the behaviour is similar to \fItest_server:start_node(Name, peer, Args)\&.\fR\& 
+
+.SH "EXAMPLE"
+
+.LP
+The following example implements a test suite starting extra Erlang nodes\&. It employs a number of techniques to speed up testing and reliably shut down peer nodes:
+.RS 2
+.TP 2
+*
+peers start linked to test runner process\&. If the test case fails, the peer node is stopped automatically, leaving no rogue nodes running in the background
+.LP
+.TP 2
+*
+arguments used to start the peer are saved in the control process state for manual analysis\&. If the test case fails, the CRASH REPORT contains these arguments
+.LP
+.TP 2
+*
+multiple test cases can run concurrently speeding up overall testing process, peer node names are unique even when there are multiple instances of the same test suite running in parallel
+.LP
+.RE
+
+.LP
+.nf
+
+      -module(my_SUITE).
+      -behaviour(ct_suite).
+      -export([all/0, groups/0]).
+      -export([basic/1, args/1, named/1, restart_node/1, multi_node/1]).
+
+      -include_lib("common_test/include/ct.hrl").
+
+      groups() ->
+          [{quick, [parallel],
+              [basic, args, named, restart_node, multi_node]}].
+
+      all() ->
+          [{group, quick}].
+
+      basic(Config) when is_list(Config) ->
+          {ok, Peer, _Node} = ?CT_PEER(),
+          peer:stop(Peer).
+
+      args(Config) when is_list(Config) ->
+          %% specify additional arguments to the new node
+          {ok, Peer, _Node} = ?CT_PEER(["-emu_flavor", "smp"]),
+          peer:stop(Peer).
+
+      named(Config) when is_list(Config) ->
+          %% pass test case name down to function starting nodes
+          Peer = start_node_impl(named_test),
+          peer:stop(Peer).
+
+      start_node_impl(ActualTestCase) ->
+          {ok, Peer, Node} = ?CT_PEER(#{name => ?CT_PEER_NAME(ActualTestCase)}),
+          %% extra setup needed for multiple test cases
+          ok = rpc:call(Node, application, set_env, [kernel, key, value]),
+          Peer.
+
+      restart_node(Config) when is_list(Config) ->
+          Name = ?CT_PEER_NAME(),
+          {ok, Peer, Node} = ?CT_PEER(#{name => Name}),
+          peer:stop(Peer),
+          %% restart the node with the same name as before
+          {ok, Peer2, Node} = ?CT_PEER(#{name => Name, args => ["+fnl"]}),
+          peer:stop(Peer2).
+    
+.fi
+.LP
+The next example demonstrates how to start multiple nodes concurrently:
+.LP
+.nf
+
+      multi_node(Config) when is_list(Config) ->
+          Peers = [?CT_PEER(#{wait_boot => {self(), tag}})
+              || _ <- lists:seq(1, 4)],
+          %% wait for all nodes to complete boot process, get their names:
+          _Nodes = [receive {tag, {started, Node, Peer}} -> Node end
+              || {ok, Peer} <- Peers],
+          [peer:stop(Peer) || {ok, Peer} <- Peers].
+    
+.fi
+.LP
+Start a peer on a different host\&. Requires \fIssh\fR\& key-based authentication set up, allowing "another_host" connection without password prompt\&.
+.LP
+.nf
+
+      Ssh = os:find_executable("ssh"),
+      peer:start_link(#{exec => {Ssh, ["another_host", "erl"]},
+          connection => standard_io}),
+    
+.fi
+.LP
+The following Common Test case demonstrates Docker integration, starting two containers with hostnames "one" and "two"\&. In this example Erlang nodes running inside containers form an Erlang cluster\&.
+.LP
+.nf
+
+      docker(Config) when is_list(Config) ->
+          Docker = os:find_executable("docker"),
+          PrivDir = proplists:get_value(priv_dir, Config),
+          build_release(PrivDir),
+          build_image(PrivDir),
+
+          %% start two Docker containers
+          {ok, Peer, Node} = peer:start_link(#{name => lambda,
+              connection => standard_io,
+              exec => {Docker, ["run", "-h", "one", "-i", "lambda"]}}),
+          {ok, Peer2, Node2} = peer:start_link(#{name => lambda,
+              connection => standard_io,
+              exec => {Docker, ["run", "-h", "two", "-i", "lambda"]}}),
+
+          %% find IP address of the second node using alternative connection RPC
+          {ok, Ips} = peer:call(Peer2, inet, getifaddrs, []),
+          {"eth0", Eth0} = lists:keyfind("eth0", 1, Ips),
+          {addr, Ip} = lists:keyfind(addr, 1, Eth0),
+
+          %% make first node to discover second one
+          ok = peer:call(Peer, inet_db, set_lookup, [[file]]),
+          ok = peer:call(Peer, inet_db, add_host, [Ip, ["two"]]),
+
+          %% join a cluster
+          true = peer:call(Peer, net_kernel, connect_node, [Node2]),
+          %% verify that second peer node has only the first node visible
+          [Node] = peer:call(Peer2, erlang, nodes, []),
+
+          %% stop peers, causing containers to also stop
+          peer:stop(Peer2),
+          peer:stop(Peer).
+
+      build_release(Dir) ->
+          %% load sasl.app file, otherwise application:get_key will fail
+          application:load(sasl),
+          %% create *.rel - release file
+          RelFile = filename:join(Dir, "lambda.rel"),
+          Release = {release, {"lambda", "1.0.0"},
+              {erts, erlang:system_info(version)},
+              [{App, begin {ok, Vsn} = application:get_key(App, vsn), Vsn end}
+                  || App <- [kernel, stdlib, sasl]]},
+          ok = file:write_file(RelFile, list_to_binary(lists:flatten(
+              io_lib:format("~tp.", [Release])))),
+          RelFileNoExt = filename:join(Dir, "lambda"),
+
+          %% create boot script
+          {ok, systools_make, []} = systools:make_script(RelFileNoExt,
+              [silent, {outdir, Dir}]),
+          %% package release into *.tar.gz
+          ok = systools:make_tar(RelFileNoExt, [{erts, code:root_dir()}]).
+
+      build_image(Dir) ->
+          %% Create Dockerfile example, working only for Ubuntu 20.04
+          %% Expose port 4445, and make Erlang distribution to listen
+          %%  on this port, and connect to it without EPMD
+          %% Set cookie on both nodes to be the same.
+          BuildScript = filename:join(Dir, "Dockerfile"),
+          Dockerfile =
+            "FROM ubuntu:20.04 as runner\\n"
+            "EXPOSE 4445\\n"
+            "WORKDIR /opt/lambda\\n"
+            "COPY lambda.tar.gz /tmp\\n"
+            "RUN tar -zxvf /tmp/lambda.tar.gz -C /opt/lambda\\n"
+            "ENTRYPOINT [\\"/opt/lambda/erts-" ++ erlang:system_info(version) ++
+            "/bin/dyn_erl\\", \\"-boot\\", \\"/opt/lambda/releases/1.0.0/start\\","
+            " \\"-kernel\\", \\"inet_dist_listen_min\\", \\"4445\\","
+            " \\"-erl_epmd_port\\", \\"4445\\","
+            " \\"-setcookie\\", \\"secret\\"]\\n",
+          ok = file:write_file(BuildScript, Dockerfile),
+          os:cmd("docker build -t lambda " ++ Dir).
+    
+.fi
+.SH DATA TYPES
+.nf
+
+\fBserver_ref()\fR\& = pid()
+.br
+.fi
+.RS
+.LP
+Identifies the controlling process of a peer node\&.
+.RE
+.nf
+
+\fBstart_options()\fR\& = 
+.br
+    #{name => atom() | string(),
+.br
+      longnames => boolean(),
+.br
+      host => string(),
+.br
+      peer_down => stop | continue | crash,
+.br
+      exec => exec(),
+.br
+      connection => connection(),
+.br
+      args => [string()],
+.br
+      env => [{string(), string()}],
+.br
+      wait_boot => wait_boot(),
+.br
+      shutdown =>
+.br
+          close | halt |
+.br
+          {halt, disconnect_timeout()} |
+.br
+          disconnect_timeout()}
+.br
+.fi
+.RS
+.LP
+Options that can be used when starting a \fIpeer\fR\& node through \fIstart/1\fR\& and \fIstart_link/0,1\fR\&\&.
+.RS 2
+.TP 2
+.B
+\fIname\fR\&:
+Node name (the part before "@")\&. When \fIname\fR\& is not specified, but \fIhost\fR\& is, \fIpeer\fR\& follows compatibility behaviour and uses the origin node name\&.
+.TP 2
+.B
+\fIhost\fR\&:
+Enforces a specific host name\&. Can be used to override the default behaviour and start "node@localhost" instead of "node@realhostname"\&.
+.TP 2
+.B
+\fIlongnames\fR\&:
+Use long names to start a node\&. Default is taken from the origin using \fInet_kernel:longnames()\fR\&\&. If the origin is not distributed, short names is the default\&.
+.TP 2
+.B
+\fIpeer_down\fR\&:
+Defines the peer control process behaviour when the control connection is closed from the peer node side (for example when the peer crashes or dumps core)\&. When set to \fIstop\fR\& (default), a lost control connection causes the control process to exit normally\&. Setting \fIpeer_down\fR\& to \fIcontinue\fR\& keeps the control process running, and \fIcrash\fR\& will cause the controlling process to exit abnormally\&.
+.TP 2
+.B
+\fIexec\fR\&:
+Alternative mechanism to start peer nodes with, for example, ssh instead of the default bash\&.
+.TP 2
+.B
+\fIconnection\fR\&:
+Alternative connection specification\&. See the \fIconnection\fR\& datatype\&.
+.TP 2
+.B
+\fIargs\fR\&:
+Extra command line arguments to append to the "erl" command\&. Arguments are passed as is, no escaping or quoting is needed or accepted\&.
+.TP 2
+.B
+\fIenv\fR\&:
+List of environment variables with their values\&. This list is applied to a locally started executable\&. If you need to change the environment of the remote peer, adjust \fIargs\fR\& to contain \fI-env ENV_KEY ENV_VALUE\fR\&\&.
+.TP 2
+.B
+\fIwait_boot\fR\&:
+Specifies the start/start_link timeout\&. See \fIwait_boot\fR\& datatype\&.
+.TP 2
+.B
+\fIshutdown\fR\&:
+Specifies the peer node stopping behaviour\&. See \fIstop()\fR\&\&.
+.RE
+.RE
+.nf
+
+\fBpeer_state()\fR\& = booting | running | {down, Reason :: term()}
+.br
+.fi
+.RS
+.LP
+Peer node state\&.
+.RE
+.nf
+
+\fBconnection()\fR\& = 
+.br
+    0\&.\&.65535 | {inet:ip_address(), 0\&.\&.65535} | standard_io
+.br
+.fi
+.RS
+.LP
+Alternative connection between the origin and the peer\&. When the connection closes, the peer node terminates automatically\&. If the \fIpeer_down\fR\& startup flag is set to \fIcrash\fR\&, the controlling process on the origin node exits with corresponding reason, effectively providing a two-way link\&.
+.LP
+When \fIconnection\fR\& is set to a port number, the origin starts listening on the requested TCP port, and the peer node connects to the port\&. When it is set to an \fI{IP, Port}\fR\& tuple, the origin listens only on the specified IP\&. The port number can be set to 0 for automatic selection\&.
+.LP
+Using the \fIstandard_io\fR\& alternative connection starts the peer attached to the origin (other connections use \fI-detached\fR\& flag to erl)\&. In this mode peer and origin communicate via stdin/stdout\&.
+.RE
+.nf
+
+\fBexec()\fR\& = file:name() | {file:name(), [string()]}
+.br
+.fi
+.RS
+.LP
+Overrides executable to start peer nodes with\&. By default it is the path to "erl", taken from \fIinit:get_argument(progname)\fR\&\&. If \fIprogname\fR\& is not known, \fIpeer\fR\& makes best guess given the current ERTS version\&.
+.LP
+When a tuple is passed, the first element is the path to executable, and the second element is prepended to the final command line\&. This can be used to start peers on a remote host or in a Docker container\&. See the examples above\&.
+.LP
+This option is useful for testing backwards compatibility with previous releases, installed at specific paths, or when the Erlang installation location is missing from the \fIPATH\fR\&\&.
+.RE
+.nf
+
+\fBwait_boot()\fR\& = timeout() | {pid(), Tag :: term()} | false
+.br
+.fi
+.RS
+.LP
+Specifies start/start_link timeout in milliseconds\&. Can be set to \fIfalse\fR\&, allowing the peer to start asynchronously\&. If \fI{Pid, Tag}\fR\& is specified instead of a timeout, the peer will send \fITag\fR\& to the requested process\&.
+.RE
+.nf
+
+\fBdisconnect_timeout()\fR\& = 1000\&.\&.4294967295 | infinity
+.br
+.fi
+.RS
+.LP
+Disconnect timeout\&. See \fIstop()\fR\&\&.
+.RE
+.SH EXPORTS
+.LP
+.nf
+
+.B
+call(Dest :: server_ref(),
+.B
+     Module :: module(),
+.B
+     Function :: atom(),
+.B
+     Args :: [term()]) ->
+.B
+        Result :: term()
+.br
+.fi
+.br
+.nf
+
+.B
+call(Dest :: server_ref(),
+.B
+     Module :: module(),
+.B
+     Function :: atom(),
+.B
+     Args :: [term()],
+.B
+     Timeout :: timeout()) ->
+.B
+        Result :: term()
+.br
+.fi
+.br
+.RS
+.LP
+Uses the alternative connection to evaluate \fIapply(Module, Function, Args)\fR\& on the peer node and returns the corresponding value \fIResult\fR\&\&. \fITimeout\fR\& is an integer representing the timeout in milliseconds or the atom \fIinfinity\fR\& which prevents the operation from ever timing out\&.
+.LP
+When an alternative connection is not requested, this function will raise \fIexit\fR\& signal with the \fInoconnection\fR\& reason\&. Use \fIerpc\fR\& module to communicate over Erlang distribution\&.
+.RE
+.LP
+.nf
+
+.B
+cast(Dest :: server_ref(),
+.B
+     Module :: module(),
+.B
+     Function :: atom(),
+.B
+     Args :: [term()]) ->
+.B
+        ok
+.br
+.fi
+.br
+.RS
+.LP
+Uses the alternative connection to evaluate \fIapply(Module, Function, Args)\fR\& on the peer node\&. No response is delivered to the calling process\&.
+.LP
+\fIpeer:cast/4\fR\& fails silently when the alternative connection is not configured\&. Use \fIerpc\fR\& module to communicate over Erlang distribution\&.
+.RE
+.LP
+.nf
+
+.B
+send(Dest :: server_ref(),
+.B
+     To :: pid() | atom(),
+.B
+     Message :: term()) ->
+.B
+        ok
+.br
+.fi
+.br
+.RS
+.LP
+Uses the alternative connection to send Message to a process on the the peer node\&. Silently fails if no alternative connection is configured\&. The process can be referenced by process ID or registered name\&.
+.RE
+.LP
+.nf
+
+.B
+get_state(Dest :: server_ref()) -> peer_state()
+.br
+.fi
+.br
+.RS
+.LP
+Returns the peer node state\&. Th initial state is \fIbooting\fR\&; the node stays in that state until then boot script is complete, and then the node progresses to \fIrunning\fR\&\&. If the node stops (gracefully or not), the state changes to \fIdown\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+random_name() -> string()
+.br
+.fi
+.br
+.RS
+.LP
+The same as \fIrandom_name(peer)\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+random_name(Prefix :: string() | atom()) -> string()
+.br
+.fi
+.br
+.RS
+.LP
+Creates a sufficiently unique node name for the current host, combining a prefix, a unique number, and the current OS process ID\&.
+.LP
+
+.RS -4
+.B
+Note:
+.RE
+Use the \fI?CT_PEER(["erl_arg1"])\fR\& macro provided by Common Test \fI-include_lib("common_test/include/ct\&.hrl")\fR\& for convenience\&. It starts a new peer using Erlang distribution as the control channel, supplies thes calling module\&'s code path to the peer, and uses the calling function name for the name prefix\&.
+
+.RE
+.LP
+.nf
+
+.B
+start(Options :: start_options()) ->
+.B
+         {ok, pid()} | {ok, pid(), node()} | {error, Reason}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Reason = term()
+.br
+.RE
+.RE
+.RS
+.LP
+Starts a peer node with the specified \fIstart_options()\fR\&\&. Returns the controlling process and the full peer node name, unless \fIwait_boot\fR\& is not requested and the host name is not known in advance\&.
+.RE
+.LP
+.nf
+
+.B
+start_link() -> {ok, pid(), node()} | {error, Reason :: term()}
+.br
+.fi
+.br
+.RS
+.LP
+The same as \fIstart_link(#{name => random_name()})\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+start_link(Options :: start_options()) ->
+.B
+              {ok, pid()} | {ok, pid(), node()} | {error, Reason}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Reason = term()
+.br
+.RE
+.RE
+.RS
+.LP
+Starts a peer node in the same way as \fIstart/1\fR\&, except that the peer node is linked to the currently executing process\&. If that process terminates, the peer node also terminates\&.
+.LP
+Accepts \fIstart_options()\fR\&\&. Returns the controlling process and the full peer node name, unless \fIwait_boot\fR\& is not requested and host name is not known in advance\&.
+.LP
+When the \fIstandard_io\fR\& alternative connection is requested, and \fIwait_boot\fR\& is not set to \fIfalse\fR\&, a failed peer boot sequence causes the caller to exit with the \fI{boot_failed, {exit_status, ExitCode}}\fR\& reason\&.
+.RE
+.LP
+.nf
+
+.B
+stop(Dest :: server_ref()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+.nf
+\fBdisconnect_timeout()\fR\& = 1000\&.\&.4294967295 | infinity
+.fi
+.br
+.RE
+.RE
+.RS
+.LP
+Stops a peer node\&. How the node is stopped depends on the \fIshutdown\fR\& option passed when starting the peer node\&. Currently the following \fIshutdown\fR\& options are supported:
+.RS 2
+.TP 2
+.B
+\fIhalt\fR\&:
+This is the default shutdown behavior\&. It behaves as \fIshutdown\fR\& option \fI{halt, DefaultTimeout}\fR\& where \fIDefaultTimeout\fR\& currently equals \fI5000\fR\&\&.
+.TP 2
+.B
+\fI{halt, Timeout :: disconnect_timeout()}\fR\&:
+Triggers a call to \fIerlang:halt()\fR\& on the peer node and then waits for the Erlang distribution connection to the peer node to be taken down\&. If this connection has not been taken down after \fITimeout\fR\& milliseconds, it will forcefully be taken down by \fIpeer:stop/1\fR\&\&. See the warning below for more info about this\&.
+.TP 2
+.B
+\fITimeout :: disconnect_timeout()\fR\&:
+Triggers a call to \fIinit:stop()\fR\& on the peer node and then waits for the Erlang distribution connection to the peer node to be taken down\&. If this connection has not been taken down after \fITimeout\fR\& milliseconds, it will forcefully be taken down by \fIpeer:stop/1\fR\&\&. See the warning below for more info about this\&.
+.TP 2
+.B
+\fIclose\fR\&:
+Close the \fIcontrol connection\fR\&  to the peer node and return\&. This is the fastest way for the caller of \fIpeer:stop/1\fR\& to stop a peer node\&.
+.RS 2
+.LP
+Note that if the Erlang distribution connection is not used as control connection it might not have been taken down when \fIpeer:stop/1\fR\& returns\&. Also note that the warning below applies when the Erlang distribution connection is used as control connection\&.
+.RE
+.RE
+.LP
+
+.RS -4
+.B
+Warning:
+.RE
+In the cases where the Erlang distribution connection is taken down by \fIpeer:stop/1\fR\&, other code independent of the peer code might react to the connection loss before the peer node is stopped which might cause undesirable effects\&. For example, \fIglobal\fR\& might trigger even more Erlang distribution connections to other nodes to be taken down\&. The potential undesirable effects are, however, not limited to this\&. It is hard to say what the effects will be since these effects can be caused by any code with links or monitors to something on the origin node, or code monitoring the connection to the origin node\&.
+
+.RE

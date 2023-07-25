@@ -1,0 +1,222 @@
+.TH wxEvent 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxEvent \- Functions for wxEvent class
+.SH DESCRIPTION
+.LP
+An event is a structure holding information about an event passed to a callback or member function\&.
+.LP
+\fIwxEvent\fR\& used to be a multipurpose event object, and is an abstract base class for other event classes (see below)\&.
+.LP
+For more information about events, see the overview_events overview\&.
+.LP
+See: \fIwxCommandEvent\fR\&, \fIwxMouseEvent\fR\& 
+.LP
+wxWidgets docs: wxEvent
+.SH DATA TYPES
+.nf
+
+\fBwxEvent()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+getId(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the identifier associated with this event, such as a button command id\&.
+.RE
+.LP
+.nf
+
+.B
+getSkipped(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the event handler should be skipped, false otherwise\&.
+.RE
+.LP
+.nf
+
+.B
+getTimestamp(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the timestamp for the event\&.
+.LP
+The timestamp is the time in milliseconds since some fixed moment (not necessarily the standard Unix Epoch, so only differences between the timestamps and not their absolute values usually make sense)\&.
+.LP
+Warning: wxWidgets returns a non-NULL timestamp only for mouse and key events (see \fIwxMouseEvent\fR\& and \fIwxKeyEvent\fR\&)\&.
+.RE
+.LP
+.nf
+
+.B
+isCommandEvent(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the event is or is derived from \fIwxCommandEvent\fR\& else it returns false\&.
+.LP
+Note: exists only for optimization purposes\&.
+.RE
+.LP
+.nf
+
+.B
+resumePropagation(This, PropagationLevel) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxEvent()
+.br
+PropagationLevel = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the propagation level to the given value (for example returned from an earlier call to \fIstopPropagation/1\fR\&)\&.
+.RE
+.LP
+.nf
+
+.B
+shouldPropagate(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Test if this event should be propagated or not, i\&.e\&. if the propagation level is currently greater than 0\&.
+.RE
+.LP
+.nf
+
+.B
+skip(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxEvent()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+skip(This, Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxEvent()
+.br
+Option = {skip, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+This method can be used inside an event handler to control whether further event handlers bound to this event will be called after the current one returns\&.
+.LP
+Without \fIskip/2\fR\& (or equivalently if Skip(false) is used), the event will not be processed any more\&. If Skip(true) is called, the event processing system continues searching for a further handler function for this event, even though it has been processed already in the current handler\&.
+.LP
+In general, it is recommended to skip all non-command events to allow the default handling to take place\&. The command events are, however, normally not skipped as usually a single command such as a button click or menu item selection must only be processed by one handler\&.
+.RE
+.LP
+.nf
+
+.B
+stopPropagation(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Stop the event from propagating to its parent window\&.
+.LP
+Returns the old propagation level value which may be later passed to \fIresumePropagation/2\fR\& to allow propagating the event again\&.
+.RE

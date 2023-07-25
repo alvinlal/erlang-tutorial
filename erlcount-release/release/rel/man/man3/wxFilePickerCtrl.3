@@ -1,0 +1,217 @@
+.TH wxFilePickerCtrl 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxFilePickerCtrl \- Functions for wxFilePickerCtrl class
+.SH DESCRIPTION
+.LP
+This control allows the user to select a file\&. The generic implementation is a button which brings up a \fIwxFileDialog\fR\& when clicked\&. Native implementation may differ but this is usually a (small) widget which give access to the file-chooser dialog\&. It is only available if \fIwxUSE_FILEPICKERCTRL\fR\& is set to 1 (the default)\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+See: \fIwxFileDialog\fR\&, \fIwxFileDirPickerEvent\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxPickerBase\fR\& \fIwxControl\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxFilePickerCtrl
+.SH "EVENTS"
+
+.LP
+Event types emitted from this class: \fIcommand_filepicker_changed\fR\&
+.SH DATA TYPES
+.nf
+
+\fBwxFilePickerCtrl()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxFilePickerCtrl()
+.br
+.fi
+.br
+.RS
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id) -> wxFilePickerCtrl()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id, Options :: [Option]) -> wxFilePickerCtrl()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Option = 
+.br
+    {path, unicode:chardata()} |
+.br
+    {message, unicode:chardata()} |
+.br
+    {wildcard, unicode:chardata()} |
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()} |
+.br
+    {validator, wx:wx_object()}
+.br
+.RE
+.RE
+.RS
+.LP
+Initializes the object and calls \fIcreate/4\fR\& with all the parameters\&.
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFilePickerCtrl()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFilePickerCtrl()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Option = 
+.br
+    {path, unicode:chardata()} |
+.br
+    {message, unicode:chardata()} |
+.br
+    {wildcard, unicode:chardata()} |
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()} |
+.br
+    {validator, wx:wx_object()}
+.br
+.RE
+.RE
+.RS
+.LP
+Creates this widget with the given parameters\&.
+.LP
+Return: true if the control was successfully created or false if creation failed\&.
+.RE
+.LP
+.nf
+
+.B
+getPath(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFilePickerCtrl()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the absolute path of the currently selected file\&.
+.RE
+.LP
+.nf
+
+.B
+setPath(This, Filename) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFilePickerCtrl()
+.br
+Filename = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the absolute path of the currently selected file\&.
+.LP
+If the control uses \fIwxFLP_FILE_MUST_EXIST\fR\& and does not use \fIwxFLP_USE_TEXTCTRL\fR\& style, the \fIfilename\fR\& must be a name of an existing file and will be simply ignored by the native wxGTK implementation if this is not the case (the generic implementation used under the other platforms accepts even invalid file names currently, but this is subject to change in the future, don\&'t rely on being able to use non-existent paths with it)\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxFilePickerCtrl()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

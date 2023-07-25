@@ -1,0 +1,1410 @@
+.TH wxSizer 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxSizer \- Functions for wxSizer class
+.SH DESCRIPTION
+.LP
+\fIwxSizer\fR\& is the abstract base class used for laying out subwindows in a window\&. You cannot use \fIwxSizer\fR\& directly; instead, you will have to use one of the sizer classes derived from it\&. Currently there are \fIwxBoxSizer\fR\&, \fIwxStaticBoxSizer\fR\&, \fIwxGridSizer\fR\&, \fIwxFlexGridSizer\fR\&, \fIwxWrapSizer\fR\& (not implemented in wx) and \fIwxGridBagSizer\fR\&\&.
+.LP
+The layout algorithm used by sizers in wxWidgets is closely related to layout in other GUI toolkits, such as Java\&'s AWT, the GTK toolkit or the Qt toolkit\&. It is based upon the idea of the individual subwindows reporting their minimal required size and their ability to get stretched if the size of the parent window has changed\&.
+.LP
+This will most often mean that the programmer does not set the original size of a dialog in the beginning, rather the dialog will be assigned a sizer and this sizer will be queried about the recommended size\&. The sizer in turn will query its children, which can be normal windows, empty space or other sizers, so that a hierarchy of sizers can be constructed\&. Note that \fIwxSizer\fR\& does not derive from \fIwxWindow\fR\& and thus does not interfere with tab ordering and requires very little resources compared to a real window on screen\&.
+.LP
+What makes sizers so well fitted for use in wxWidgets is the fact that every control reports its own minimal size and the algorithm can handle differences in font sizes or different window (dialog item) sizes on different platforms without problems\&. If e\&.g\&. the standard font as well as the overall design of Motif widgets requires more space than on Windows, the initial dialog size will automatically be bigger on Motif than on Windows\&.
+.LP
+Sizers may also be used to control the layout of custom drawn items on the window\&. The \fIadd/4\fR\&, \fIinsert/5\fR\&, and \fIprepend/4\fR\& functions return a pointer to the newly added \fIwxSizerItem\fR\&\&. Just add empty space of the desired size and attributes, and then use the \fIwxSizerItem:getRect/1\fR\& method to determine where the drawing operations should take place\&.
+.LP
+Please notice that sizers, like child windows, are owned by the library and will be deleted by it which implies that they must be allocated on the heap\&. However if you create a sizer and do not add it to another sizer or window, the library wouldn\&'t be able to delete such an orphan sizer and in this, and only this, case it should be deleted explicitly\&.
+.LP
+wxSizer flags
+.LP
+The "flag" argument accepted by \fIwxSizerItem\fR\& constructors and other functions, e\&.g\&. \fIadd/4\fR\&, is an OR-combination of the following flags\&. Two main behaviours are defined using these flags\&. One is the border around a window: the border parameter determines the border width whereas the flags given here determine which side(s) of the item that the border will be added\&. The other flags determine how the sizer item behaves when the space allotted to the sizer changes, and is somewhat dependent on the specific kind of sizer used\&.
+.LP
+See: Overview sizer 
+.LP
+wxWidgets docs: wxSizer
+.SH DATA TYPES
+.nf
+
+\fBwxSizer()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+add(This, Window) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Window = wxWindow:wxWindow() | wxSizer:wxSizer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+add(This, Width, Height) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.nf
+
+.B
+add(This, Window, Flags) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.nf
+
+.B
+add(This, Window, Height :: [Option]) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Window = wxWindow:wxWindow() | wxSizer:wxSizer()
+.br
+Option = 
+.br
+    {proportion, integer()} |
+.br
+    {flag, integer()} |
+.br
+    {border, integer()} |
+.br
+    {userData, wx:wx_object()}
+.br
+.RE
+.RE
+.RS
+.LP
+Appends a child to the sizer\&.
+.LP
+\fIwxSizer\fR\& itself is an abstract class, but the parameters are equivalent in the derived classes that you will instantiate to use it so they are described here:
+.RE
+.LP
+.nf
+
+.B
+add(This, Width, Height, Options :: [Option]) ->
+.B
+       wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.nf
+
+.B
+add(This, Width, Height, Flags) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Width = Height = integer()
+.br
+Flags = wxSizerFlags:wxSizerFlags()
+.br
+.RE
+.RE
+.RS
+.LP
+Appends a spacer child to the sizer\&.
+.RE
+.LP
+.nf
+
+.B
+addSpacer(This, Size) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Size = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+This base function adds non-stretchable space to both the horizontal and vertical orientation of the sizer\&.
+.LP
+More readable way of calling:
+.LP
+See: \fIaddSpacer/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+addStretchSpacer(This) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+addStretchSpacer(This, Options :: [Option]) ->
+.B
+                    wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Option = {prop, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Adds stretchable space to the sizer\&.
+.LP
+More readable way of calling:
+.RE
+.LP
+.nf
+
+.B
+calcMin(This) -> {W :: integer(), H :: integer()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+.RE
+.RE
+.RS
+.LP
+This method is abstract and has to be overwritten by any derived class\&.
+.LP
+Here, the sizer will do the actual calculation of its children\&'s minimal sizes\&.
+.RE
+.LP
+.nf
+
+.B
+clear(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+clear(This, Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Option = {delete_windows, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Detaches all children from the sizer\&.
+.LP
+If \fIdelete_windows\fR\& is true then child windows will also be deleted\&.
+.LP
+Notice that child sizers are always deleted, as a general consequence of the principle that sizers own their sizer children, but don\&'t own their window children (because they are already owned by their parent windows)\&.
+.RE
+.LP
+.nf
+
+.B
+detach(This, Window) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+detach(This, Index) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Index = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Detach a item at position \fIindex\fR\& from the sizer without destroying it\&.
+.LP
+This method does not cause any layout or resizing to take place, call \fIlayout/1\fR\& to update the layout "on screen" after detaching a child from the sizer\&. Returns true if the child item was found and detached, false otherwise\&.
+.LP
+See: \fIremove/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+fit(This, Window) -> {W :: integer(), H :: integer()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Window = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Tell the sizer to resize the \fIwindow\fR\& so that its client area matches the sizer\&'s minimal size (\fIComputeFittingClientSize()\fR\& (not implemented in wx) is called to determine it)\&.
+.LP
+This is commonly done in the constructor of the window itself, see sample in the description of \fIwxBoxSizer\fR\&\&.
+.LP
+Return: The new window size\&.
+.LP
+See: \fIComputeFittingClientSize()\fR\& (not implemented in wx), \fIComputeFittingWindowSize()\fR\& (not implemented in wx)
+.RE
+.LP
+.nf
+
+.B
+setVirtualSizeHints(This, Window) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Window = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+See: \fIfitInside/2\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+fitInside(This, Window) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Window = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Tell the sizer to resize the virtual size of the \fIwindow\fR\& to match the sizer\&'s minimal size\&.
+.LP
+This will not alter the on screen size of the window, but may cause the addition/removal/alteration of scrollbars required to view the virtual area in windows which manage it\&.
+.LP
+See: \fIwxScrolledWindow:setScrollbars/6\fR\&, \fIsetVirtualSizeHints/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getChildren(This) -> [wxSizerItem:wxSizerItem()]
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+getItem(This, Window) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.nf
+
+.B
+getItem(This, Index) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Index = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Finds \fIwxSizerItem\fR\& which is located in the sizer at position \fIindex\fR\&\&.
+.LP
+Use parameter \fIrecursive\fR\& to search in subsizers too\&. Returns pointer to item or NULL\&.
+.RE
+.LP
+.nf
+
+.B
+getItem(This, Window, Options :: [Option]) ->
+.B
+           wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Window = wxWindow:wxWindow() | wxSizer:wxSizer()
+.br
+Option = {recursive, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Finds \fIwxSizerItem\fR\& which holds the given \fIwindow\fR\&\&.
+.LP
+Use parameter \fIrecursive\fR\& to search in subsizers too\&. Returns pointer to item or NULL\&.
+.RE
+.LP
+.nf
+
+.B
+getSize(This) -> {W :: integer(), H :: integer()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the current size of the sizer\&.
+.RE
+.LP
+.nf
+
+.B
+getPosition(This) -> {X :: integer(), Y :: integer()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the current position of the sizer\&.
+.RE
+.LP
+.nf
+
+.B
+getMinSize(This) -> {W :: integer(), H :: integer()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the minimal size of the sizer\&.
+.LP
+This is either the combined minimal size of all the children and their borders or the minimal size set by \fIsetMinSize/3\fR\&, depending on which is bigger\&. Note that the returned value is client size, not window size\&. In particular, if you use the value to set toplevel window\&'s minimal or actual size, use \fIwxWindow::SetMinClientSize()\fR\& (not implemented in wx) or \fIwxWindow:setClientSize/3\fR\&, not \fIwxWindow:setMinSize/2\fR\& or \fIwxWindow:setSize/6\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+hide(This, Window) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+hide(This, Index) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Index = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Hides the item at position \fIindex\fR\&\&.
+.LP
+To make a sizer item disappear, use \fIhide/3\fR\& followed by \fIlayout/1\fR\&\&.
+.LP
+Use parameter \fIrecursive\fR\& to hide elements found in subsizers\&. Returns true if the child item was found, false otherwise\&.
+.LP
+See: \fIisShown/2\fR\&, \fIshow/3\fR\& 
+.RE
+.LP
+.nf
+
+.B
+hide(This, Window, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Window = wxWindow:wxWindow() | wxSizer:wxSizer()
+.br
+Option = {recursive, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Hides the child \fIwindow\fR\&\&.
+.LP
+To make a sizer item disappear, use \fIhide/3\fR\& followed by \fIlayout/1\fR\&\&.
+.LP
+Use parameter \fIrecursive\fR\& to hide elements found in subsizers\&. Returns true if the child item was found, false otherwise\&.
+.LP
+See: \fIisShown/2\fR\&, \fIshow/3\fR\& 
+.RE
+.LP
+.nf
+
+.B
+insert(This, Index, Item) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Index = integer()
+.br
+Item = wxSizerItem:wxSizerItem()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+insert(This, Index, Width, Height) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.nf
+
+.B
+insert(This, Index, Window, Flags) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.nf
+
+.B
+insert(This, Index, Window, Height :: [Option]) ->
+.B
+          wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Index = integer()
+.br
+Window = wxWindow:wxWindow() | wxSizer:wxSizer()
+.br
+Option = 
+.br
+    {proportion, integer()} |
+.br
+    {flag, integer()} |
+.br
+    {border, integer()} |
+.br
+    {userData, wx:wx_object()}
+.br
+.RE
+.RE
+.RS
+.LP
+Insert a child into the sizer before any existing item at \fIindex\fR\&\&.
+.LP
+See \fIadd/4\fR\& for the meaning of the other parameters\&.
+.RE
+.LP
+.nf
+
+.B
+insert(This, Index, Width, Height, Options :: [Option]) ->
+.B
+          wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.nf
+
+.B
+insert(This, Index, Width, Height, Flags) ->
+.B
+          wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Index = Width = Height = integer()
+.br
+Flags = wxSizerFlags:wxSizerFlags()
+.br
+.RE
+.RE
+.RS
+.LP
+Insert a child into the sizer before any existing item at \fIindex\fR\&\&.
+.LP
+See \fIadd/4\fR\& for the meaning of the other parameters\&.
+.RE
+.LP
+.nf
+
+.B
+insertSpacer(This, Index, Size) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Index = Size = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Inserts non-stretchable space to the sizer\&.
+.LP
+More readable way of calling wxSizer::Insert(index, size, size)\&.
+.RE
+.LP
+.nf
+
+.B
+insertStretchSpacer(This, Index) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Index = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+insertStretchSpacer(This, Index, Options :: [Option]) ->
+.B
+                       wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Index = integer()
+.br
+Option = {prop, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Inserts stretchable space to the sizer\&.
+.LP
+More readable way of calling wxSizer::Insert(0, 0, prop)\&.
+.RE
+.LP
+.nf
+
+.B
+isShown(This, Window) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+isShown(This, Index) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Index = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the item at \fIindex\fR\& is shown\&.
+.LP
+See: \fIhide/3\fR\&, \fIshow/3\fR\&, \fIwxSizerItem:isShown/1\fR\& 
+.RE
+.LP
+.nf
+
+.B
+recalcSizes(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+.RE
+.RE
+.RS
+.LP
+See: \fIlayout/1\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+layout(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+.RE
+.RE
+.RS
+.LP
+Call this to force layout of the children anew, e\&.g\&. after having added a child to or removed a child (window, other sizer or space) from the sizer while keeping the current dimension\&.
+.RE
+.LP
+.nf
+
+.B
+prepend(This, Item) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Item = wxSizerItem:wxSizerItem()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+prepend(This, Width, Height) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.nf
+
+.B
+prepend(This, Window, Flags) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.nf
+
+.B
+prepend(This, Window, Height :: [Option]) ->
+.B
+           wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Window = wxWindow:wxWindow() | wxSizer:wxSizer()
+.br
+Option = 
+.br
+    {proportion, integer()} |
+.br
+    {flag, integer()} |
+.br
+    {border, integer()} |
+.br
+    {userData, wx:wx_object()}
+.br
+.RE
+.RE
+.RS
+.LP
+Same as \fIadd/4\fR\&, but prepends the items to the beginning of the list of items (windows, subsizers or spaces) owned by this sizer\&.
+.RE
+.LP
+.nf
+
+.B
+prepend(This, Width, Height, Options :: [Option]) ->
+.B
+           wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.nf
+
+.B
+prepend(This, Width, Height, Flags) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Width = Height = integer()
+.br
+Flags = wxSizerFlags:wxSizerFlags()
+.br
+.RE
+.RE
+.RS
+.LP
+Same as \fIadd/4\fR\&, but prepends the items to the beginning of the list of items (windows, subsizers or spaces) owned by this sizer\&.
+.RE
+.LP
+.nf
+
+.B
+prependSpacer(This, Size) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Size = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Prepends non-stretchable space to the sizer\&.
+.LP
+More readable way of calling wxSizer::Prepend(size, size, 0)\&.
+.RE
+.LP
+.nf
+
+.B
+prependStretchSpacer(This) -> wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+prependStretchSpacer(This, Options :: [Option]) ->
+.B
+                        wxSizerItem:wxSizerItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Option = {prop, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Prepends stretchable space to the sizer\&.
+.LP
+More readable way of calling wxSizer::Prepend(0, 0, prop)\&.
+.RE
+.LP
+.nf
+
+.B
+remove(This, Index) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+remove(This, Sizer) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = Sizer = wxSizer()
+.br
+.RE
+.RE
+.RS
+.LP
+Removes a sizer child from the sizer and destroys it\&.
+.LP
+Note: This method does not cause any layout or resizing to take place, call \fIlayout/1\fR\& to update the layout "on screen" after removing a child from the sizer\&.
+.LP
+Return: true if the child item was found and removed, false otherwise\&.
+.RE
+.LP
+.nf
+
+.B
+replace(This, Oldwin, Newwin) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+replace(This, Index, Newitem) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Index = integer()
+.br
+Newitem = wxSizerItem:wxSizerItem()
+.br
+.RE
+.RE
+.RS
+.LP
+Detaches the given item at position \fIindex\fR\& from the sizer and replaces it with the given \fIwxSizerItem\fR\& \fInewitem\fR\&\&.
+.LP
+The detached child is deleted \fIonly\fR\& if it is a sizer or a spacer (but not if it is a \fIwxWindow\fR\& because windows are owned by their parent window, not the sizer)\&.
+.LP
+This method does not cause any layout or resizing to take place, call \fIlayout/1\fR\& to update the layout "on screen" after replacing a child from the sizer\&.
+.LP
+Returns true if the child item was found and removed, false otherwise\&.
+.RE
+.LP
+.nf
+
+.B
+replace(This, Oldwin, Newwin, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Oldwin = Newwin = wxWindow:wxWindow() | wxSizer:wxSizer()
+.br
+Option = {recursive, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Detaches the given \fIoldwin\fR\& from the sizer and replaces it with the given \fInewwin\fR\&\&.
+.LP
+The detached child window is \fInot\fR\& deleted (because windows are owned by their parent window, not the sizer)\&.
+.LP
+Use parameter \fIrecursive\fR\& to search the given element recursively in subsizers\&.
+.LP
+This method does not cause any layout or resizing to take place, call \fIlayout/1\fR\& to update the layout "on screen" after replacing a child from the sizer\&.
+.LP
+Returns true if the child item was found and removed, false otherwise\&.
+.RE
+.LP
+.nf
+
+.B
+setDimension(This, Pos, Size) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Pos = {X :: integer(), Y :: integer()}
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+This is an overloaded member function, provided for convenience\&. It differs from the above function only in what argument(s) it accepts\&.
+.RE
+.LP
+.nf
+
+.B
+setDimension(This, X, Y, Width, Height) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+X = Y = Width = Height = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Call this to force the sizer to take the given dimension and thus force the items owned by the sizer to resize themselves according to the rules defined by the parameter in the \fIadd/4\fR\& and \fIprepend/4\fR\& methods\&.
+.RE
+.LP
+.nf
+
+.B
+setMinSize(This, Size) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Call this to give the sizer a minimal size\&.
+.LP
+Normally, the sizer will calculate its minimal size based purely on how much space its children need\&. After calling this method \fIgetMinSize/1\fR\& will return either the minimal size as requested by its children or the minimal size set here, depending on which is bigger\&.
+.RE
+.LP
+.nf
+
+.B
+setMinSize(This, Width, Height) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Width = Height = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+This is an overloaded member function, provided for convenience\&. It differs from the above function only in what argument(s) it accepts\&.
+.RE
+.LP
+.nf
+
+.B
+setItemMinSize(This, Window, Size) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+setItemMinSize(This, Index, Size) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Index = integer()
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+setItemMinSize(This, Window, Width, Height) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+setItemMinSize(This, Index, Width, Height) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Index = Width = Height = integer()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+setSizeHints(This, Window) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Window = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+This method first calls \fIfit/2\fR\& and then \fIsetSizeHints/2\fR\& on the \fIwindow\fR\& passed to it\&.
+.LP
+This only makes sense when \fIwindow\fR\& is actually a \fIwxTopLevelWindow\fR\& such as a \fIwxFrame\fR\& or a \fIwxDialog\fR\&, since SetSizeHints only has any effect in these classes\&. It does nothing in normal windows or controls\&.
+.LP
+This method is implicitly used by \fIwxWindow:setSizerAndFit/3\fR\& which is commonly invoked in the constructor of a toplevel window itself (see the sample in the description of \fIwxBoxSizer\fR\&) if the toplevel window is resizable\&.
+.RE
+.LP
+.nf
+
+.B
+show(This, Window) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+show(This, Index) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+show(This, Show) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Show = boolean()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+show(This, Window, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.nf
+
+.B
+show(This, Index, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Index = integer()
+.br
+Option = {show, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Shows the item at \fIindex\fR\&\&.
+.LP
+To make a sizer item disappear or reappear, use \fIshow/3\fR\& followed by \fIlayout/1\fR\&\&.
+.LP
+Returns true if the child item was found, false otherwise\&.
+.LP
+See: \fIhide/3\fR\&, \fIisShown/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+showItems(This, Show) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSizer()
+.br
+Show = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+Show or hide all items managed by the sizer\&.
+.RE

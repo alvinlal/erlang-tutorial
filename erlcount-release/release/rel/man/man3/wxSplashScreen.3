@@ -1,0 +1,143 @@
+.TH wxSplashScreen 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxSplashScreen \- Functions for wxSplashScreen class
+.SH DESCRIPTION
+.LP
+\fIwxSplashScreen\fR\& shows a window with a thin border, displaying a bitmap describing your application\&.
+.LP
+Show it in application initialisation, and then either explicitly destroy it or let it time-out\&.
+.LP
+Example usage:
+.LP
+This class is derived (and can use functions) from: \fIwxFrame\fR\& \fIwxTopLevelWindow\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxSplashScreen
+.SH DATA TYPES
+.nf
+
+\fBwxSplashScreen()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new(Bitmap, SplashStyle, Milliseconds, Parent, Id) ->
+.B
+       wxSplashScreen()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Bitmap = wxBitmap:wxBitmap()
+.br
+SplashStyle = Milliseconds = integer()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Bitmap, SplashStyle, Milliseconds, Parent, Id,
+.B
+    Options :: [Option]) ->
+.B
+       wxSplashScreen()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Bitmap = wxBitmap:wxBitmap()
+.br
+SplashStyle = Milliseconds = integer()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Option = 
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Construct the splash screen passing a bitmap, a style, a timeout, a window id, optional position and size, and a window style\&.
+.LP
+\fIsplashStyle\fR\& is a bitlist of some of the following:
+.LP
+\fImilliseconds\fR\& is the timeout in milliseconds\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxSplashScreen()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the splash screen\&.
+.RE
+.LP
+.nf
+
+.B
+getSplashStyle(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSplashScreen()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the splash style (see \fInew/6\fR\& for details)\&.
+.RE
+.LP
+.nf
+
+.B
+getTimeout(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSplashScreen()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the timeout in milliseconds\&.
+.RE

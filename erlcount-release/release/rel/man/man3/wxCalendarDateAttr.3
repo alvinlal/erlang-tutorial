@@ -1,0 +1,467 @@
+.TH wxCalendarDateAttr 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxCalendarDateAttr \- Functions for wxCalendarDateAttr class
+.SH DESCRIPTION
+.LP
+\fIwxCalendarDateAttr\fR\& is a custom attributes for a calendar date\&. The objects of this class are used with \fIwxCalendarCtrl\fR\&\&.
+.LP
+See: \fIwxCalendarCtrl\fR\& 
+.LP
+wxWidgets docs: wxCalendarDateAttr
+.SH DATA TYPES
+.nf
+
+\fBwxCalendarDateAttr()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxCalendarDateAttr()
+.br
+.fi
+.br
+.LP
+.nf
+
+.B
+new(Border) -> wxCalendarDateAttr()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Border :: [Option]) -> wxCalendarDateAttr()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Option = 
+.br
+    {colText, wx:wx_colour()} |
+.br
+    {colBack, wx:wx_colour()} |
+.br
+    {colBorder, wx:wx_colour()} |
+.br
+    {font, wxFont:wxFont()} |
+.br
+    {border, wx:wx_enum()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor for specifying all \fIwxCalendarDateAttr\fR\& properties\&.
+.RE
+.LP
+.nf
+
+.B
+new(Border, Options :: [Option]) -> wxCalendarDateAttr()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Border = wx:wx_enum()
+.br
+Option = {colBorder, wx:wx_colour()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor using default properties except the given border\&.
+.RE
+.LP
+.nf
+
+.B
+setTextColour(This, ColText) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+ColText = wx:wx_colour()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the text (foreground) colour to use\&.
+.RE
+.LP
+.nf
+
+.B
+setBackgroundColour(This, ColBack) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+ColBack = wx:wx_colour()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the text background colour to use\&.
+.RE
+.LP
+.nf
+
+.B
+setBorderColour(This, Col) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+Col = wx:wx_colour()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the border colour to use\&.
+.RE
+.LP
+.nf
+
+.B
+setFont(This, Font) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+Font = wxFont:wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the font to use\&.
+.RE
+.LP
+.nf
+
+.B
+setBorder(This, Border) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+Border = wx:wx_enum()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the border to use\&.
+.RE
+.LP
+.nf
+
+.B
+setHoliday(This, Holiday) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+Holiday = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+If \fIholiday\fR\& is true, this calendar day will be displayed as a holiday\&.
+.RE
+.LP
+.nf
+
+.B
+hasTextColour(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if a non-default text foreground colour is set\&.
+.RE
+.LP
+.nf
+
+.B
+hasBackgroundColour(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if a non-default text background colour is set\&.
+.RE
+.LP
+.nf
+
+.B
+hasBorderColour(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if a non-default border colour is set\&.
+.RE
+.LP
+.nf
+
+.B
+hasFont(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if a non-default font is set\&.
+.RE
+.LP
+.nf
+
+.B
+hasBorder(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if a non-default (i\&.e\&. any) border is set\&.
+.RE
+.LP
+.nf
+
+.B
+isHoliday(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if this calendar day is displayed as a holiday\&.
+.RE
+.LP
+.nf
+
+.B
+getTextColour(This) -> wx:wx_colour4()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the text colour set for the calendar date\&.
+.RE
+.LP
+.nf
+
+.B
+getBackgroundColour(This) -> wx:wx_colour4()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the background colour set for the calendar date\&.
+.RE
+.LP
+.nf
+
+.B
+getBorderColour(This) -> wx:wx_colour4()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the border colour set for the calendar date\&.
+.RE
+.LP
+.nf
+
+.B
+getFont(This) -> wxFont:wxFont()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the font set for the calendar date\&.
+.RE
+.LP
+.nf
+
+.B
+getBorder(This) -> wx:wx_enum()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCalendarDateAttr()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the border set for the calendar date\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxCalendarDateAttr()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

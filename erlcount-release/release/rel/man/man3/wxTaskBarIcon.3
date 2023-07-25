@@ -1,0 +1,158 @@
+.TH wxTaskBarIcon 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxTaskBarIcon \- Functions for wxTaskBarIcon class
+.SH DESCRIPTION
+.LP
+This class represents a taskbar icon\&. A taskbar icon is an icon that appears in the \&'system tray\&' and responds to mouse clicks, optionally with a tooltip above it to help provide information\&.
+.LP
+X Window System Note
+.LP
+Under X Window System, the window manager must support either the "System Tray Protocol" (see http://freedesktop\&.org/wiki/Specifications/systemtray-spec) by freedesktop\&.org (WMs used by modern desktop environments such as GNOME >= 2, KDE >= 3 and XFCE >= 4 all do) or the older methods used in GNOME 1\&.2 and KDE 1 and 2\&.
+.LP
+If it doesn\&'t, the icon will appear as a toplevel window on user\&'s desktop\&. Because not all window managers have system tray, there\&'s no guarantee that \fIwxTaskBarIcon\fR\& will work correctly under X Window System and so the applications should use it only as an optional component of their user interface\&. The user should be required to explicitly enable the taskbar icon on Unix, it shouldn\&'t be on by default\&.
+.LP
+This class is derived (and can use functions) from: \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxTaskBarIcon
+.SH "EVENTS"
+
+.LP
+Event types emitted from this class: \fItaskbar_move\fR\&, \fItaskbar_left_down\fR\&, \fItaskbar_left_up\fR\&, \fItaskbar_right_down\fR\&, \fItaskbar_right_up\fR\&, \fItaskbar_left_dclick\fR\&, \fItaskbar_right_dclick\fR\&
+.SH DATA TYPES
+.nf
+
+\fBwxTaskBarIcon()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new(Options :: [Option]) -> wxTaskBarIcon()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Option = 
+.br
+    {iconType, wx:wx_enum()} |
+.br
+    {createPopupMenu, fun(() -> wxMenu:wxMenu())}
+.br
+.RE
+.RE
+.RS
+.LP
+Default constructor\&.
+.LP
+The iconType is only applicable on wxOSX/Cocoa\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxTaskBarIcon()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the \fIwxTaskBarIcon\fR\& object, removing the icon if not already removed\&.
+.RE
+.LP
+.nf
+
+.B
+popupMenu(This, Menu) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxTaskBarIcon()
+.br
+Menu = wxMenu:wxMenu()
+.br
+.RE
+.RE
+.RS
+.LP
+Pops up a menu at the current mouse position\&.
+.LP
+The events can be handled by a class derived from \fIwxTaskBarIcon\fR\&\&.
+.LP
+Note: It is recommended to override \fICreatePopupMenu()\fR\& (not implemented in wx) callback instead of calling this method from event handler, because some ports (e\&.g\&. wxCocoa) may not implement \fIpopupMenu/2\fR\& and mouse click events at all\&.
+.RE
+.LP
+.nf
+
+.B
+removeIcon(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxTaskBarIcon()
+.br
+.RE
+.RE
+.RS
+.LP
+Removes the icon previously set with \fIsetIcon/3\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+setIcon(This, Icon) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxTaskBarIcon()
+.br
+Icon = wxIcon:wxIcon()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+setIcon(This, Icon, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxTaskBarIcon()
+.br
+Icon = wxIcon:wxIcon()
+.br
+Option = {tooltip, unicode:chardata()}
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the icon, and optional tooltip text\&.
+.RE

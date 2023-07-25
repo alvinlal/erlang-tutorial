@@ -1,0 +1,171 @@
+.TH wxMiniFrame 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxMiniFrame \- Functions for wxMiniFrame class
+.SH DESCRIPTION
+.LP
+A miniframe is a frame with a small title bar\&. It is suitable for floating toolbars that must not take up too much screen area\&.
+.LP
+An example of mini frame can be seen in the page_samples_dialogs using the "Mini frame" command of the "Generic dialogs" submenu\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+Remark: This class has miniframe functionality under Windows and GTK, i\&.e\&. the presence of mini frame will not be noted in the task bar and focus behaviour is different\&. On other platforms, it behaves like a normal frame\&.
+.LP
+See: \fIwxMDIParentFrame\fR\&, \fIwxMDIChildFrame\fR\&, \fIwxFrame\fR\&, \fIwxDialog\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxFrame\fR\& \fIwxTopLevelWindow\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxMiniFrame
+.SH DATA TYPES
+.nf
+
+\fBwxMiniFrame()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxMiniFrame()
+.br
+.fi
+.br
+.RS
+.LP
+Default ctor\&.
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id, Title) -> wxMiniFrame()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Title = unicode:chardata()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id, Title, Options :: [Option]) -> wxMiniFrame()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Title = unicode:chardata()
+.br
+Option = 
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor, creating the window\&.
+.LP
+Remark: The frame behaves like a normal frame on non-Windows platforms\&.
+.LP
+See: \fIcreate/5\fR\& 
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxMiniFrame()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor\&.
+.LP
+Destroys all child windows and menu bar if present\&.
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id, Title) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxMiniFrame()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Title = unicode:chardata()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id, Title, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxMiniFrame()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Title = unicode:chardata()
+.br
+Option = 
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Used in two-step frame construction\&.
+.LP
+See \fInew/4\fR\& for further details\&.
+.RE

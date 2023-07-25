@@ -1,0 +1,723 @@
+.TH wxPageSetupDialogData 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxPageSetupDialogData \- Functions for wxPageSetupDialogData class
+.SH DESCRIPTION
+.LP
+This class holds a variety of information related to \fIwxPageSetupDialog\fR\&\&.
+.LP
+It contains a \fIwxPrintData\fR\& member which is used to hold basic printer configuration data (as opposed to the user-interface configuration settings stored by \fIwxPageSetupDialogData\fR\&)\&.
+.LP
+See: Overview printing, \fIwxPageSetupDialog\fR\& 
+.LP
+wxWidgets docs: wxPageSetupDialogData
+.SH DATA TYPES
+.nf
+
+\fBwxPageSetupDialogData()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxPageSetupDialogData()
+.br
+.fi
+.br
+.RS
+.LP
+Default constructor\&.
+.RE
+.LP
+.nf
+
+.B
+new(PrintData) -> wxPageSetupDialogData()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+PrintData = 
+.br
+    wxPrintData:wxPrintData() |
+.br
+    wxPageSetupDialogData:wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.LP
+Construct an object from a print data object\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxPageSetupDialogData()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor\&.
+.RE
+.LP
+.nf
+
+.B
+enableHelp(This, Flag) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+Flag = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+Enables or disables the "Help" button (Windows only)\&.
+.RE
+.LP
+.nf
+
+.B
+enableMargins(This, Flag) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+Flag = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+Enables or disables the margin controls (Windows only)\&.
+.RE
+.LP
+.nf
+
+.B
+enableOrientation(This, Flag) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+Flag = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+Enables or disables the orientation control (Windows only)\&.
+.RE
+.LP
+.nf
+
+.B
+enablePaper(This, Flag) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+Flag = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+Enables or disables the paper size control (Windows only)\&.
+.RE
+.LP
+.nf
+
+.B
+enablePrinter(This, Flag) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+Flag = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+Enables or disables the "Printer" button, which invokes a printer setup dialog\&.
+.RE
+.LP
+.nf
+
+.B
+getDefaultMinMargins(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the page setup dialog will take its minimum margin values from the currently selected printer properties (Windows only)\&.
+.RE
+.LP
+.nf
+
+.B
+getEnableMargins(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the margin controls are enabled (Windows only)\&.
+.RE
+.LP
+.nf
+
+.B
+getEnableOrientation(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the orientation control is enabled (Windows only)\&.
+.RE
+.LP
+.nf
+
+.B
+getEnablePaper(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the paper size control is enabled (Windows only)\&.
+.RE
+.LP
+.nf
+
+.B
+getEnablePrinter(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the printer setup button is enabled\&.
+.RE
+.LP
+.nf
+
+.B
+getEnableHelp(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the printer setup button is enabled\&.
+.RE
+.LP
+.nf
+
+.B
+getDefaultInfo(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the dialog will simply return default printer information (such as orientation) instead of showing a dialog (Windows only)\&.
+.RE
+.LP
+.nf
+
+.B
+getMarginTopLeft(This) -> {X :: integer(), Y :: integer()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the left (x) and top (y) margins in millimetres\&.
+.RE
+.LP
+.nf
+
+.B
+getMarginBottomRight(This) -> {X :: integer(), Y :: integer()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the right (x) and bottom (y) margins in millimetres\&.
+.RE
+.LP
+.nf
+
+.B
+getMinMarginTopLeft(This) -> {X :: integer(), Y :: integer()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the left (x) and top (y) minimum margins the user can enter (Windows only)\&.
+.LP
+Units are in millimetres\&.
+.RE
+.LP
+.nf
+
+.B
+getMinMarginBottomRight(This) -> {X :: integer(), Y :: integer()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the right (x) and bottom (y) minimum margins the user can enter (Windows only)\&.
+.LP
+Units are in millimetres\&.
+.RE
+.LP
+.nf
+
+.B
+getPaperId(This) -> wx:wx_enum()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the paper id (stored in the internal \fIwxPrintData\fR\& object)\&.
+.LP
+See: \fIwxPrintData:setPaperId/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getPaperSize(This) -> {W :: integer(), H :: integer()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the paper size in millimetres\&.
+.RE
+.LP
+.nf
+
+.B
+getPrintData(This) -> wxPrintData:wxPrintData()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+isOk(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the print data associated with the dialog data is valid\&.
+.LP
+This can return false on Windows if the current printer is not set, for example\&. On all other platforms, it returns true\&.
+.RE
+.LP
+.nf
+
+.B
+setDefaultInfo(This, Flag) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+Flag = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+Pass true if the dialog will simply return default printer information (such as orientation) instead of showing a dialog (Windows only)\&.
+.RE
+.LP
+.nf
+
+.B
+setDefaultMinMargins(This, Flag) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+Flag = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+Pass true if the page setup dialog will take its minimum margin values from the currently selected printer properties (Windows only)\&.
+.LP
+Units are in millimetres\&.
+.RE
+.LP
+.nf
+
+.B
+setMarginTopLeft(This, Pt) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+Pt = {X :: integer(), Y :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the left (x) and top (y) margins in millimetres\&.
+.RE
+.LP
+.nf
+
+.B
+setMarginBottomRight(This, Pt) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+Pt = {X :: integer(), Y :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the right (x) and bottom (y) margins in millimetres\&.
+.RE
+.LP
+.nf
+
+.B
+setMinMarginTopLeft(This, Pt) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+Pt = {X :: integer(), Y :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the left (x) and top (y) minimum margins the user can enter (Windows only)\&.
+.LP
+Units are in millimetres\&.
+.RE
+.LP
+.nf
+
+.B
+setMinMarginBottomRight(This, Pt) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+Pt = {X :: integer(), Y :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the right (x) and bottom (y) minimum margins the user can enter (Windows only)\&.
+.LP
+Units are in millimetres\&.
+.RE
+.LP
+.nf
+
+.B
+setPaperId(This, Id) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+Id = wx:wx_enum()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the paper size id\&.
+.LP
+Calling this function overrides the explicit paper dimensions passed in \fIsetPaperSize/2\fR\&\&.
+.LP
+See: \fIwxPrintData:setPaperId/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setPaperSize(This, Size) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the paper size in millimetres\&.
+.LP
+If a corresponding paper id is found, it will be set in the internal \fIwxPrintData\fR\& object, otherwise the paper size overrides the paper id\&.
+.RE
+.LP
+.nf
+
+.B
+setPrintData(This, PrintData) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialogData()
+.br
+PrintData = wxPrintData:wxPrintData()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the print data associated with this object\&.
+.RE

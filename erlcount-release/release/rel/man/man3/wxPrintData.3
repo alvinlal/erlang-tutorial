@@ -1,0 +1,511 @@
+.TH wxPrintData 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxPrintData \- Functions for wxPrintData class
+.SH DESCRIPTION
+.LP
+This class holds a variety of information related to printers and printer device contexts\&. This class is used to create a \fIwxPrinterDC\fR\& (not implemented in wx) and a \fIwxPostScriptDC\fR\&\&. It is also used as a data member of \fIwxPrintDialogData\fR\& and \fIwxPageSetupDialogData\fR\&, as part of the mechanism for transferring data between the print dialogs and the application\&.
+.LP
+See: Overview printing, \fIwxPrintDialog\fR\&, \fIwxPageSetupDialog\fR\&, \fIwxPrintDialogData\fR\&, \fIwxPageSetupDialogData\fR\&, Overview cmndlg, \fIwxPrinterDC\fR\& (not implemented in wx), \fIwxPostScriptDC\fR\& 
+.LP
+wxWidgets docs: wxPrintData
+.SH DATA TYPES
+.nf
+
+\fBwxPrintData()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxPrintData()
+.br
+.fi
+.br
+.RS
+.LP
+Default constructor\&.
+.RE
+.LP
+.nf
+
+.B
+new(Data) -> wxPrintData()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Data = wxPrintData()
+.br
+.RE
+.RE
+.RS
+.LP
+Copy constructor\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxPrintData()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor\&.
+.RE
+.LP
+.nf
+
+.B
+getCollate(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if collation is on\&.
+.RE
+.LP
+.nf
+
+.B
+getBin(This) -> wx:wx_enum()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the current bin (papersource)\&.
+.LP
+By default, the system is left to select the bin (\fIwxPRINTBIN_DEFAULT\fR\& is returned)\&.
+.LP
+See \fIsetBin/2\fR\& for the full list of bin values\&.
+.RE
+.LP
+.nf
+
+.B
+getColour(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if colour printing is on\&.
+.RE
+.LP
+.nf
+
+.B
+getDuplex(This) -> wx:wx_enum()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the duplex mode\&.
+.LP
+One of wxDUPLEX_SIMPLEX, wxDUPLEX_HORIZONTAL, wxDUPLEX_VERTICAL\&.
+.RE
+.LP
+.nf
+
+.B
+getNoCopies(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the number of copies requested by the user\&.
+.RE
+.LP
+.nf
+
+.B
+getOrientation(This) -> wx:wx_enum()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the orientation\&.
+.LP
+This can be wxLANDSCAPE or wxPORTRAIT\&.
+.RE
+.LP
+.nf
+
+.B
+getPaperId(This) -> wx:wx_enum()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the paper size id\&.
+.LP
+See: \fIsetPaperId/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getPrinterName(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the printer name\&.
+.LP
+If the printer name is the empty string, it indicates that the default printer should be used\&.
+.RE
+.LP
+.nf
+
+.B
+getQuality(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the current print quality\&.
+.LP
+This can be a positive integer, denoting the number of dots per inch, or one of the following identifiers:
+.LP
+On input you should pass one of these identifiers, but on return you may get back a positive integer indicating the current resolution setting\&.
+.RE
+.LP
+.nf
+
+.B
+isOk(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the print data is valid for using in print dialogs\&.
+.LP
+This can return false on Windows if the current printer is not set, for example\&. On all other platforms, it returns true\&.
+.RE
+.LP
+.nf
+
+.B
+setBin(This, Flag) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+Flag = wx:wx_enum()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the current bin\&.
+.RE
+.LP
+.nf
+
+.B
+setCollate(This, Flag) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+Flag = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets collation to on or off\&.
+.RE
+.LP
+.nf
+
+.B
+setColour(This, Flag) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+Flag = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets colour printing on or off\&.
+.RE
+.LP
+.nf
+
+.B
+setDuplex(This, Mode) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+Mode = wx:wx_enum()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the duplex mode\&.
+.LP
+One of wxDUPLEX_SIMPLEX, wxDUPLEX_HORIZONTAL, wxDUPLEX_VERTICAL\&.
+.RE
+.LP
+.nf
+
+.B
+setNoCopies(This, N) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+N = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the default number of copies to be printed out\&.
+.RE
+.LP
+.nf
+
+.B
+setOrientation(This, Orientation) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+Orientation = wx:wx_enum()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the orientation\&.
+.LP
+This can be wxLANDSCAPE or wxPORTRAIT\&.
+.RE
+.LP
+.nf
+
+.B
+setPaperId(This, PaperId) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+PaperId = wx:wx_enum()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the paper id\&.
+.LP
+This indicates the type of paper to be used\&. For a mapping between paper id, paper size and string name, see wxPrintPaperDatabase in \fI"paper\&.h"\fR\& (not yet documented)\&.
+.LP
+See: \fISetPaperSize()\fR\& (not implemented in wx)
+.RE
+.LP
+.nf
+
+.B
+setPrinterName(This, PrinterName) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+PrinterName = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the printer name\&.
+.LP
+This can be the empty string to indicate that the default printer should be used\&.
+.RE
+.LP
+.nf
+
+.B
+setQuality(This, Quality) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPrintData()
+.br
+Quality = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the desired print quality\&.
+.LP
+This can be a positive integer, denoting the number of dots per inch, or one of the following identifiers:
+.LP
+On input you should pass one of these identifiers, but on return you may get back a positive integer indicating the current resolution setting\&.
+.RE

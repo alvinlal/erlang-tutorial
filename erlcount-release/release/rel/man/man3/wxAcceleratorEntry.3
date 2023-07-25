@@ -1,0 +1,172 @@
+.TH wxAcceleratorEntry 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxAcceleratorEntry \- Functions for wxAcceleratorEntry class
+.SH DESCRIPTION
+.LP
+An object used by an application wishing to create an accelerator table (see \fIwxAcceleratorTable\fR\&)\&.
+.LP
+See: \fIwxAcceleratorTable\fR\&, \fIwxWindow:setAcceleratorTable/2\fR\& 
+.LP
+wxWidgets docs: wxAcceleratorEntry
+.SH DATA TYPES
+.nf
+
+\fBwxAcceleratorEntry()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxAcceleratorEntry()
+.br
+.fi
+.br
+.LP
+.nf
+
+.B
+new(Options :: [Option]) -> wxAcceleratorEntry()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Entry) -> wxAcceleratorEntry()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Entry = wxAcceleratorEntry()
+.br
+.RE
+.RE
+.RS
+.LP
+Copy ctor\&.
+.RE
+.LP
+.nf
+
+.B
+getCommand(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAcceleratorEntry()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the command identifier for the accelerator table entry\&.
+.RE
+.LP
+.nf
+
+.B
+getFlags(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAcceleratorEntry()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the flags for the accelerator table entry\&.
+.RE
+.LP
+.nf
+
+.B
+getKeyCode(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAcceleratorEntry()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the keycode for the accelerator table entry\&.
+.RE
+.LP
+.nf
+
+.B
+set(This, Flags, KeyCode, Cmd) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAcceleratorEntry()
+.br
+Flags = KeyCode = Cmd = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+set(This, Flags, KeyCode, Cmd, Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAcceleratorEntry()
+.br
+Flags = KeyCode = Cmd = integer()
+.br
+Option = {item, wxMenuItem:wxMenuItem()}
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the accelerator entry parameters\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxAcceleratorEntry()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

@@ -1,0 +1,276 @@
+.TH wxCommandEvent 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxCommandEvent \- Functions for wxCommandEvent class
+.SH DESCRIPTION
+.LP
+This event class contains information about command events, which originate from a variety of simple controls\&.
+.LP
+Note that wxCommandEvents and wxCommandEvent-derived event classes by default and unlike other wxEvent-derived classes propagate upward from the source window (the window which emits the event) up to the first parent which processes the event\&. Be sure to read overview_events_propagation\&.
+.LP
+More complex controls, such as \fIwxTreeCtrl\fR\&, have separate command event classes\&.
+.LP
+This class is derived (and can use functions) from: \fIwxEvent\fR\&
+.LP
+wxWidgets docs: wxCommandEvent
+.SH "EVENTS"
+
+.LP
+Use \fIwxEvtHandler:connect/3\fR\& with \fIwxCommandEventType\fR\& to subscribe to events of this type\&.
+.SH DATA TYPES
+.nf
+
+\fBwxCommandEvent()\fR\& = wx:wx_object()
+.br
+.fi
+.nf
+
+\fBwxCommand()\fR\& = 
+.br
+    #wxCommand{type = wxCommandEvent:wxCommandEventType(),
+.br
+               cmdString = unicode:chardata(),
+.br
+               commandInt = integer(),
+.br
+               extraLong = integer()}
+.br
+.fi
+.nf
+
+\fBwxCommandEventType()\fR\& = 
+.br
+    command_button_clicked | command_checkbox_clicked |
+.br
+    command_choice_selected | command_listbox_selected |
+.br
+    command_listbox_doubleclicked | command_text_updated |
+.br
+    command_text_enter | text_maxlen | command_menu_selected |
+.br
+    command_slider_updated | command_radiobox_selected |
+.br
+    command_radiobutton_selected | command_scrollbar_updated |
+.br
+    command_vlbox_selected | command_combobox_selected |
+.br
+    combobox_dropdown | combobox_closeup | command_tool_rclicked |
+.br
+    command_tool_enter | tool_dropdown |
+.br
+    command_checklistbox_toggled | command_togglebutton_clicked |
+.br
+    command_left_click | command_left_dclick |
+.br
+    command_right_click | command_set_focus | command_kill_focus |
+.br
+    command_enter | notification_message_click |
+.br
+    notification_message_dismissed | notification_message_action
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+getClientData(This) -> term()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCommandEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns client object pointer for a listbox or choice selection event (not valid for a deselection)\&.
+.RE
+.LP
+.nf
+
+.B
+getExtraLong(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCommandEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns extra information dependent on the event objects type\&.
+.LP
+If the event comes from a listbox selection, it is a boolean determining whether the event was a selection (true) or a deselection (false)\&. A listbox deselection only occurs for multiple-selection boxes, and in this case the index and string values are indeterminate and the listbox must be examined by the application\&.
+.RE
+.LP
+.nf
+
+.B
+getInt(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCommandEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the integer identifier corresponding to a listbox, choice or radiobox selection (only if the event was a selection, not a deselection), or a boolean value representing the value of a checkbox\&.
+.LP
+For a menu item, this method returns -1 if the item is not checkable or a boolean value (true or false) for checkable items indicating the new state of the item\&.
+.RE
+.LP
+.nf
+
+.B
+getSelection(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCommandEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns item index for a listbox or choice selection event (not valid for a deselection)\&.
+.RE
+.LP
+.nf
+
+.B
+getString(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCommandEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns item string for a listbox or choice selection event\&.
+.LP
+If one or several items have been deselected, returns the index of the first deselected item\&. If some items have been selected and others deselected at the same time, it will return the index of the first selected item\&.
+.RE
+.LP
+.nf
+
+.B
+isChecked(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCommandEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+This method can be used with checkbox and menu events: for the checkboxes, the method returns true for a selection event and false for a deselection one\&.
+.LP
+For the menu events, this method indicates if the menu item just has become checked or unchecked (and thus only makes sense for checkable menu items)\&.
+.LP
+Notice that this method cannot be used with \fIwxCheckListBox\fR\& currently\&.
+.RE
+.LP
+.nf
+
+.B
+isSelection(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCommandEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+For a listbox or similar event, returns true if it is a selection, false if it is a deselection\&.
+.LP
+If some items have been selected and others deselected at the same time, it will return true\&.
+.RE
+.LP
+.nf
+
+.B
+setInt(This, IntCommand) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCommandEvent()
+.br
+IntCommand = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the \fIm_commandInt\fR\& member\&.
+.RE
+.LP
+.nf
+
+.B
+setString(This, String) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCommandEvent()
+.br
+String = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the \fIm_commandString\fR\& member\&.
+.RE

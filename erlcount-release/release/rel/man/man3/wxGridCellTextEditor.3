@@ -1,0 +1,83 @@
+.TH wxGridCellTextEditor 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxGridCellTextEditor \- Functions for wxGridCellTextEditor class
+.SH DESCRIPTION
+.LP
+Grid cell editor for string/text data\&.
+.LP
+See: \fIwxGridCellEditor\fR\&, \fIwxGridCellAutoWrapStringEditor\fR\& (not implemented in wx), \fIwxGridCellBoolEditor\fR\&, \fIwxGridCellChoiceEditor\fR\&, \fIwxGridCellEnumEditor\fR\& (not implemented in wx), \fIwxGridCellFloatEditor\fR\&, \fIwxGridCellNumberEditor\fR\&, \fIwxGridCellDateEditor\fR\& (not implemented in wx)
+.LP
+This class is derived (and can use functions) from: \fIwxGridCellEditor\fR\&
+.LP
+wxWidgets docs: wxGridCellTextEditor
+.SH DATA TYPES
+.nf
+
+\fBwxGridCellTextEditor()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxGridCellTextEditor()
+.br
+.fi
+.br
+.LP
+.nf
+
+.B
+new(Options :: [Option]) -> wxGridCellTextEditor()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Option = {maxChars, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Text cell editor constructor\&.
+.RE
+.LP
+.nf
+
+.B
+setParameters(This, Params) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGridCellTextEditor()
+.br
+Params = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+The parameters string format is "n" where n is a number representing the maximum width\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxGridCellTextEditor()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

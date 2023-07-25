@@ -1,0 +1,233 @@
+.TH wxListItemAttr 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxListItemAttr \- Functions for wxListItemAttr class
+.SH DESCRIPTION
+.LP
+wxWidgets docs: wxListItemAttr
+.SH DATA TYPES
+.nf
+
+\fBwxListItemAttr()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxListItemAttr()
+.br
+.fi
+.br
+.RS
+.RE
+.LP
+.nf
+
+.B
+new(ColText, ColBack, Font) -> wxListItemAttr()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+ColText = ColBack = wx:wx_colour()
+.br
+Font = wxFont:wxFont()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+getBackgroundColour(This) -> wx:wx_colour4()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItemAttr()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+getFont(This) -> wxFont:wxFont()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItemAttr()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+getTextColour(This) -> wx:wx_colour4()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItemAttr()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+hasBackgroundColour(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItemAttr()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+hasFont(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItemAttr()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+hasTextColour(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItemAttr()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+setBackgroundColour(This, ColBack) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItemAttr()
+.br
+ColBack = wx:wx_colour()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+setFont(This, Font) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItemAttr()
+.br
+Font = wxFont:wxFont()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+setTextColour(This, ColText) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItemAttr()
+.br
+ColText = wx:wx_colour()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxListItemAttr()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

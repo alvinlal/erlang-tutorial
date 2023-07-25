@@ -1,0 +1,423 @@
+.TH wxNotificationMessage 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxNotificationMessage \- Functions for wxNotificationMessage class
+.SH DESCRIPTION
+.LP
+This class allows showing the user a message non intrusively\&.
+.LP
+Currently it is implemented natively for Windows, macOS, GTK and uses generic toast notifications under the other platforms\&. It\&'s not recommended but \fIwxGenericNotificationMessage\fR\& can be used instead of the native ones\&. This might make sense if your application requires features not available in the native implementation\&.
+.LP
+Notice that this class is not a window and so doesn\&'t derive from \fIwxWindow\fR\&\&.
+.LP
+Platform Notes
+.LP
+Par: Up to Windows 8 balloon notifications are displayed from an icon in the notification area of the taskbar\&. If your application uses a \fIwxTaskBarIcon\fR\& you should call \fIuseTaskBarIcon/1\fR\& to ensure that only one icon is shown in the notification area\&. Windows 10 displays all notifications as popup toasts\&. To suppress the additional icon in the notification area on Windows 10 and for toast notification support on Windows 8 it is recommended to call \fImSWUseToasts/1\fR\& before showing the first notification message\&.
+.LP
+Par: The macOS implementation uses Notification Center to display native notifications\&. In order to use actions your notifications must use the alert style\&. This can be enabled by the user in system settings or by setting the \fINSUserNotificationAlertStyle\fR\& value in Info\&.plist to \fIalert\fR\&\&. Please note that the user always has the option to change the notification style\&.
+.LP
+Since: 2\&.9\&.0
+.LP
+This class is derived (and can use functions) from: \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxNotificationMessage
+.SH "EVENTS"
+
+.LP
+Event types emitted from this class: \fInotification_message_click\fR\&, \fInotification_message_dismissed\fR\&, \fInotification_message_action\fR\&
+.SH DATA TYPES
+.nf
+
+\fBwxNotificationMessage()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxNotificationMessage()
+.br
+.fi
+.br
+.RS
+.LP
+Default constructor, use \fIsetParent/2\fR\&, \fIsetTitle/2\fR\& and \fIsetMessage/2\fR\& to initialize the object before showing it\&.
+.RE
+.LP
+.nf
+
+.B
+new(Title) -> wxNotificationMessage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Title = unicode:chardata()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Title, Options :: [Option]) -> wxNotificationMessage()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Title = unicode:chardata()
+.br
+Option = 
+.br
+    {message, unicode:chardata()} |
+.br
+    {parent, wxWindow:wxWindow()} |
+.br
+    {flags, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Create a notification object with the given attributes\&.
+.LP
+See \fIsetTitle/2\fR\&, \fIsetMessage/2\fR\&, \fIsetParent/2\fR\& and \fIsetFlags/2\fR\& for the description of the corresponding parameters\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxNotificationMessage()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor does not hide the notification\&.
+.LP
+The notification can continue to be shown even after the C++ object was destroyed, call \fIclose/1\fR\& explicitly if it needs to be hidden\&.
+.RE
+.LP
+.nf
+
+.B
+addAction(This, Actionid) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxNotificationMessage()
+.br
+Actionid = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+addAction(This, Actionid, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxNotificationMessage()
+.br
+Actionid = integer()
+.br
+Option = {label, unicode:chardata()}
+.br
+.RE
+.RE
+.RS
+.LP
+Add an action to the notification\&.
+.LP
+If supported by the implementation this are usually buttons in the notification selectable by the user\&.
+.LP
+Return: false if the current implementation or OS version does not support actions in notifications\&.
+.LP
+Since: 3\&.1\&.0
+.RE
+.LP
+.nf
+
+.B
+close(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxNotificationMessage()
+.br
+.RE
+.RE
+.RS
+.LP
+Hides the notification\&.
+.LP
+Returns true if it was hidden or false if it couldn\&'t be done (e\&.g\&. on some systems automatically hidden notifications can\&'t be hidden manually)\&.
+.RE
+.LP
+.nf
+
+.B
+setFlags(This, Flags) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxNotificationMessage()
+.br
+Flags = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+This parameter can be currently used to specify the icon to show in the notification\&.
+.LP
+Valid values are \fIwxICON_INFORMATION\fR\&, \fIwxICON_WARNING\fR\& and \fIwxICON_ERROR\fR\& (notice that \fIwxICON_QUESTION\fR\& is not allowed here)\&. Some implementations of this class may not support the icons\&.
+.LP
+See: \fIsetIcon/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setIcon(This, Icon) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxNotificationMessage()
+.br
+Icon = wxIcon:wxIcon()
+.br
+.RE
+.RE
+.RS
+.LP
+Specify a custom icon to be displayed in the notification\&.
+.LP
+Some implementations of this class may not support custom icons\&.
+.LP
+See: \fIsetFlags/2\fR\& 
+.LP
+Since: 3\&.1\&.0
+.RE
+.LP
+.nf
+
+.B
+setMessage(This, Message) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxNotificationMessage()
+.br
+Message = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Set the main text of the notification\&.
+.LP
+This should be a more detailed description than the title but still limited to reasonable length (not more than 256 characters)\&.
+.RE
+.LP
+.nf
+
+.B
+setParent(This, Parent) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxNotificationMessage()
+.br
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Set the parent for this notification: the notification will be associated with the top level parent of this window or, if this method is not called, with the main application window by default\&.
+.RE
+.LP
+.nf
+
+.B
+setTitle(This, Title) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxNotificationMessage()
+.br
+Title = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Set the title, it must be a concise string (not more than 64 characters), use \fIsetMessage/2\fR\& to give the user more details\&.
+.RE
+.LP
+.nf
+
+.B
+show(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxNotificationMessage()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+show(This, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxNotificationMessage()
+.br
+Option = {timeout, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Show the notification to the user and hides it after \fItimeout\fR\& seconds are elapsed\&.
+.LP
+Special values \fITimeout_Auto\fR\& and \fITimeout_Never\fR\& can be used here, notice that you shouldn\&'t rely on \fItimeout\fR\& being exactly respected because the current platform may only support default timeout value and also because the user may be able to close the notification\&.
+.LP
+Note: When using native notifications in wxGTK, the timeout is ignored for the notifications with \fIwxICON_WARNING\fR\& or \fIwxICON_ERROR\fR\& flags, they always remain shown unless they\&'re explicitly hidden by the user, i\&.e\&. behave as if Timeout_Auto were given\&.
+.LP
+Return: false if an error occurred\&.
+.RE
+.LP
+.nf
+
+.B
+useTaskBarIcon(Icon) -> wxTaskBarIcon:wxTaskBarIcon()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Icon = wxTaskBarIcon:wxTaskBarIcon()
+.br
+.RE
+.RE
+.RS
+.LP
+If the application already uses a \fIwxTaskBarIcon\fR\&, it should be connected to notifications by using this method\&.
+.LP
+This has no effect if toast notifications are used\&.
+.LP
+Return: the task bar icon which was used previously (may be \fINULL\fR\&)
+.LP
+Only for:wxmsw
+.RE
+.LP
+.nf
+
+.B
+mSWUseToasts() -> boolean()
+.br
+.fi
+.br
+.LP
+.nf
+
+.B
+mSWUseToasts(Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Option = 
+.br
+    {shortcutPath, unicode:chardata()} |
+.br
+    {appId, unicode:chardata()}
+.br
+.RE
+.RE
+.RS
+.LP
+Enables toast notifications available since Windows 8 and suppresses the additional icon in the notification area on Windows 10\&.
+.LP
+Toast notifications \fIrequire\fR\& a shortcut to the application in the start menu\&. The start menu shortcut needs to contain an Application User Model ID\&. It is recommended that the applications setup creates the shortcut and the application specifies the setup created shortcut in \fIshortcutPath\fR\&\&. A call to this method will verify (and if necessary modify) the shortcut before enabling toast notifications\&.
+.LP
+Return: false if toast notifications could not be enabled\&.
+.LP
+Only for:wxmsw
+.LP
+See: \fIwxAppConsole::SetAppName()\fR\& (not implemented in wx), \fIwxAppConsole::SetVendorName()\fR\& (not implemented in wx)
+.LP
+Since: 3\&.1\&.0
+.RE

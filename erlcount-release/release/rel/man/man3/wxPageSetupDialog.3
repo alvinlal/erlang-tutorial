@@ -1,0 +1,123 @@
+.TH wxPageSetupDialog 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxPageSetupDialog \- Functions for wxPageSetupDialog class
+.SH DESCRIPTION
+.LP
+This class represents the page setup common dialog\&.
+.LP
+The page setup dialog contains controls for paper size (letter, A4, A5 etc\&.), orientation (landscape or portrait), and, only under Windows currently, controls for setting left, top, right and bottom margin sizes in millimetres\&.
+.LP
+The exact appearance of this dialog varies among the platforms as a native dialog is used when available (currently the case for all major platforms)\&.
+.LP
+When the dialog has been closed, you need to query the \fIwxPageSetupDialogData\fR\& object associated with the dialog\&.
+.LP
+Note that the OK and Cancel buttons do not destroy the dialog; this must be done by the application\&.
+.LP
+See: Overview printing, \fIwxPrintDialog\fR\&, \fIwxPageSetupDialogData\fR\& 
+.LP
+wxWidgets docs: wxPageSetupDialog
+.SH DATA TYPES
+.nf
+
+\fBwxPageSetupDialog()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new(Parent) -> wxPageSetupDialog()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Options :: [Option]) -> wxPageSetupDialog()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Option = {data, wxPageSetupDialogData:wxPageSetupDialogData()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor\&.
+.LP
+Pass a parent window, and optionally a pointer to a block of page setup data, which will be copied to the print dialog\&'s internal data\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxPageSetupDialog()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor\&.
+.RE
+.LP
+.nf
+
+.B
+getPageSetupData(This) ->
+.B
+                    wxPageSetupDialogData:wxPageSetupDialogData()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the \fIwxPageSetupDialogData\fR\& object associated with the dialog\&.
+.RE
+.LP
+.nf
+
+.B
+showModal(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPageSetupDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Shows the dialog, returning \fIwxID_OK\fR\& if the user pressed OK, and \fIwxID_CANCEL\fR\& otherwise\&.
+.RE

@@ -1,0 +1,181 @@
+.TH wxDirDialog 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxDirDialog \- Functions for wxDirDialog class
+.SH DESCRIPTION
+.LP
+This class represents the directory chooser dialog\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+Note: This flag cannot be used with the \fIwxDD_MULTIPLE\fR\& style\&.
+.LP
+Remark: MacOS 10\&.11+ does not display a title bar on the dialog\&. Use \fIsetMessage/2\fR\& to change the string displayed to the user at the top of the dialog after creation\&. The \fIwxTopLevelWindow:setTitle/2\fR\& method is provided for compatibility with pre-10\&.11 MacOS versions that do still support displaying the title bar\&.
+.LP
+See: Overview cmndlg, \fIwxFileDialog\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxDialog\fR\& \fIwxTopLevelWindow\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxDirDialog
+.SH DATA TYPES
+.nf
+
+\fBwxDirDialog()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new(Parent) -> wxDirDialog()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Options :: [Option]) -> wxDirDialog()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Option = 
+.br
+    {title, unicode:chardata()} |
+.br
+    {defaultPath, unicode:chardata()} |
+.br
+    {style, integer()} |
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {sz, {W :: integer(), H :: integer()}}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor\&.
+.LP
+Use \fIwxDialog:showModal/1\fR\& to show the dialog\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxDirDialog()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor\&.
+.RE
+.LP
+.nf
+
+.B
+getPath(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxDirDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the default or user-selected path\&.
+.LP
+Note: This function can\&'t be used with dialogs which have the \fIwxDD_MULTIPLE\fR\& style, use \fIGetPaths()\fR\& (not implemented in wx) instead\&.
+.RE
+.LP
+.nf
+
+.B
+getMessage(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxDirDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the message that will be displayed on the dialog\&.
+.RE
+.LP
+.nf
+
+.B
+setMessage(This, Message) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxDirDialog()
+.br
+Message = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the message that will be displayed on the dialog\&.
+.RE
+.LP
+.nf
+
+.B
+setPath(This, Path) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxDirDialog()
+.br
+Path = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the default path\&.
+.RE

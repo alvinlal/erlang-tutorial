@@ -1,0 +1,161 @@
+.TH wxToolTip 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxToolTip \- Functions for wxToolTip class
+.SH DESCRIPTION
+.LP
+This class holds information about a tooltip associated with a window (see \fIwxWindow:setToolTip/2\fR\&)\&.
+.LP
+The four static methods, \fIenable/1\fR\&, \fIsetDelay/1\fR\& \fIwxToolTip::SetAutoPop()\fR\& (not implemented in wx) and \fIwxToolTip::SetReshow()\fR\& (not implemented in wx) can be used to globally alter tooltips behaviour\&.
+.LP
+wxWidgets docs: wxToolTip
+.SH DATA TYPES
+.nf
+
+\fBwxToolTip()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+enable(Flag) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Flag = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+Enable or disable tooltips globally\&.
+.LP
+Note: May not be supported on all platforms (eg\&. wxCocoa)\&.
+.RE
+.LP
+.nf
+
+.B
+setDelay(Msecs) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Msecs = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Set the delay after which the tooltip appears\&.
+.LP
+Note: May not be supported on all platforms\&.
+.RE
+.LP
+.nf
+
+.B
+new(Tip) -> wxToolTip()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Tip = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor\&.
+.RE
+.LP
+.nf
+
+.B
+setTip(This, Tip) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxToolTip()
+.br
+Tip = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Set the tooltip text\&.
+.RE
+.LP
+.nf
+
+.B
+getTip(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxToolTip()
+.br
+.RE
+.RE
+.RS
+.LP
+Get the tooltip text\&.
+.RE
+.LP
+.nf
+
+.B
+getWindow(This) -> wxWindow:wxWindow()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxToolTip()
+.br
+.RE
+.RE
+.RS
+.LP
+Get the associated window\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxToolTip()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

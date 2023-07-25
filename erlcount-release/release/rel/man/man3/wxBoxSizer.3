@@ -1,0 +1,77 @@
+.TH wxBoxSizer 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxBoxSizer \- Functions for wxBoxSizer class
+.SH DESCRIPTION
+.LP
+The basic idea behind a box sizer is that windows will most often be laid out in rather simple basic geometry, typically in a row or a column or several hierarchies of either\&.
+.LP
+For more information, please see overview_sizer_box\&.
+.LP
+See: \fIwxSizer\fR\&, Overview sizer 
+.LP
+This class is derived (and can use functions) from: \fIwxSizer\fR\&
+.LP
+wxWidgets docs: wxBoxSizer
+.SH DATA TYPES
+.nf
+
+\fBwxBoxSizer()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new(Orient) -> wxBoxSizer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Orient = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor for a \fIwxBoxSizer\fR\&\&.
+.LP
+\fIorient\fR\& may be either of wxVERTICAL or wxHORIZONTAL for creating either a column sizer or a row sizer\&.
+.RE
+.LP
+.nf
+
+.B
+getOrientation(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBoxSizer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the orientation of the box sizer, either wxVERTICAL or wxHORIZONTAL\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxBoxSizer()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

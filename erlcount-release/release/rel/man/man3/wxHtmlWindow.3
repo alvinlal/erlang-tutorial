@@ -1,0 +1,696 @@
+.TH wxHtmlWindow 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxHtmlWindow \- Functions for wxHtmlWindow class
+.SH DESCRIPTION
+.LP
+\fIwxHtmlWindow\fR\& is probably the only class you will directly use unless you want to do something special (like adding new tag handlers or MIME filters)\&.
+.LP
+The purpose of this class is to display rich content pages (either local file or downloaded via HTTP protocol) in a window based on a subset of the HTML standard\&. The width of the window is constant, given in the constructor and virtual height is changed dynamically depending on page size\&. Once the window is created you can set its content by calling \fIsetPage/2\fR\& with raw HTML, \fIloadPage/2\fR\& with a \fIwxFileSystem\fR\& (not implemented in wx) location or \fIloadFile/2\fR\& with a filename\&.
+.LP
+Note: If you want complete HTML/CSS support as well as a Javascript engine, consider using \fIwxWebView\fR\& instead\&.
+.LP
+\fIwxHtmlWindow\fR\& uses the \fIwxImage\fR\& class for displaying images, so you need to initialize the handlers for any image formats you use before loading a page\&. See ?wxInitAllImageHandlers and \fIwxImage::AddHandler\fR\& (not implemented in wx)\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+See: \fIwxHtmlLinkEvent\fR\&, \fIwxHtmlCellEvent\fR\& (not implemented in wx)
+.LP
+This class is derived (and can use functions) from: \fIwxScrolledWindow\fR\& \fIwxPanel\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxHtmlWindow
+.SH "EVENTS"
+
+.LP
+Event types emitted from this class: \fIhtml_cell_clicked\fR\&, \fIhtml_cell_hover\fR\&, \fIcommand_html_link_clicked\fR\&
+.SH DATA TYPES
+.nf
+
+\fBwxHtmlWindow()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxHtmlWindow()
+.br
+.fi
+.br
+.RS
+.LP
+Default ctor\&.
+.RE
+.LP
+.nf
+
+.B
+new(Parent) -> wxHtmlWindow()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Options :: [Option]) -> wxHtmlWindow()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Option = 
+.br
+    {id, integer()} |
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor\&.
+.LP
+The parameters are the same as \fIwxScrolled::wxScrolled()\fR\& (not implemented in wx) constructor\&.
+.RE
+.LP
+.nf
+
+.B
+appendToPage(This, Source) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+Source = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Appends HTML fragment to currently displayed text and refreshes the window\&.
+.LP
+Return: false if an error occurred, true otherwise\&.
+.RE
+.LP
+.nf
+
+.B
+getOpenedAnchor(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns anchor within currently opened page (see \fIgetOpenedPage/1\fR\&)\&.
+.LP
+If no page is opened or if the displayed page wasn\&'t produced by call to \fIloadPage/2\fR\&, empty string is returned\&.
+.RE
+.LP
+.nf
+
+.B
+getOpenedPage(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns full location of the opened page\&.
+.LP
+If no page is opened or if the displayed page wasn\&'t produced by call to \fIloadPage/2\fR\&, empty string is returned\&.
+.RE
+.LP
+.nf
+
+.B
+getOpenedPageTitle(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns title of the opened page or wxEmptyString if the current page does not contain <TITLE> tag\&.
+.RE
+.LP
+.nf
+
+.B
+getRelatedFrame(This) -> wxFrame:wxFrame()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the related frame\&.
+.RE
+.LP
+.nf
+
+.B
+historyBack(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Moves back to the previous page\&.
+.LP
+Only pages displayed using \fIloadPage/2\fR\& are stored in history list\&.
+.RE
+.LP
+.nf
+
+.B
+historyCanBack(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if it is possible to go back in the history i\&.e\&.
+.LP
+\fIhistoryBack/1\fR\& won\&'t fail\&.
+.RE
+.LP
+.nf
+
+.B
+historyCanForward(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if it is possible to go forward in the history i\&.e\&.
+.LP
+\fIhistoryForward/1\fR\& won\&'t fail\&.
+.RE
+.LP
+.nf
+
+.B
+historyClear(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Clears history\&.
+.RE
+.LP
+.nf
+
+.B
+historyForward(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Moves to next page in history\&.
+.LP
+Only pages displayed using \fIloadPage/2\fR\& are stored in history list\&.
+.RE
+.LP
+.nf
+
+.B
+loadFile(This, Filename) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+Filename = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Loads an HTML page from a file and displays it\&.
+.LP
+Return: false if an error occurred, true otherwise
+.LP
+See: \fIloadPage/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+loadPage(This, Location) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+Location = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Unlike \fIsetPage/2\fR\& this function first loads the HTML page from \fIlocation\fR\& and then displays it\&.
+.LP
+Return: false if an error occurred, true otherwise
+.LP
+See: \fIloadFile/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+selectAll(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Selects all text in the window\&.
+.LP
+See: \fIselectLine/2\fR\&, \fIselectWord/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+selectionToText(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the current selection as plain text\&.
+.LP
+Returns an empty string if no text is currently selected\&.
+.RE
+.LP
+.nf
+
+.B
+selectLine(This, Pos) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+Pos = {X :: integer(), Y :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Selects the line of text that \fIpos\fR\& points at\&.
+.LP
+Note that \fIpos\fR\& is relative to the top of displayed page, not to window\&'s origin, use \fIwxScrolledWindow:calcUnscrolledPosition/3\fR\& to convert physical coordinate\&.
+.LP
+See: \fIselectAll/1\fR\&, \fIselectWord/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+selectWord(This, Pos) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+Pos = {X :: integer(), Y :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Selects the word at position \fIpos\fR\&\&.
+.LP
+Note that \fIpos\fR\& is relative to the top of displayed page, not to window\&'s origin, use \fIwxScrolledWindow:calcUnscrolledPosition/3\fR\& to convert physical coordinate\&.
+.LP
+See: \fIselectAll/1\fR\&, \fIselectLine/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setBorders(This, B) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+B = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+This function sets the space between border of window and HTML contents\&.
+.LP
+See image:
+.RE
+.LP
+.nf
+
+.B
+setFonts(This, Normal_face, Fixed_face) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+Normal_face = Fixed_face = unicode:chardata()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+setFonts(This, Normal_face, Fixed_face, Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+Normal_face = Fixed_face = unicode:chardata()
+.br
+Option = {sizes, [integer()]}
+.br
+.RE
+.RE
+.RS
+.LP
+This function sets font sizes and faces\&.
+.LP
+See \fIwxHtmlDCRenderer::SetFonts\fR\& (not implemented in wx) for detailed description\&.
+.LP
+See: SetSize()
+.RE
+.LP
+.nf
+
+.B
+setPage(This, Source) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+Source = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the source of a page and displays it, for example:
+.LP
+If you want to load a document from some location use \fIloadPage/2\fR\& instead\&.
+.LP
+Return: false if an error occurred, true otherwise\&.
+.RE
+.LP
+.nf
+
+.B
+setRelatedFrame(This, Frame, Format) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+Frame = wxFrame:wxFrame()
+.br
+Format = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the frame in which page title will be displayed\&.
+.LP
+\fIformat\fR\& is the format of the frame title, e\&.g\&. "HtmlHelp : %s"\&. It must contain exactly one s\&. This s is substituted with HTML page title\&.
+.RE
+.LP
+.nf
+
+.B
+setRelatedStatusBar(This, Statusbar) -> ok
+.br
+.fi
+.br
+.nf
+
+.B
+setRelatedStatusBar(This, Index) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+Index = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+\fIAfter\fR\& calling \fIsetRelatedFrame/3\fR\&, this sets statusbar slot where messages will be displayed\&.
+.LP
+(Default is -1 = no messages\&.)
+.RE
+.LP
+.nf
+
+.B
+setRelatedStatusBar(This, Statusbar, Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+Statusbar = wxStatusBar:wxStatusBar()
+.br
+Option = {index, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+\fISets\fR\& the associated statusbar where messages will be displayed\&.
+.LP
+Call this instead of \fIsetRelatedFrame/3\fR\& if you want statusbar updates only, no changing of the frame title\&.
+.LP
+Since: 2\&.9\&.0
+.RE
+.LP
+.nf
+
+.B
+toText(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxHtmlWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns content of currently displayed page as plain text\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxHtmlWindow()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

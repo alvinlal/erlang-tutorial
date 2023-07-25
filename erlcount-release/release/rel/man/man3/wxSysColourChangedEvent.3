@@ -1,0 +1,38 @@
+.TH wxSysColourChangedEvent 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxSysColourChangedEvent \- Functions for wxSysColourChangedEvent class
+.SH DESCRIPTION
+.LP
+This class is used for system colour change events, which are generated when the user changes the colour settings using the control panel\&. This is only appropriate under Windows\&.
+.LP
+Remark: The default event handler for this event propagates the event to child windows, since Windows only sends the events to top-level windows\&. If intercepting this event for a top-level window, remember to call the base class handler, or to pass the event on to the window\&'s children explicitly\&.
+.LP
+See: Overview events 
+.LP
+This class is derived (and can use functions) from: \fIwxEvent\fR\&
+.LP
+wxWidgets docs: wxSysColourChangedEvent
+.SH "EVENTS"
+
+.LP
+Use \fIwxEvtHandler:connect/3\fR\& with \fIwxSysColourChangedEventType\fR\& to subscribe to events of this type\&.
+.SH DATA TYPES
+.nf
+
+\fBwxSysColourChangedEvent()\fR\& = wx:wx_object()
+.br
+.fi
+.nf
+
+\fBwxSysColourChanged()\fR\& = 
+.br
+    #wxSysColourChanged{type =
+.br
+                            wxSysColourChangedEvent:wxSysColourChangedEventType()}
+.br
+.fi
+.nf
+
+\fBwxSysColourChangedEventType()\fR\& = sys_colour_changed
+.br
+.fi

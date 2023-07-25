@@ -1,0 +1,1712 @@
+.TH gen_server 3 "stdlib 4.3.1" "Ericsson AB" "Erlang Module Definition"
+.SH NAME
+gen_server \- Generic server behavior.
+.SH DESCRIPTION
+.LP
+This behavior module provides the server of a client-server relation\&. A generic server process (\fIgen_server\fR\&) implemented using this module has a standard set of interface functions and includes functionality for tracing and error reporting\&. It also fits into an OTP supervision tree\&. For more information, see section  gen_server Behaviour in OTP Design Principles\&.
+.LP
+A \fIgen_server\fR\& process assumes all specific parts to be located in a callback module exporting a predefined set of functions\&. The relationship between the behavior functions and the callback functions is as follows:
+.LP
+.nf
+
+gen_server module            Callback module
+-----------------            ---------------
+gen_server:start
+gen_server:start_monitor
+gen_server:start_link -----> Module:init/1
+
+gen_server:stop       -----> Module:terminate/2
+
+gen_server:call
+gen_server:send_request
+gen_server:multi_call -----> Module:handle_call/3
+
+gen_server:cast
+gen_server:abcast     -----> Module:handle_cast/2
+
+-                     -----> Module:handle_info/2
+
+-                     -----> Module:handle_continue/2
+
+-                     -----> Module:terminate/2
+
+-                     -----> Module:code_change/3
+.fi
+.LP
+If a callback function fails or returns a bad value, the \fIgen_server\fR\& process terminates\&.
+.LP
+A \fIgen_server\fR\& process handles system messages as described in \fIsys(3)\fR\&\&. The \fIsys\fR\& module can be used for debugging a \fIgen_server\fR\& process\&.
+.LP
+Notice that a \fIgen_server\fR\& process does not trap exit signals automatically, this must be explicitly initiated in the callback module\&.
+.LP
+Unless otherwise stated, all functions in this module fail if the specified \fIgen_server\fR\& process does not exist or if bad arguments are specified\&.
+.LP
+The \fIgen_server\fR\& process can go into hibernation (see \fIerlang:hibernate/3\fR\&) if a callback function specifies \fI\&'hibernate\&'\fR\& instead of a time-out value\&. This can be useful if the server is expected to be idle for a long time\&. However, use this feature with care, as hibernation implies at least two garbage collections (when hibernating and shortly after waking up) and is not something you want to do between each call to a busy server\&.
+.LP
+If the \fIgen_server\fR\& process needs to perform an action immediately after initialization or to break the execution of a callback into multiple steps, it can return \fI{continue,Continue}\fR\& in place of the time-out or hibernation value, which will immediately invoke the \fIhandle_continue/2\fR\& callback\&.
+.LP
+If the \fIgen_server\fR\& process terminates, e\&.g\&. as a result of a function in the callback module returning \fI{stop,Reason,NewState}\fR\&, an exit signal with this \fIReason\fR\& is sent to linked processes and ports\&. See  Processes in the Reference Manual for details regarding error handling using exit signals\&.
+.SH DATA TYPES
+.nf
+
+\fBserver_name()\fR\& = 
+.br
+    {local, LocalName :: atom()} |
+.br
+    {global, GlobalName :: term()} |
+.br
+    {via, RegMod :: module(), ViaName :: term()}
+.br
+.fi
+.RS
+.LP
+Name specification to use when starting a \fIgen_server\fR\&\&. See functions \fIstart/3,4\fR\&, \fIstart_link/3,4\fR\&, \fIstart_monitor/3,4\fR\&, \fIenter_loop/3,4,5\fR\&, and the type \fIserver_ref()\fR\& below\&.
+.RS 2
+.TP 2
+.B
+\fI{local,LocalName}\fR\&:
+Register the \fIgen_server\fR\& locally as \fILocalName\fR\& using \fIregister/2\fR\&\&.
+.TP 2
+.B
+\fI{global,GlobalName}\fR\&:
+Register the \fIgen_server\fR\& process id globally as \fIGlobalName\fR\& using \fIglobal:register_name/2\fR\&\&.
+.TP 2
+.B
+\fI{via,RegMod,ViaName}\fR\&:
+Register the \fIgen_server\fR\& process with the registry represented by \fIRegMod\fR\&\&. The \fIRegMod\fR\& callback is to export the functions \fIregister_name/2\fR\&, \fIunregister_name/1\fR\&, \fIwhereis_name/1\fR\&, and \fIsend/2\fR\&, which are to behave like the corresponding functions in \fIglobal\fR\&\&. Thus, \fI{via,global,GlobalName}\fR\& is a valid reference equivalent to \fI{global,GlobalName}\fR\&\&.
+.RE
+.RE
+.nf
+
+\fBserver_ref()\fR\& = 
+.br
+    pid() |
+.br
+    (LocalName :: atom()) |
+.br
+    {Name :: atom(), Node :: atom()} |
+.br
+    {global, GlobalName :: term()} |
+.br
+    {via, RegMod :: module(), ViaName :: term()}
+.br
+.fi
+.RS
+.LP
+Server specification to use when addressing a \fIgen_server\fR\&\&. See \fIcall/2,3\fR\&, \fIcast/2\fR\&, \fIsend_request/2\fR\&, \fIcheck_response/2\fR\&, \fIwait_response/2\fR\&, \fIstop/2,3\fR\& and the type \fIserver_name()\fR\& above\&.
+.LP
+It can be:
+.RS 2
+.TP 2
+.B
+\fIpid()\fR\&:
+The \fIgen_server\fR\&\&'s process identifier\&.
+.TP 2
+.B
+\fILocalName\fR\&:
+The \fIgen_server\fR\& is locally registered as \fILocalName\fR\& with \fIregister/2\fR\&\&.
+.TP 2
+.B
+\fI{Name,Node}\fR\&:
+The \fIgen_server\fR\& is locally registered on another node\&.
+.TP 2
+.B
+\fI{global,GlobalName}\fR\&:
+The \fIgen_server\fR\& is globally registered in \fIglobal\fR\&\&.
+.TP 2
+.B
+\fI{via,RegMod,ViaName}\fR\&:
+The \fIgen_server\fR\& is registered in an alternative process registry\&. The registry callback module \fIRegMod\fR\& is to export functions \fIregister_name/2\fR\&, \fIunregister_name/1\fR\&, \fIwhereis_name/1\fR\&, and \fIsend/2\fR\&, which are to behave like the corresponding functions in \fIglobal\fR\&\&. Thus, \fI{via,global,GlobalName}\fR\& is the same as \fI{global,GlobalName}\fR\&\&.
+.RE
+.RE
+.nf
+
+\fBstart_opt()\fR\& = 
+.br
+    {timeout, Timeout :: timeout()} |
+.br
+    {spawn_opt, SpawnOptions :: [proc_lib:spawn_option()]} |
+.br
+    enter_loop_opt()
+.br
+.fi
+.RS
+.LP
+Options that can be used when starting a \fIgen_server\fR\& server through, for example, \fIstart_link/3,4\fR\&\&.
+.RS 2
+.TP 2
+.B
+\fI{timeout,Timeout}\fR\&:
+How many milliseconds the \fIgen_server\fR\& process is allowed to spend initializing or it is terminated and the start function returns \fI{error,timeout}\fR\&\&.
+.TP 2
+.B
+\fI{spawn_opt,SpawnOptions}\fR\&:
+The \fISpawnOptions\fR\& option list is passed to the function used to spawn the \fIgen_server\fR\&; see \fIspawn_opt/2\fR\&\&.
+.LP
+
+.RS -4
+.B
+Note:
+.RE
+Using spawn option \fImonitor\fR\& is not allowed, it causes a \fIbadarg\fR\& failure\&.
+
+.TP 2
+.B
+\fIenter_loop_opt()\fR\&:
+See the type \fIenter_loop_opt()\fR\& below for more start options that are also allowed by \fIenter_loop/3,4,5\fR\&\&.
+.RE
+.RE
+.nf
+
+\fBenter_loop_opt()\fR\& = 
+.br
+    {hibernate_after, HibernateAfterTimeout :: timeout()} |
+.br
+    {debug, Dbgs :: [sys:debug_option()]}
+.br
+.fi
+.RS
+.LP
+Options that can be used when starting a \fIgen_server\fR\& server through \fIenter_loop/3-5\fR\& or the start functions such as \fIstart_link/3,4\fR\&\&.
+.RS 2
+.TP 2
+.B
+\fI{hibernate_after,HibernateAfterTimeout}\fR\&:
+Specifies that the \fIgen_server\fR\& process awaits any message for \fIHibernateAfterTimeout\fR\& milliseconds and if no message is received, the process goes into hibernation automatically (by calling \fIproc_lib:hibernate/3\fR\&)\&.
+.TP 2
+.B
+\fI{debug,Dbgs}\fR\&:
+For every entry in \fIDbgs\fR\&, the corresponding function in \fIsys(3)\fR\& is called\&.
+.RE
+.RE
+.nf
+
+\fBstart_ret()\fR\& = 
+.br
+    {ok, Pid :: pid()} | ignore | {error, Reason :: term()}
+.br
+.fi
+.RS
+.LP
+Return value from the \fIstart/3,4\fR\& and \fIstart_link/3,4\fR\& functions\&.
+.RS 2
+.TP 2
+.B
+\fI{ok,Pid}\fR\&:
+The \fIgen_server\fR\& process was succesfully created and initialized, with the process identifier \fIPid\fR\&\&.
+.TP 2
+.B
+\fI{error,{already_started,OtherPid}}\fR\&:
+A process with the specified \fIServerName\fR\& exists already with the process identifier \fIOtherPid\fR\&\&. This \fIgen_server\fR\& was not started\&.
+.TP 2
+.B
+\fIignore\fR\&:
+\fIModule:init/1\fR\& returned \fIignore\fR\&, the \fIgen_server\fR\& process is terminated\&. An exit signal \fInormal\fR\& is sent to linked processes and ports\&.
+.TP 2
+.B
+\fI{error,Reason}\fR\&:
+\fIModule:init/1\fR\& returned \fI{stop,Reason}\fR\& or failed with \fIReason\fR\&\&. The \fIgen_server\fR\& process is terminated and an exit signal with the same \fIReason\fR\& is sent to linked processes and ports\&.
+.RE
+.RE
+.nf
+
+\fBstart_mon_ret()\fR\& = 
+.br
+    {ok, {Pid :: pid(), MonRef :: reference()}} |
+.br
+    ignore |
+.br
+    {error, Reason :: term()}
+.br
+.fi
+.RS
+.LP
+Return value from the \fIstart_monitor/3,4\fR\& functions\&. The same as type \fIstart_ret()\fR\& except that for a succesful start it returns both the process identifier \fIPid\fR\& and a \fImonitor/2,3\fR\& \fIreference()\fR\& \fIMonRef\fR\&\&.
+.RE
+.nf
+
+\fBfrom()\fR\& = {Client :: pid(), Tag :: reply_tag()}
+.br
+.fi
+.RS
+.LP
+Destination, given to the \fIgen_server\fR\& as the first argument to the callback function \fIModule:handle_call/3\fR\&, to be used by the when replying through \fIreply/2\fR\& (instead of through the callback function\&'s return value) to the process \fIClient\fR\& that has called the \fIgen_server\fR\& using \fIcall/2,3\fR\&\&. \fITag\fR\& is a term that is unique for this call/request instance\&.
+.RE
+.nf
+
+\fBreply_tag()\fR\&
+.br
+.fi
+.RS
+.LP
+A handle that associates a reply to the corresponding request\&.
+.RE
+.nf
+
+\fBrequest_id()\fR\&
+.br
+.fi
+.RS
+.LP
+An opaque request identifier\&. See \fIsend_request/2\fR\& for details\&.
+.RE
+.nf
+
+\fBrequest_id_collection()\fR\&
+.br
+.fi
+.RS
+.LP
+An opaque collection of request identifiers (\fIrequest_id()\fR\&) where each request identifier can be associated with a label chosen by the user\&. For more information see \fIreqids_new/0\fR\&\&.
+.RE
+.nf
+
+\fBresponse_timeout()\fR\& = timeout() | {abs, integer()}
+.br
+.fi
+.RS
+.LP
+Used to set a time limit on how long to wait for a response using either \fIreceive_response/2\fR\&, \fIreceive_response/3\fR\&, \fIwait_response/2\fR\&, or \fIwait_response/3\fR\&\&. The time unit used is \fImillisecond\fR\&\&. Currently valid values:
+.RS 2
+.TP 2
+.B
+\fI0\&.\&.4294967295\fR\&:
+Timeout relative to current time in milliseconds\&.
+.TP 2
+.B
+\fIinfinity\fR\&:
+Infinite timeout\&. That is, the operation will never time out\&.
+.TP 2
+.B
+\fI{abs, Timeout}\fR\&:
+An absolute Erlang monotonic time timeout in milliseconds\&. That is, the operation will time out when \fIerlang:monotonic_time(millisecond)\fR\& returns a value larger than or equal to \fITimeout\fR\&\&. \fITimeout\fR\& is not allowed to identify a time further into the future than \fI4294967295\fR\& milliseconds\&. Identifying the timeout using an absolute timeout value is especially handy when you have a deadline for responses corresponding to a complete collection of requests (\fIrequest_id_collection()\fR\&) , since you do not have to recalculate the relative time until the deadline over and over again\&.
+.RE
+.RE
+.nf
+
+\fBformat_status()\fR\& = 
+.br
+    #{state => term(),
+.br
+      message => term(),
+.br
+      reason => term(),
+.br
+      log => [sys:system_event()]}
+.br
+.fi
+.RS
+.LP
+A map that describes the \fIgen_server\fR\& status\&. The keys are:
+.RS 2
+.TP 2
+.B
+\fIstate\fR\&:
+The internal state of the \fIgen_server\fR\& process\&.
+.TP 2
+.B
+\fImessage\fR\&:
+The message that caused the server to terminate\&.
+.TP 2
+.B
+\fIreason\fR\&:
+The reason that caused the server to terminate\&.
+.TP 2
+.B
+\fIlog\fR\&:
+ The sys log of the server\&. 
+.RE
+.LP
+New associations may be added to the status map without prior notice\&.
+.RE
+.SH EXPORTS
+.LP
+.nf
+
+.B
+abcast(Name :: atom(), Request :: term()) -> abcast
+.br
+.fi
+.br
+.nf
+
+.B
+abcast(Nodes :: [node()], Name :: atom(), Request :: term()) ->
+.B
+          abcast
+.br
+.fi
+.br
+.RS
+.LP
+Sends an asynchronous request to the \fIgen_server\fR\& processes locally registered as \fIName\fR\& at the specified nodes\&. The function returns immediately and ignores nodes that do not exist, or where the \fIgen_server\fR\& \fIName\fR\& does not exist\&. The \fIgen_server\fR\& processes call \fIModule:handle_cast/2\fR\& to handle the request\&.
+.LP
+For a description of the arguments, see \fImulti_call/2,3,4\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+call(ServerRef :: server_ref(), Request :: term()) ->
+.B
+        Reply :: term()
+.br
+.fi
+.br
+.nf
+
+.B
+call(ServerRef :: server_ref(),
+.B
+     Request :: term(),
+.B
+     Timeout :: timeout()) ->
+.B
+        Reply :: term()
+.br
+.fi
+.br
+.RS
+.LP
+Makes a synchronous call to the \fIServerRef\fR\& of the \fIgen_server\fR\& process by sending a request and waiting until a reply arrives or a time-out occurs\&. The \fIgen_server\fR\& process calls \fIModule:handle_call/3\fR\& to handle the request\&.
+.LP
+See also \fIServerRef\fR\&\&'s type \fIserver_ref()\fR\&\&.
+.LP
+\fIRequest\fR\& is any term that is passed as the first argument to \fIModule:handle_call/3\fR\&\&.
+.LP
+\fITimeout\fR\& is an integer that specifies how many milliseconds to wait for a reply, or the atom \fIinfinity\fR\& to wait indefinitely\&. Defaults to 5000\&. If no reply is received within the specified time, this function exits the calling process with an exit term containing \fIReason = timeout\fR\& as described below\&.
+.LP
+
+.RS -4
+.B
+Note:
+.RE
+Before OTP 24, if the caller uses (\fItry\fR\&\&.\&.\&.)\fIcatch\fR\& to avoid process exit, and the server happens to just be late with the reply, it may arrive to the process message queue any time later\&. The calling process must therefore after catching a time-out exit be prepared to receive garbage message(s) on the form \fI{reference(), _}\fR\& and deal with them appropriately (discard them) so they do not clog the process message queue or gets mistaken for other messages\&.
+.LP
+Starting with OTP 24, \fIgen_server:call\fR\& uses process aliases, so late replies will not be received\&.
+
+.LP
+The return value \fIReply\fR\& is passed from the return value of \fIModule:handle_call/3\fR\&\&.
+.LP
+This call may exit the calling process with an exit term on the form \fI{Reason, Location}\fR\& where \fILocation = {gen_server,call,ArgList}\fR\& and \fIReason\fR\& can be (at least) one of:
+.RS 2
+.TP 2
+.B
+\fItimeout\fR\&:
+The call was aborted after waiting \fITimeout\fR\& milliseconds for a reply, as described above\&.
+.TP 2
+.B
+\fInoproc\fR\&:
+The \fIServerRef\fR\& refers to a server by name (it is not a \fIpid()\fR\&) and looking up the server process failed, or the \fIpid()\fR\& was already terminated\&.
+.TP 2
+.B
+\fI{nodedown,Node}\fR\&:
+The \fIServerRef\fR\& refers to a server on the remote node \fINode\fR\& and the connection to that node failed\&.
+.TP 2
+.B
+\fIcalling_self\fR\&:
+A call to \fIself()\fR\& would hang indefinitely\&.
+.TP 2
+.B
+\fIshutdown\fR\&
+.br
+:
+The server was stopped during the call by its supervisor\&. See also \fIstop/3\fR\&\&.
+.TP 2
+.B
+\fInormal\fR\&
+.br
+\fI{shutdown,Term}\fR\&
+.br
+:
+The server stopped during the call by returning \fI{stop,Reason,_}\fR\& from its \fIModule:handle_call/3\fR\& callback, without replying\&. See also \fIstop/3\fR\&\&.
+.TP 2
+.B
+\fI_OtherTerm\fR\&:
+The server process exited during the call, with reason \fIReason\fR\&\&. Either by returning \fI{stop,Reason,_}\fR\& from its \fIModule:handle_call/3\fR\& callback (without replying), by raising an exception, or due to getting an exit signal it did not trap\&.
+.RE
+.RE
+.LP
+.nf
+
+.B
+cast(ServerRef :: server_ref(), Request :: term()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Sends an asynchronous request to the \fIServerRef\fR\& of the \fIgen_server\fR\& process and returns \fIok\fR\& immediately, ignoring if the destination node or \fIgen_server\fR\& process does not exist\&. The \fIgen_server\fR\& process calls \fIModule:handle_cast/2\fR\& to handle the request\&.
+.LP
+See also \fIServerRef\fR\&\&'s type \fIserver_ref()\fR\&\&.
+.LP
+\fIRequest\fR\& is any term that is passed as the first argument to \fIModule:handle_cast/2\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+check_response(Msg, ReqId) -> Result
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Msg = term()
+.br
+ReqId = request_id()
+.br
+Response = 
+.br
+    {reply, Reply :: term()} |
+.br
+    {error, {Reason :: term(), server_ref()}}
+.br
+Result = Response | no_reply
+.br
+.RE
+.RE
+.RS
+.LP
+Check if \fIMsg\fR\& is a response corresponding to the request identifier \fIReqId\fR\&\&. The request must have been made by \fIsend_request/2\fR\&, and it must have been made by the same process calling this function\&.
+.LP
+If \fIMsg\fR\& is a response corresponding to \fIReqId\fR\& the response is returned; otherwise, \fIno_reply\fR\& is returned and no cleanup is done, and thus the function must be invoked repeatedly until a response is returned\&.
+.LP
+The return value \fIReply\fR\& is passed from the return value of \fIModule:handle_call/3\fR\&\&.
+.LP
+The function returns an error if the \fIgen_server\fR\& died before a reply was sent\&.
+.RE
+.LP
+.nf
+
+.B
+check_response(Msg, ReqIdCollection, Delete) -> Result
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Msg = term()
+.br
+ReqIdCollection = request_id_collection()
+.br
+Delete = boolean()
+.br
+Response = 
+.br
+    {reply, Reply :: term()} |
+.br
+    {error, {Reason :: term(), server_ref()}}
+.br
+Result = 
+.br
+    {Response,
+.br
+     Label :: term(),
+.br
+     NewReqIdCollection :: request_id_collection()} |
+.br
+    no_request | no_reply
+.br
+.RE
+.RE
+.RS
+.LP
+Check if \fIMsg\fR\& is a response corresponding to a request identifier saved in \fIReqIdCollection\fR\&\&. All request identifiers of \fIReqIdCollection\fR\& must correspond to requests that have been made using \fIsend_request/2\fR\& or \fIsend_request/4\fR\&, and all request must have been made by the process calling this function\&.
+.LP
+The \fILabel\fR\& in the response equals the \fILabel\fR\& associated with the request identifier that the response corresponds to\&. The \fILabel\fR\& of a request identifier is associated when saving the request id in a request identifier collection, or when sending the request using \fIsend_request/4\fR\&\&.
+.LP
+Compared to \fIcheck_response/2\fR\&, the returned result associated with a specific request identifier or an exception associated with a specific request identifier will be wrapped in a 3-tuple\&. The first element of this tuple equals the value that would have been produced by \fIcheck_response/2\fR\&, the second element equals the \fILabel\fR\& associated with the specific request identifier, and the third element \fINewReqIdCollection\fR\& is a possibly modified request identifier collection\&.
+.LP
+If \fIReqIdCollection\fR\& is empty, the atom \fIno_request\fR\& will be returned\&. If \fIMsg\fR\& does not correspond to any of the request identifiers in \fIReqIdCollection\fR\&, the atom \fIno_reply\fR\& is returned\&.
+.LP
+If \fIDelete\fR\& equals \fItrue\fR\&, the association with \fILabel\fR\& will have been deleted from \fIReqIdCollection\fR\& in the resulting \fINewReqIdCollection\fR\&\&. If \fIDelete\fR\& equals \fIfalse\fR\&, \fINewReqIdCollection\fR\& will equal \fIReqIdCollection\fR\&\&. Note that deleting an association is not for free and that a collection containing already handled requests can still be used by subsequent calls to \fIcheck_response/3\fR\&, \fIreceive_response/3\fR\&, and \fIwait_response/3\fR\&\&. However, without deleting handled associations, the above calls will not be able to detect when there are no more outstanding requests to handle, so you will have to keep track of this some other way than relying on a \fIno_request\fR\& return\&. Note that if you pass a collection only containing associations of already handled or abandoned requests to \fIcheck_response/3\fR\&, it will always return \fIno_reply\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+enter_loop(Module :: module(),
+.B
+           Options :: [enter_loop_opt()],
+.B
+           State :: term()) ->
+.B
+              no_return()
+.br
+.fi
+.br
+.nf
+
+.B
+enter_loop(Module :: module(),
+.B
+           Options :: [enter_loop_opt()],
+.B
+           State :: term(),
+.B
+           ServerName :: server_name() | pid()) ->
+.B
+              no_return()
+.br
+.fi
+.br
+.nf
+
+.B
+enter_loop(Module :: module(),
+.B
+           Options :: [enter_loop_opt()],
+.B
+           State :: term(),
+.B
+           Timeout :: timeout()) ->
+.B
+              no_return()
+.br
+.fi
+.br
+.nf
+
+.B
+enter_loop(Module :: module(),
+.B
+           Options :: [enter_loop_opt()],
+.B
+           State :: term(),
+.B
+           Hibernate :: hibernate) ->
+.B
+              no_return()
+.br
+.fi
+.br
+.nf
+
+.B
+enter_loop(Module :: module(),
+.B
+           Options :: [enter_loop_opt()],
+.B
+           State :: term(),
+.B
+           Cont :: {continue, term()}) ->
+.B
+              no_return()
+.br
+.fi
+.br
+.nf
+
+.B
+enter_loop(Module :: module(),
+.B
+           Options :: [enter_loop_opt()],
+.B
+           State :: term(),
+.B
+           ServerName :: server_name() | pid(),
+.B
+           Timeout :: timeout()) ->
+.B
+              no_return()
+.br
+.fi
+.br
+.nf
+
+.B
+enter_loop(Module :: module(),
+.B
+           Options :: [enter_loop_opt()],
+.B
+           State :: term(),
+.B
+           ServerName :: server_name() | pid(),
+.B
+           Hibernate :: hibernate) ->
+.B
+              no_return()
+.br
+.fi
+.br
+.nf
+
+.B
+enter_loop(Module :: module(),
+.B
+           Options :: [enter_loop_opt()],
+.B
+           State :: term(),
+.B
+           ServerName :: server_name() | pid(),
+.B
+           Cont :: {continue, term()}) ->
+.B
+              no_return()
+.br
+.fi
+.br
+.RS
+.LP
+Makes an existing process a \fIgen_server\fR\& process\&. Does not return, instead the calling process enters the \fIgen_server\fR\& process receive loop and becomes a \fIgen_server\fR\& process\&. The process \fImust\fR\& have been started using one of the start functions in \fIproc_lib(3)\fR\&\&. The user is responsible for any initialization of the process, including registering a name for it\&.
+.LP
+This function is useful when a more complex initialization procedure is needed than the \fIgen_server\fR\& process behavior provides\&.
+.LP
+\fIModule\fR\&, \fIOptions\fR\&, and \fIServerName\fR\& have the same meanings as when calling \fIstart[_link|_monitor]/3,4\fR\& or it can be \fIself()\fR\& for an anonymous server, which is the same as calling an \fIenter_loop/3,4\fR\& function without a \fIServerName\fR\& argument\&. However, if \fIServerName\fR\& is specified (and not as \fIself()\fR\&), the process must have been registered accordingly \fIbefore\fR\& this function is called\&.
+.LP
+\fIState\fR\&, \fITimeout\fR\&, \fIHibernate\fR\& and \fICont\fR\& have the same meanings as in the return value of \fIModule:init/1\fR\&, which is \fInot\fR\& called when \fIenter_loop/3,4,5\fR\& is used\&. Note that to adhere to the  gen_server Behaviour  such a callback function needs to be defined, and it might as well be the one used when starting the \fIgen_server\fR\& process through \fIproc_lib\fR\&, and then be the one that calls \fIenter_loop/3,4,5\fR\&\&. But if such a \fIModule:init/1\fR\& function in for example error cases cannot call \fIenter_loop/3,4,5\fR\&, it should return a value that follows the type specification for \fIModule:init/1\fR\& such as \fIignore\fR\&, although that value will be lost when returning to the spawning function\&.
+.LP
+This function fails if the calling process was not started by a \fIproc_lib\fR\& start function, or if it is not registered according to \fIServerName\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+multi_call(Name :: atom(), Request :: term()) ->
+.B
+              {Replies :: [{Node :: node(), Reply :: term()}],
+.B
+               BadNodes :: [node()]}
+.br
+.fi
+.br
+.nf
+
+.B
+multi_call(Nodes :: [node()], Name :: atom(), Request :: term()) ->
+.B
+              {Replies :: [{Node :: node(), Reply :: term()}],
+.B
+               BadNodes :: [node()]}
+.br
+.fi
+.br
+.nf
+
+.B
+multi_call(Nodes :: [node()],
+.B
+           Name :: atom(),
+.B
+           Request :: term(),
+.B
+           Timeout :: timeout()) ->
+.B
+              {Replies :: [{Node :: node(), Reply :: term()}],
+.B
+               BadNodes :: [node()]}
+.br
+.fi
+.br
+.RS
+.LP
+Makes a synchronous call to all \fIgen_server\fR\& processes locally registered as \fIName\fR\& at the specified nodes, by first sending the request to the nodes, and then waiting for the replies\&. The \fIgen_server\fR\& processes on the nodes call \fIModule:handle_call/3\fR\& to handle the request\&.
+.LP
+The function returns a tuple \fI{Replies,BadNodes}\fR\&, where \fIReplies\fR\& is a list of \fI{Node,Reply}\fR\& tuples, and \fIBadNodes\fR\& is a list of nodes that either did not exist, where \fIName\fR\& was not a registered \fIgen_server\fR\&, or where it did not reply\&.
+.LP
+\fINodes\fR\& is a list of node names to which the request is to be sent\&. Default value is the list of all known nodes \fI[node()|nodes()]\fR\&\&.
+.LP
+\fIName\fR\& is the locally registered name for each \fIgen_server\fR\& process\&.
+.LP
+\fIRequest\fR\& is any term that is passed as the first argument to \fIModule:handle_call/3\fR\&\&.
+.LP
+\fITimeout\fR\& is an integer that specifies how many milliseconds to wait for all replies, or the atom \fIinfinity\fR\& to wait indefinitely, which is the default\&. If no reply is received from a node within the specified time, the node is added to \fIBadNodes\fR\&\&.
+.LP
+When a reply \fIReply\fR\& is received from the \fIgen_server\fR\& process at a node \fINode\fR\&, \fI{Node,Reply}\fR\& is added to \fIReplies\fR\&\&. \fIReply\fR\& is passed from the return value of \fIModule:handle_call/3\fR\&\&.
+.LP
+
+.RS -4
+.B
+Warning:
+.RE
+If one of the nodes cannot process monitors, for example, C or Java nodes, and the \fIgen_server\fR\& process is not started when the requests are sent, but starts within 2 seconds, this function waits the whole \fITimeout\fR\&, which may be infinity\&.
+.LP
+This problem does not exist if all nodes are Erlang nodes\&.
+
+.LP
+To prevent late answers (after the time-out) from polluting the message queue of the caller, a middleman process is used to do the calls\&. Late answers are then discarded when they arrive to a terminated process\&.
+.RE
+.LP
+.nf
+
+.B
+receive_response(ReqId, Timeout) -> Result
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+ReqId = request_id()
+.br
+Timeout = response_timeout()
+.br
+Response = 
+.br
+    {reply, Reply :: term()} |
+.br
+    {error, {Reason :: term(), server_ref()}}
+.br
+Result = Response | timeout
+.br
+.RE
+.RE
+.RS
+.LP
+Receive a response corresponding to the request identifier \fIReqId\fR\&\&. The request must have been made by \fIsend_request/2\fR\&, and it must have been made by the same process calling this function\&.
+.LP
+\fITimeout\fR\& specifies how long to wait for a response\&. If no response is received within the specified time, the function returns \fItimeout\fR\&\&. Assuming that the server executes on a node supporting aliases (introduced in OTP 24) the request will also be abandoned\&. That is, no response will be received after a timeout\&. Otherwise, a stray response might be received at a later time\&.
+.LP
+The return value \fIReply\fR\& is passed from the return value of \fIModule:handle_call/3\fR\&\&.
+.LP
+The function returns an error if the \fIgen_server\fR\& died before a reply was sent\&.
+.LP
+The difference between \fIreceive_response/2\fR\& and \fIwait_response/2\fR\& is that \fIreceive_response/2\fR\& abandons the request at timeout so that a potential future response is ignored, while \fIwait_response/2\fR\& does not\&.
+.RE
+.LP
+.nf
+
+.B
+receive_response(ReqIdCollection, Timeout, Delete) -> Result
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+ReqIdCollection = request_id_collection()
+.br
+Timeout = response_timeout()
+.br
+Delete = boolean()
+.br
+Response = 
+.br
+    {reply, Reply :: term()} |
+.br
+    {error, {Reason :: term(), server_ref()}}
+.br
+Result = 
+.br
+    {Response,
+.br
+     Label :: term(),
+.br
+     NewReqIdCollection :: request_id_collection()} |
+.br
+    no_request | timeout
+.br
+.RE
+.RE
+.RS
+.LP
+Receive a response corresponding to a request identifier saved in \fIReqIdCollection\fR\&\&. All request identifiers of \fIReqIdCollection\fR\& must correspond to requests that have been made using \fIsend_request/2\fR\& or \fIsend_request/4\fR\&, and all request must have been made by the process calling this function\&.
+.LP
+The \fILabel\fR\& in the response equals the \fILabel\fR\& associated with the request identifier that the response corresponds to\&. The \fILabel\fR\& of a request identifier is associated when adding the request id in a request identifier collection, or when sending the request using \fIsend_request/4\fR\&\&.
+.LP
+Compared to \fIreceive_response/2\fR\&, the returned result associated with a specific request identifier will be wrapped in a 3-tuple\&. The first element of this tuple equals the value that would have been produced by \fIreceive_response/2\fR\&, the second element equals the \fILabel\fR\& associated with the specific request identifier, and the third element \fINewReqIdCollection\fR\& is a possibly modified request identifier collection\&.
+.LP
+If \fIReqIdCollection\fR\& is empty, the atom \fIno_request\fR\& will be returned\&.
+.LP
+\fITimeout\fR\& specifies how long to wait for a response\&. If no response is received within the specified time, the function returns \fItimeout\fR\&\&. Assuming that the server executes on a node supporting aliases (introduced in OTP 24) all requests identified by \fIReqIdCollection\fR\& will also be abandoned\&. That is, no responses will be received after a timeout\&. Otherwise, stray responses might be received at a later time\&.
+.LP
+The difference between \fIreceive_response/3\fR\& and \fIwait_response/3\fR\& is that \fIreceive_response/3\fR\& abandons the requests at timeout so that potential future responses are ignored, while \fIwait_response/3\fR\& does not\&.
+.LP
+If \fIDelete\fR\& equals \fItrue\fR\&, the association with \fILabel\fR\& will have been deleted from \fIReqIdCollection\fR\& in the resulting \fINewReqIdCollection\fR\&\&. If \fIDelete\fR\& equals \fIfalse\fR\&, \fINewReqIdCollection\fR\& will equal \fIReqIdCollection\fR\&\&. Note that deleting an association is not for free and that a collection containing already handled requests can still be used by subsequent calls to \fIreceive_response/3\fR\&, \fIcheck_response/3\fR\&, and \fIwait_response/3\fR\&\&. However, without deleting handled associations, the above calls will not be able to detect when there are no more outstanding requests to handle, so you will have to keep track of this some other way than relying on a \fIno_request\fR\& return\&. Note that if you pass a collection only containing associations of already handled or abandoned requests to \fIreceive_response/3\fR\&, it will always block until a timeout determined by \fITimeout\fR\& is triggered\&.
+.RE
+.LP
+.nf
+
+.B
+reply(Client :: from(), Reply :: term()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+This function can be used by a \fIgen_server\fR\& process to explicitly send a reply to a client that called \fIcall/2,3\fR\& or \fImulti_call/2,3,4\fR\&, when the reply cannot be passed in the return value of \fIModule:handle_call/3\fR\&\&.
+.LP
+\fIClient\fR\& must be the \fIFrom\fR\& argument provided to the \fIhandle_call\fR\& callback function\&. \fIReply\fR\& is any term passed back to the client as the return value of \fIcall/2,3\fR\& or \fImulti_call/2,3,4\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+reqids_add(ReqId :: request_id(),
+.B
+           Label :: term(),
+.B
+           ReqIdCollection :: request_id_collection()) ->
+.B
+              NewReqIdCollection :: request_id_collection()
+.br
+.fi
+.br
+.RS
+.LP
+Saves \fIReqId\fR\& and associates a \fILabel\fR\& with the request identifier by adding this information to \fIReqIdCollection\fR\& and returning the resulting request identifier collection\&.
+.RE
+.LP
+.nf
+
+.B
+reqids_new() -> NewReqIdCollection :: request_id_collection()
+.br
+.fi
+.br
+.RS
+.LP
+Returns a new empty request identifier collection\&. A request identifier collection can be utilized in order the handle multiple outstanding requests\&.
+.LP
+Request identifiers of requests made by \fIsend_request/2\fR\& can be saved in a request identifier collection using \fIreqids_add/3\fR\&\&. Such a collection of request identifiers can later be used in order to get one response corresponding to a request in the collection by passing the collection as argument to \fIreceive_response/3\fR\&, \fIwait_response/3\fR\&, or, \fIcheck_response/3\fR\&\&.
+.LP
+\fIreqids_size/1\fR\& can be used to determine the amount of request identifiers in a request identifier collection\&.
+.RE
+.LP
+.nf
+
+.B
+reqids_size(ReqIdCollection :: request_id_collection()) ->
+.B
+               integer() >= 0
+.br
+.fi
+.br
+.RS
+.LP
+Returns the amount of request identifiers saved in \fIReqIdCollection\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+reqids_to_list(ReqIdCollection :: request_id_collection()) ->
+.B
+                  [{ReqId :: request_id(), Label :: term()}]
+.br
+.fi
+.br
+.RS
+.LP
+Returns a list of \fI{ReqId, Label}\fR\& tuples which corresponds to all request identifiers with their associated labels present in the \fIReqIdCollection\fR\& collection\&.
+.RE
+.LP
+.nf
+
+.B
+send_request(ServerRef :: server_ref(), Request :: term()) ->
+.B
+                ReqId :: request_id()
+.br
+.fi
+.br
+.RS
+.LP
+Sends an asynchronous \fIcall\fR\& request \fIRequest\fR\& to the \fIgen_server\fR\& process identified by \fIServerRef\fR\& and returns a request identifier \fIReqId\fR\&\&. The return value \fIReqId\fR\& shall later be used with \fIreceive_response/2\fR\&, \fIwait_response/2\fR\&, or \fIcheck_response/2\fR\& to fetch the actual result of the request\&. Besides passing the request identifier directly to these functions, it can also be saved in a request identifier collection using \fIreqids_add/3\fR\&\&. Such a collection of request identifiers can later be used in order to get one response corresponding to a request in the collection by passing the collection as argument to \fIreceive_response/3\fR\&, \fIwait_response/3\fR\&, or \fIcheck_response/3\fR\&\&. If you are about to save the request identifier in a request identifier collection, you may want to consider using \fIsend_request/4\fR\& instead\&.
+.LP
+The call \fIgen_server:receive_response(gen_server:send_request(ServerRef, Request), Timeout)\fR\& can be seen as equivalent to \fIgen_server:call(ServerRef, Request, Timeout)\fR\&, ignoring the error handling\&.
+.LP
+The \fIgen_server\fR\& process calls \fIModule:handle_call/3\fR\& to handle the request\&.
+.LP
+See the type \fIserver_ref()\fR\& for the possible values for \fIServerRef\fR\&\&.
+.LP
+\fIRequest\fR\& is any term that is passed as the first argument to \fIModule:handle_call/3\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+send_request(ServerRef :: server_ref(),
+.B
+             Request :: term(),
+.B
+             Label :: term(),
+.B
+             ReqIdCollection :: request_id_collection()) ->
+.B
+                NewReqIdCollection :: request_id_collection()
+.br
+.fi
+.br
+.RS
+.LP
+Sends an asynchronous \fIcall\fR\& request \fIRequest\fR\& to the \fIgen_server\fR\& process identified by \fIServerRef\fR\&\&. The \fILabel\fR\& will be associated with the request identifier of the operation and added to the returned request identifier collection \fINewReqIdCollection\fR\&\&. The collection can later be used in order to get one response corresponding to a request in the collection by passing the collection as argument to \fIreceive_response/3\fR\&, \fIwait_response/3\fR\&, or, \fIcheck_response/3\fR\&\&.
+.LP
+The same as calling \fIgen_server:reqids_add\fR\&(\fIgen_server:send_request\fR\&\fI(ServerRef, Request), Label, ReqIdCollection)\fR\&, but calling \fIsend_request/4\fR\& is slightly more efficient\&.
+.RE
+.LP
+.nf
+
+.B
+start(Module :: module(),
+.B
+      Args :: term(),
+.B
+      Options :: [start_opt()]) ->
+.B
+         start_ret()
+.br
+.fi
+.br
+.nf
+
+.B
+start(ServerName :: server_name(),
+.B
+      Module :: module(),
+.B
+      Args :: term(),
+.B
+      Options :: [start_opt()]) ->
+.B
+         start_ret()
+.br
+.fi
+.br
+.RS
+.LP
+Creates a standalone \fIgen_server\fR\& process, that is, a \fIgen_server\fR\& process that is not part of a supervision tree and thus has no supervisor\&.
+.LP
+Other than that see \fIstart_link/3,4\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+start_link(Module :: module(),
+.B
+           Args :: term(),
+.B
+           Options :: [start_opt()]) ->
+.B
+              start_ret()
+.br
+.fi
+.br
+.nf
+
+.B
+start_link(ServerName :: server_name(),
+.B
+           Module :: module(),
+.B
+           Args :: term(),
+.B
+           Options :: [start_opt()]) ->
+.B
+              start_ret()
+.br
+.fi
+.br
+.RS
+.LP
+Creates a \fIgen_server\fR\& process as part of a supervision tree\&. This function is to be called, directly or indirectly, by the supervisor\&. For example, it ensures that the \fIgen_server\fR\& process is linked to the supervisor\&.
+.LP
+The \fIgen_server\fR\& process calls \fIModule:init/1\fR\& to initialize\&. To ensure a synchronized startup procedure, \fIstart_link/3,4\fR\& does not return until \fIModule:init/1\fR\& has returned\&.
+.LP
+Using the argument \fIServerName\fR\& creates a \fIgen_server\fR\& with a registered name\&. See type \fIserver_name()\fR\& for different name registrations\&. If no \fIServerName\fR\& is provided, the \fIgen_server\fR\& process is not registered\&.
+.LP
+\fIModule\fR\& is the name of the callback module\&.
+.LP
+\fIArgs\fR\& is any term that is passed as the argument to \fIModule:init/1\fR\&\&.
+.LP
+See type \fIstart_opt()\fR\& for \fIOptions\fR\& when starting the \fIgen_server\fR\& process\&.
+.LP
+See type \fIstart_ret()\fR\& for a description this function\&'s return values\&.
+.RE
+.LP
+.nf
+
+.B
+start_monitor(Module :: module(),
+.B
+              Args :: term(),
+.B
+              Options :: [start_opt()]) ->
+.B
+                 start_mon_ret()
+.br
+.fi
+.br
+.nf
+
+.B
+start_monitor(ServerName :: server_name(),
+.B
+              Module :: module(),
+.B
+              Args :: term(),
+.B
+              Options :: [start_opt()]) ->
+.B
+                 start_mon_ret()
+.br
+.fi
+.br
+.RS
+.LP
+Creates a standalone \fIgen_server\fR\& process, that is, a \fIgen_server\fR\& process that is not part of a supervision tree (and thus has no supervisor) and atomically sets up a monitor to the newly created server\&.
+.LP
+Other than that see \fIstart_link/3,4\fR\&\&. Note that the return value for a successful start differs in that it returns a monitor \fIreference\fR\&\&. See type \fIstart_mon_ret()\fR\&\&.
+.LP
+If the start is not successful, the caller will be blocked until the monitor\&'s \fI\&'DOWN\&'\fR\& message has been received and removed from the message queue\&.
+.RE
+.LP
+.nf
+
+.B
+stop(ServerRef :: server_ref()) -> ok
+.br
+.fi
+.br
+.nf
+
+.B
+stop(ServerRef :: server_ref(),
+.B
+     Reason :: term(),
+.B
+     Timeout :: timeout()) ->
+.B
+        ok
+.br
+.fi
+.br
+.RS
+.LP
+Orders the generic server specified by \fIServerRef\fR\& to exit with the specified \fIReason\fR\&, default \&'normal\&', and waits for it to terminate\&. The \fIgen_server\fR\& process calls \fIModule:terminate/2\fR\& before exiting\&.
+.LP
+The function returns \fIok\fR\& if the server terminates with the expected reason\&. Any other reason than \fInormal\fR\&, \fIshutdown\fR\&, or \fI{shutdown,Term}\fR\& causes an error report to be issued using \fIlogger(3)\fR\&\&. An exit signal with the same reason is sent to linked processes and ports\&.
+.LP
+\fITimeout\fR\& is an integer that specifies how many milliseconds to wait for the server to terminate, or the atom \fIinfinity\fR\& to wait indefinitely, which is the default\&. If the server has not terminated within the specified time, the call exits the calling process with reason \fItimeout\fR\&\&.
+.LP
+If the process does not exist, the call exits the calling process with reason \fInoproc\fR\&, and with reason \fI{nodedown,Node}\fR\& if the connection fails to the remote \fINode\fR\& where the server runs\&.
+.RE
+.LP
+.nf
+
+.B
+wait_response(ReqId, WaitTime) -> Result
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+ReqId = request_id()
+.br
+WaitTime = response_timeout()
+.br
+Response = 
+.br
+    {reply, Reply :: term()} |
+.br
+    {error, {Reason :: term(), server_ref()}}
+.br
+Result = Response | timeout
+.br
+.RE
+.RE
+.RS
+.LP
+Wait for a response corresponding to the request identifier \fIReqId\fR\&\&. The request must have been made by \fIsend_request/2\fR\&, and it must have been made by the same process calling this function\&.
+.LP
+\fIWaitTime\fR\& specifies how long to wait for a reply\&. If no reply is received within the specified time, the function returns \fItimeout\fR\& and no cleanup is done, and thus the function can be invoked repeatedly until a reply is returned\&.
+.LP
+The return value \fIReply\fR\& is passed from the return value of \fIModule:handle_call/3\fR\&\&.
+.LP
+The function returns an error if the \fIgen_server\fR\& died before a reply was sent\&.
+.LP
+The difference between \fIreceive_response/2\fR\& and \fIwait_response/2\fR\& is that \fIreceive_response/2\fR\& abandons the request at time-out so that a potential future response is ignored, while \fIwait_response/2\fR\& does not\&.
+.RE
+.LP
+.nf
+
+.B
+wait_response(ReqIdCollection, WaitTime, Delete) -> Result
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+ReqIdCollection = request_id_collection()
+.br
+WaitTime = response_timeout()
+.br
+Delete = boolean()
+.br
+Response = 
+.br
+    {reply, Reply :: term()} |
+.br
+    {error, {Reason :: term(), server_ref()}}
+.br
+Result = 
+.br
+    {Response,
+.br
+     Label :: term(),
+.br
+     NewReqIdCollection :: request_id_collection()} |
+.br
+    no_request | timeout
+.br
+.RE
+.RE
+.RS
+.LP
+Wait for a response corresponding to a request identifier saved in \fIReqIdCollection\fR\&\&. All request identifiers of \fIReqIdCollection\fR\& must correspond to requests that have been made using \fIsend_request/2\fR\& or \fIsend_request/4\fR\&, and all request must have been made by the process calling this function\&.
+.LP
+The \fILabel\fR\& in the response equals the \fILabel\fR\& associated with the request identifier that the response corresponds to\&. The \fILabel\fR\& of a request identifier is associated when saving the request id in a request identifier collection, or when sending the request using \fIsend_request/4\fR\&\&.
+.LP
+Compared to \fIwait_response/2\fR\&, the returned result associated with a specific request identifier or an exception associated with a specific request identifier will be wrapped in a 3-tuple\&. The first element of this tuple equals the value that would have been produced by \fIwait_response/2\fR\&, the second element equals the \fILabel\fR\& associated with the specific request identifier, and the third element \fINewReqIdCollection\fR\& is a possibly modified request identifier collection\&.
+.LP
+If \fIReqIdCollection\fR\& is empty, \fIno_request\fR\& will be returned\&. If no response is received before the \fIWaitTime\fR\& timeout has triggered, the atom \fItimeout\fR\& is returned\&. It is valid to continue waiting for a response as many times as needed up until a response has been received and completed by \fIcheck_response()\fR\&, \fIreceive_response()\fR\&, or \fIwait_response()\fR\&\&.
+.LP
+The difference between \fIreceive_response/3\fR\& and \fIwait_response/3\fR\& is that \fIreceive_response/3\fR\& abandons requests at timeout so that a potential future responses are ignored, while \fIwait_response/3\fR\& does not\&.
+.LP
+If \fIDelete\fR\& equals \fItrue\fR\&, the association with \fILabel\fR\& will have been deleted from \fIReqIdCollection\fR\& in the resulting \fINewReqIdCollection\fR\&\&. If \fIDelete\fR\& equals \fIfalse\fR\&, \fINewReqIdCollection\fR\& will equal \fIReqIdCollection\fR\&\&. Note that deleting an association is not for free and that a collection containing already handled requests can still be used by subsequent calls to \fIwait_response/3\fR\&, \fIcheck_response/3\fR\&, and \fIreceive_response/3\fR\&\&. However, without deleting handled associations, the above calls will not be able to detect when there are no more outstanding requests to handle, so you will have to keep track of this some other way than relying on a \fIno_request\fR\& return\&. Note that if you pass a collection only containing associations of already handled or abandoned requests to \fIwait_response/3\fR\&, it will always block until a timeout determined by \fIWaitTime\fR\& is triggered and then return \fIno_reply\fR\&\&.
+.RE
+.SH "CALLBACK FUNCTIONS"
+
+.LP
+The following functions are to be exported from a \fIgen_server\fR\& callback module\&.
+.SH EXPORTS
+.LP
+.B
+Module:code_change(OldVsn, State, Extra) -> {ok, NewState} | {error, Reason}
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+OldVsn = Vsn | {down, Vsn}
+.br
+ Vsn = term()
+.br
+State = NewState = term()
+.br
+Extra = term()
+.br
+Reason = term()
+.br
+.RE
+.RE
+.RS
+.LP
+
+.RS -4
+.B
+Note:
+.RE
+This callback is optional, so callback modules need not export it\&. If a release upgrade/downgrade with \fIChange={advanced,Extra}\fR\& specified in the \fIappup\fR\& file is made when \fIcode_change/3\fR\& isn\&'t implemented the process will crash with an \fIundef\fR\& exit reason\&.
+
+.LP
+This function is called by a \fIgen_server\fR\& process when it is to update its internal state during a release upgrade/downgrade, that is, when the instruction \fI{update,Module,Change,\&.\&.\&.}\fR\&, where \fIChange={advanced,Extra}\fR\&, is specifed in the \fIappup\fR\& file\&. For more information, see section  Release Handling Instructions in OTP Design Principles\&.
+.LP
+For an upgrade, \fIOldVsn\fR\& is \fIVsn\fR\&, and for a downgrade, \fIOldVsn\fR\& is \fI{down,Vsn}\fR\&\&. \fIVsn\fR\& is defined by the \fIvsn\fR\& attribute(s) of the old version of the callback module \fIModule\fR\&\&. If no such attribute is defined, the version is the checksum of the Beam file\&.
+.LP
+\fIState\fR\& is the internal state of the \fIgen_server\fR\& process\&.
+.LP
+\fIExtra\fR\& is passed "as is" from the \fI{advanced,Extra}\fR\& part of the update instruction\&.
+.LP
+If successful, the function must return the updated internal state\&.
+.LP
+If the function returns \fI{error,Reason}\fR\&, the ongoing upgrade fails and rolls back to the old release\&.
+.RE
+.LP
+.B
+Module:format_status(Status) -> NewStatus
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Status = format_status()
+.br
+NewStatus = format_status()
+.br
+.RE
+.RE
+.RS
+.LP
+
+.RS -4
+.B
+Note:
+.RE
+This callback is optional, so callback modules need not export it\&. The \fIgen_server\fR\& module provides a default implementation of this function that returns the callback module state\&.
+.LP
+If this callback is exported but fails, to hide possibly sensitive data, the default function will instead return the fact that \fIformat_status/1\fR\& has crashed\&.
+
+.LP
+This function is called by a \fIgen_server\fR\& process in the following situations:
+.RS 2
+.TP 2
+*
+\fIsys:get_status/1,2\fR\& is invoked to get the \fIgen_server\fR\& status\&.
+.LP
+.TP 2
+*
+The \fIgen_server\fR\& process terminates abnormally and logs an error\&.
+.LP
+.RE
+
+.LP
+This callback is used to limit the status of the process returned by \fIsys:get_status/1,2\fR\& or sent to \fIlogger\fR\&\&.
+.LP
+The callback gets a map \fIStatus\fR\& describing the current status and shall return a map \fINewStatus\fR\& with the same keys, but it may transform some values\&.
+.LP
+Two possible use cases for this callback is to remove sensitive information from the state to prevent it from being printed in log files, or to compact large irrelevant status items that would only clutter the logs\&.
+.LP
+Example:
+.LP
+.nf
+
+format_status(Status) ->
+  maps:map(
+    fun(state,State) ->
+            maps:remove(private_key, State);
+       (message,{password, _Pass}) ->
+            {password, removed};
+       (_,Value) ->
+            Value
+    end, Status).
+
+.fi
+.RE
+.LP
+.B
+Module:format_status(Opt, [PDict, State]) -> Status
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Opt = normal | terminate
+.br
+PDict = [{Key, Value}]
+.br
+State = term()
+.br
+Status = term()
+.br
+.RE
+.RE
+.RS
+.LP
+
+.RS -4
+.B
+Warning:
+.RE
+This callback is deprecated, in new code use  format_status/1\&. If a format_status/1 callback exists, then this function will never be called\&.
+
+.LP
+
+.RS -4
+.B
+Note:
+.RE
+This callback is optional, so callback modules need not export it\&. The \fIgen_server\fR\& module provides a default implementation of this function that returns the callback module state\&.
+
+.LP
+This function is called by a \fIgen_server\fR\& process in the following situations:
+.RS 2
+.TP 2
+*
+One of \fIsys:get_status/1,2\fR\& is invoked to get the \fIgen_server\fR\& status\&. \fIOpt\fR\& is set to the atom \fInormal\fR\&\&.
+.LP
+.TP 2
+*
+The \fIgen_server\fR\& process terminates abnormally and logs an error\&. \fIOpt\fR\& is set to the atom \fIterminate\fR\&\&.
+.LP
+.RE
+
+.LP
+This function is useful for changing the form and appearance of the \fIgen_server\fR\& status for these cases\&. A callback module wishing to change the \fIsys:get_status/1,2\fR\& return value, as well as how its status appears in termination error logs, exports an instance of \fIformat_status/2\fR\& that returns a term describing the current status of the \fIgen_server\fR\& process\&.
+.LP
+\fIPDict\fR\& is the current value of the process dictionary of the \fIgen_server\fR\& process\&.\&.
+.LP
+\fIState\fR\& is the internal state of the \fIgen_server\fR\& process\&.
+.LP
+The function is to return \fIStatus\fR\&, a term that changes the details of the current state and status of the \fIgen_server\fR\& process\&. There are no restrictions on the form \fIStatus\fR\& can take, but for the \fIsys:get_status/1,2\fR\& case (when \fIOpt\fR\& is \fInormal\fR\&), the recommended form for the \fIStatus\fR\& value is \fI[{data, [{"State", Term}]}]\fR\&, where \fITerm\fR\& provides relevant details of the \fIgen_server\fR\& state\&. Following this recommendation is not required, but it makes the callback module status consistent with the rest of the \fIsys:get_status/1,2\fR\& return value\&.
+.LP
+One use for this function is to return compact alternative state representations to avoid that large state terms are printed in log files\&.
+.RE
+.LP
+.B
+Module:handle_call(Request, From, State) -> Result
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Request = term()
+.br
+From = from()
+.br
+State = term()
+.br
+Result = {reply,Reply,NewState}
+.br
+ | {reply,Reply,NewState,Timeout}
+.br
+ | {reply,Reply,NewState,hibernate}
+.br
+ | {reply,Reply,NewState,{continue,Continue}}
+.br
+ | {noreply,NewState}
+.br
+ | {noreply,NewState,Timeout}
+.br
+ | {noreply,NewState,hibernate}
+.br
+ | {noreply,NewState,{continue,Continue}}
+.br
+ | {stop,Reason,Reply,NewState}
+.br
+ | {stop,Reason,NewState}
+.br
+ Reply = term()
+.br
+ NewState = term()
+.br
+ Timeout = timeout()
+.br
+ Continue = term()
+.br
+ Reason = term()
+.br
+.RE
+.RE
+.RS
+.LP
+Whenever a \fIgen_server\fR\& process receives a request sent using \fIcall/2,3\fR\& or \fImulti_call/2,3,4\fR\&, this function is called to handle the request\&.
+.LP
+\fIState\fR\& is the internal state of the \fIgen_server\fR\& process, and \fINewState\fR\& a possibly updated one\&.
+.LP
+\fIRequest\fR\& is passed from the same argument provided to \fIcall\fR\& or \fImulti_call\fR\&\&.
+.LP
+The return value \fIResult\fR\& is interpreted as follows:
+.RS 2
+.TP 2
+.B
+\fI{reply,Reply,NewState}\fR\&
+.br
+\fI{reply,Reply,NewState,_}\fR\&:
+The \fIReply\fR\& value is sent back to the client request and there becomes its return value\&.
+.RS 2
+.LP
+The \fIgen_server\fR\& process continues executing with the possibly updated internal state \fINewState\fR\&\&.
+.RE
+.TP 2
+.B
+\fI{noreply,NewState}\fR\&
+.br
+\fI{noreply,NewState,_}\fR\&:
+The \fIgen_server\fR\& process continues executing with the possibly updated internal state \fINewState\fR\&\&.
+.RS 2
+.LP
+A reply to the client request has to be created by calling \fIreply(From, Reply)\fR\&, either in this or in a later callback\&.
+.RE
+.TP 2
+.B
+\fI{reply,_,_,Timeout}\fR\&
+.br
+\fI{noreply,_,Timeout}\fR\&:
+If an integer \fITimeout\fR\& is provided, a time-out occurs unless a request or a message is received within that many milliseconds\&. A time-out is represented by the atom \fItimeout\fR\& to be handled by the \fIModule:handle_info/2\fR\& callback function\&. \fITimeout =:= infinity\fR\& can be used to wait indefinitely, which is the same as returning a value without a \fITimeout\fR\& member\&.
+.TP 2
+.B
+\fI{reply,_,_,hibernate}\fR\&
+.br
+\fI{noreply,_,hibernate}\fR\&:
+The process goes into hibernation waiting for the next message to arrive (by calling \fIproc_lib:hibernate/3\fR\&)\&.
+.TP 2
+.B
+\fI{reply,_,_,{continue,Continue}}\fR\&
+.br
+\fI{noreply,_,{continue,Continue}}\fR\&:
+The process will execute the \fIModule:handle_continue/2\fR\& callback function, with \fIContinue\fR\& as the first argument\&.
+.TP 2
+.B
+\fI{stop,Reason,NewState}\fR\&
+.br
+\fI{stop,Reason,Reply,NewState}\fR\&:
+The \fIgen_server\fR\& process will call \fIModule:terminate(Reason,NewState)\fR\& and then terminate\&.
+.RS 2
+.LP
+\fI{stop,_,Reply,_}\fR\& will create a reply to the client request just as \fI{reply,Reply,\&.\&.\&.}\fR\& while \fI{stop,_,_}\fR\& will not, so just as for \fI{noreply,NewState,\&.\&.\&.}\fR\& a reply has to be created by calling \fIreply(From, Reply)\fR\& before returning \fI{stop,_,_}\fR\&\&.
+.RE
+.RE
+.RE
+.LP
+.B
+Module:handle_cast(Request, State) -> Result
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Request = term()
+.br
+State = term()
+.br
+Result = {noreply,NewState}
+.br
+ | {noreply,NewState,Timeout}
+.br
+ | {noreply,NewState,hibernate}
+.br
+ | {noreply,NewState,{continue,Continue}}
+.br
+ | {stop,Reason,NewState}
+.br
+ NewState = term()
+.br
+ Timeout = timeout()
+.br
+ Continue = term()
+.br
+ Reason = term()
+.br
+.RE
+.RE
+.RS
+.LP
+Whenever a \fIgen_server\fR\& process receives a request sent using \fIcast/2\fR\& or \fIabcast/2,3\fR\&, this function is called to handle the request\&.
+.LP
+For a description of the arguments and possible return values, see \fIModule:handle_call/3\fR\&\&.
+.RE
+.LP
+.B
+Module:handle_continue(Continue, State) -> Result
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Continue = term()
+.br
+State = term()
+.br
+Result = {noreply,NewState}
+.br
+ | {noreply,NewState,Timeout}
+.br
+ | {noreply,NewState,hibernate}
+.br
+ | {noreply,NewState,{continue,Continue}}
+.br
+ | {stop,Reason,NewState}
+.br
+ NewState = term()
+.br
+ Timeout = timeout()
+.br
+ Continue = term()
+.br
+ Reason = normal | term()
+.br
+.RE
+.RE
+.RS
+.LP
+
+.RS -4
+.B
+Note:
+.RE
+This callback is optional, so callback modules need to export it only if they return one of the tuples containing \fI{continue,Continue}\fR\& from another callback\&. If such a \fI{continue,_}\fR\& tuple is used and the callback is not implemented, the process will exit with \fIundef\fR\& error\&.
+
+.LP
+This function is called by a \fIgen_server\fR\& process whenever a previous callback returns one of the tuples containing \fI{continue, Continue}\fR\&\&. \fIhandle_continue/2\fR\& is invoked immediately after the previous callback, which makes it useful for performing work after initialization or for splitting the work in a callback in multiple steps, updating the process state along the way\&.
+.LP
+For a description of the other arguments and possible return values, see \fIModule:handle_call/3\fR\&\&.
+.RE
+.LP
+.B
+Module:handle_info(Info, State) -> Result
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Info = timeout | term()
+.br
+State = term()
+.br
+Result = {noreply,NewState}
+.br
+ | {noreply,NewState,Timeout}
+.br
+ | {noreply,NewState,hibernate}
+.br
+ | {noreply,NewState,{continue,Continue}}
+.br
+ | {stop,Reason,NewState}
+.br
+ NewState = term()
+.br
+ Timeout = timeout()
+.br
+ Reason = normal | term()
+.br
+.RE
+.RE
+.RS
+.LP
+
+.RS -4
+.B
+Note:
+.RE
+This callback is optional, so callback modules need not export it\&. The \fIgen_server\fR\& module provides a default implementation of this function that logs about the unexpected \fIInfo\fR\& message, drops it and returns \fI{noreply, State}\fR\&\&.
+
+.LP
+This function is called by a \fIgen_server\fR\& process when a time-out occurs or when it receives any other message than a synchronous or asynchronous request (or a system message)\&.
+.LP
+\fIInfo\fR\& is either the atom \fItimeout\fR\&, if a time-out has occurred, or the received message\&.
+.LP
+For a description of the other arguments and possible return values, see \fIModule:handle_call/3\fR\&\&.
+.RE
+.LP
+.B
+Module:init(Args) -> Result
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Args = term()
+.br
+Result = {ok,State}
+.br
+ | {ok,State,Timeout}
+.br
+ | {ok,State,hibernate}
+.br
+ | {ok,State,{continue,Continue}}
+.br
+ | {stop,Reason}
+.br
+ | ignore
+.br
+ State = term()
+.br
+ Timeout = timeout()
+.br
+ Reason = term()
+.br
+.RE
+.RE
+.RS
+.LP
+Whenever a \fIgen_server\fR\& process is started using \fIstart/3,4\fR\&, \fIstart_monitor/3,4\fR\&, or \fIstart_link/3,4\fR\&, this function is called by the new process to initialize\&.
+.LP
+\fIArgs\fR\& is the \fIArgs\fR\& argument provided to the start function\&.
+.LP
+The return value \fIResult\fR\& is interpreted as follows:
+.RS 2
+.TP 2
+.B
+\fI{ok,State}\fR\&
+.br
+\fI{ok,State,_}\fR\&:
+Initialization was succesful and \fIState\fR\& is the internal state of the \fIgen_server\fR\& process\&.
+.TP 2
+.B
+\fI{ok,_,Timeout}\fR\&
+.br
+\fI{ok,_,hibernate}\fR\&
+.br
+\fI{ok,_,{continue,Continue}}\fR\&:
+See the corresponding return values from \fIModule:handle_call/3\fR\& for a description of this tuple member\&.
+.TP 2
+.B
+\fI{stop,Reason}\fR\&
+.br
+\fIignore\fR\&:
+Initialization failed\&. An exit signal with this \fIReason\fR\& (or with reason \fInormal\fR\& if \fIignore\fR\& is returned) is sent to linked processes and ports, notably to the process starting the gen_server when \fIstart_link/3,4\fR\& is used\&.
+.RE
+.RE
+.LP
+.B
+Module:terminate(Reason, State)
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Reason = normal | shutdown | {shutdown,term()} | term()
+.br
+State = term()
+.br
+.RE
+.RE
+.RS
+.LP
+
+.RS -4
+.B
+Note:
+.RE
+This callback is optional, so callback modules need not export it\&. The \fIgen_server\fR\& module provides a default implementation without cleanup\&.
+
+.LP
+This function is called by a \fIgen_server\fR\& process when it is about to terminate\&. It is to be the opposite of \fIModule:init/1\fR\& and do any necessary cleaning up\&. When it returns, the \fIgen_server\fR\& process terminates with \fIReason\fR\&\&. The return value is ignored\&.
+.LP
+\fIReason\fR\& is a term denoting the stop reason and \fIState\fR\& is the internal state of the \fIgen_server\fR\& process\&.
+.LP
+\fIReason\fR\& depends on why the \fIgen_server\fR\& process is terminating\&. If it is because another callback function has returned a stop tuple \fI{stop,\&.\&.}\fR\&, \fIReason\fR\& has the value specified in that tuple\&. If it is because of a failure, \fIReason\fR\& is the error reason\&.
+.LP
+If the \fIgen_server\fR\& process is part of a supervision tree and is ordered by its supervisor to terminate, this function is called with \fIReason=shutdown\fR\& if the following conditions apply:
+.RS 2
+.TP 2
+*
+The \fIgen_server\fR\& process has been set to trap exit signals\&.
+.LP
+.TP 2
+*
+The shutdown strategy as defined in the child specification of the supervisor is an integer time-out value, not \fIbrutal_kill\fR\&\&.
+.LP
+.RE
+
+.LP
+Even if the \fIgen_server\fR\& process is \fInot\fR\& part of a supervision tree, this function is called if it receives an \fI\&'EXIT\&'\fR\& message from its parent\&. \fIReason\fR\& is the same as in the \fI\&'EXIT\&'\fR\& message\&.
+.LP
+Otherwise, the \fIgen_server\fR\& process terminates immediately\&.
+.LP
+Notice that for any other reason than \fInormal\fR\&, \fIshutdown\fR\&, or \fI{shutdown,Term}\fR\&, see \fIstop/3\fR\&, the \fIgen_server\fR\& process is assumed to terminate because of an error, and an error report is issued using \fIlogger(3)\fR\&\&.
+.LP
+When the gen_server process exits, an exit signal with the same reason is sent to linked processes and ports\&.
+.RE
+.SH "SEE ALSO"
+
+.LP
+\fIgen_event(3)\fR\&, \fIgen_statem(3)\fR\&, \fIproc_lib(3)\fR\&, \fIsupervisor(3)\fR\&, \fIsys(3)\fR\&

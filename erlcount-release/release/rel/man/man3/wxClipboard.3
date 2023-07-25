@@ -1,0 +1,322 @@
+.TH wxClipboard 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxClipboard \- Functions for wxClipboard class
+.SH DESCRIPTION
+.LP
+A class for manipulating the clipboard\&.
+.LP
+To use the clipboard, you call member functions of the global ?wxTheClipboard object\&.
+.LP
+See the overview_dataobject for further information\&.
+.LP
+Call \fIopen/1\fR\& to get ownership of the clipboard\&. If this operation returns true, you now own the clipboard\&. Call \fIsetData/2\fR\& to put data on the clipboard, or \fIgetData/2\fR\& to retrieve data from the clipboard\&. Call \fIclose/1\fR\& to close the clipboard and relinquish ownership\&. You should keep the clipboard open only momentarily\&.
+.LP
+For example:
+.LP
+Note: On GTK, the clipboard behavior can vary depending on the configuration of the end-user\&'s machine\&. In order for the clipboard data to persist after the window closes, a clipboard manager must be installed\&. Some clipboard managers will automatically flush the clipboard after each new piece of data is added, while others will not\&. The @Flush() function will force the clipboard manager to flush the data\&.
+.LP
+See: Overview dnd, Overview dataobject, \fIwxDataObject\fR\& 
+.LP
+wxWidgets docs: wxClipboard
+.SH DATA TYPES
+.nf
+
+\fBwxClipboard()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxClipboard()
+.br
+.fi
+.br
+.RS
+.LP
+Default constructor\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxClipboard()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor\&.
+.RE
+.LP
+.nf
+
+.B
+addData(This, Data) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxClipboard()
+.br
+Data = wxDataObject:wxDataObject()
+.br
+.RE
+.RE
+.RS
+.LP
+Call this function to add the data object to the clipboard\&.
+.LP
+This is an obsolete synonym for \fIsetData/2\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+clear(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxClipboard()
+.br
+.RE
+.RE
+.RS
+.LP
+Clears the global clipboard object and the system\&'s clipboard if possible\&.
+.RE
+.LP
+.nf
+
+.B
+close(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxClipboard()
+.br
+.RE
+.RE
+.RS
+.LP
+Call this function to close the clipboard, having opened it with \fIopen/1\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+flush(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxClipboard()
+.br
+.RE
+.RE
+.RS
+.LP
+Flushes the clipboard: this means that the data which is currently on clipboard will stay available even after the application exits (possibly eating memory), otherwise the clipboard will be emptied on exit\&.
+.LP
+Currently this method is implemented in MSW and GTK and always returns false otherwise\&.
+.LP
+Note: On GTK, only the non-primary selection can be flushed\&. Calling this function when the clipboard is using the primary selection will return false and not make any data available after the program exits\&.
+.LP
+Return: false if the operation is unsuccessful for any reason\&.
+.RE
+.LP
+.nf
+
+.B
+getData(This, Data) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxClipboard()
+.br
+Data = wxDataObject:wxDataObject()
+.br
+.RE
+.RE
+.RS
+.LP
+Call this function to fill \fIdata\fR\& with data on the clipboard, if available in the required format\&.
+.LP
+Returns true on success\&.
+.RE
+.LP
+.nf
+
+.B
+isOpened(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxClipboard()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the clipboard has been opened\&.
+.RE
+.LP
+.nf
+
+.B
+open(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxClipboard()
+.br
+.RE
+.RE
+.RS
+.LP
+Call this function to open the clipboard before calling \fIsetData/2\fR\& and \fIgetData/2\fR\&\&.
+.LP
+Call \fIclose/1\fR\& when you have finished with the clipboard\&. You should keep the clipboard open for only a very short time\&.
+.LP
+Return: true on success\&. This should be tested (as in the sample shown above)\&.
+.RE
+.LP
+.nf
+
+.B
+setData(This, Data) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxClipboard()
+.br
+Data = wxDataObject:wxDataObject()
+.br
+.RE
+.RE
+.RS
+.LP
+Call this function to set the data object to the clipboard\&.
+.LP
+The new data object replaces any previously set one, so if the application wants to provide clipboard data in several different formats, it must use a composite data object supporting all of the formats instead of calling this function several times with different data objects as this would only leave data from the last one in the clipboard\&.
+.LP
+After this function has been called, the clipboard owns the data, so do not delete the data explicitly\&.
+.RE
+.LP
+.nf
+
+.B
+usePrimarySelection(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxClipboard()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+usePrimarySelection(This, Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxClipboard()
+.br
+Option = {primary, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+On platforms supporting it (all X11-based ports), \fIwxClipboard\fR\& uses the CLIPBOARD X11 selection by default\&.
+.LP
+When this function is called with true, all subsequent clipboard operations will use PRIMARY selection until this function is called again with false\&.
+.LP
+On the other platforms, there is no PRIMARY selection and so all clipboard operations will fail\&. This allows implementing the standard X11 handling of the clipboard which consists in copying data to the CLIPBOARD selection only when the user explicitly requests it (i\&.e\&. by selecting the "Copy" menu command) but putting the currently selected text into the PRIMARY selection automatically, without overwriting the normal clipboard contents with the currently selected text on the other platforms\&.
+.RE
+.LP
+.nf
+
+.B
+isSupported(This, Format) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxClipboard()
+.br
+Format = wx:wx_enum()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if there is data which matches the data format of the given data object currently \fIavailable\fR\& on the clipboard\&.
+.RE
+.LP
+.nf
+
+.B
+get() -> wxClipboard()
+.br
+.fi
+.br
+.RS
+.LP
+Returns the global instance (wxTheClipboard) of the clipboard object\&.
+.RE

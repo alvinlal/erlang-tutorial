@@ -1,0 +1,707 @@
+.TH wxListbook 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxListbook \- Functions for wxListbook class
+.SH DESCRIPTION
+.LP
+\fIwxListbook\fR\& is a class similar to \fIwxNotebook\fR\& but which uses a \fIwxListCtrl\fR\& to show the labels instead of the tabs\&.
+.LP
+The underlying \fIwxListCtrl\fR\& displays page labels in a one-column report view by default\&. Calling wxBookCtrl::SetImageList will implicitly switch the control to use an icon view\&.
+.LP
+For usage documentation of this class, please refer to the base abstract class wxBookCtrl\&. You can also use the page_samples_notebook to see \fIwxListbook\fR\& in action\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+See: ?wxBookCtrl, \fIwxNotebook\fR\&, Examples 
+.LP
+This class is derived (and can use functions) from: \fIwxBookCtrlBase\fR\& \fIwxControl\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxListbook
+.SH "EVENTS"
+
+.LP
+Event types emitted from this class: \fIlistbook_page_changed\fR\&, \fIlistbook_page_changing\fR\&
+.SH DATA TYPES
+.nf
+
+\fBwxListbook()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxListbook()
+.br
+.fi
+.br
+.RS
+.LP
+Default ctor\&.
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id) -> wxListbook()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id, Options :: [Option]) -> wxListbook()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Option = 
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructs a listbook control\&.
+.RE
+.LP
+.nf
+
+.B
+addPage(This, Page, Text) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+Page = wxWindow:wxWindow()
+.br
+Text = unicode:chardata()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+addPage(This, Page, Text, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+Page = wxWindow:wxWindow()
+.br
+Text = unicode:chardata()
+.br
+Option = {bSelect, boolean()} | {imageId, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Adds a new page\&.
+.LP
+The page must have the book control itself as the parent and must not have been added to this control previously\&.
+.LP
+The call to this function will generate the page changing and page changed events if \fIselect\fR\& is true, but not when inserting the very first page (as there is no previous page selection to switch from in this case and so it wouldn\&'t make sense to e\&.g\&. veto such event)\&.
+.LP
+Return: true if successful, false otherwise\&.
+.LP
+Remark: Do not delete the page, it will be deleted by the book control\&.
+.LP
+See: \fIinsertPage/5\fR\& 
+.RE
+.LP
+.nf
+
+.B
+advanceSelection(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+advanceSelection(This, Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+Option = {forward, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Cycles through the tabs\&.
+.LP
+The call to this function generates the page changing events\&.
+.RE
+.LP
+.nf
+
+.B
+assignImageList(This, ImageList) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+ImageList = wxImageList:wxImageList()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the image list for the page control and takes ownership of the list\&.
+.LP
+See: \fIwxImageList\fR\&, \fIsetImageList/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Option = 
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Create the list book control that has already been constructed with the default constructor\&.
+.RE
+.LP
+.nf
+
+.B
+deleteAllPages(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+.RE
+.RE
+.RS
+.LP
+Deletes all pages\&.
+.RE
+.LP
+.nf
+
+.B
+getCurrentPage(This) -> wxWindow:wxWindow()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the currently selected page or NULL\&.
+.RE
+.LP
+.nf
+
+.B
+getImageList(This) -> wxImageList:wxImageList()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the associated image list, may be NULL\&.
+.LP
+See: \fIwxImageList\fR\&, \fIsetImageList/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getPage(This, Page) -> wxWindow:wxWindow()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+Page = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the window at the given page position\&.
+.RE
+.LP
+.nf
+
+.B
+getPageCount(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the number of pages in the control\&.
+.RE
+.LP
+.nf
+
+.B
+getPageImage(This, NPage) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+NPage = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the image index for the given page\&.
+.RE
+.LP
+.nf
+
+.B
+getPageText(This, NPage) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+NPage = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the string for the given page\&.
+.RE
+.LP
+.nf
+
+.B
+getSelection(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the currently selected page, or \fIwxNOT_FOUND\fR\& if none was selected\&.
+.LP
+Note that this method may return either the previously or newly selected page when called from the \fIEVT_BOOKCTRL_PAGE_CHANGED\fR\& handler depending on the platform and so \fIwxBookCtrlEvent:getSelection/1\fR\& should be used instead in this case\&.
+.RE
+.LP
+.nf
+
+.B
+hitTest(This, Pt) -> Result
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Result = {Res :: integer(), Flags :: integer()}
+.br
+This = wxListbook()
+.br
+Pt = {X :: integer(), Y :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the index of the tab at the specified position or \fIwxNOT_FOUND\fR\& if none\&.
+.LP
+If \fIflags\fR\& parameter is non-NULL, the position of the point inside the tab is returned as well\&.
+.LP
+Return: Returns the zero-based tab index or \fIwxNOT_FOUND\fR\& if there is no tab at the specified position\&.
+.RE
+.LP
+.nf
+
+.B
+insertPage(This, Index, Page, Text) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+Index = integer()
+.br
+Page = wxWindow:wxWindow()
+.br
+Text = unicode:chardata()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+insertPage(This, Index, Page, Text, Options :: [Option]) ->
+.B
+              boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+Index = integer()
+.br
+Page = wxWindow:wxWindow()
+.br
+Text = unicode:chardata()
+.br
+Option = {bSelect, boolean()} | {imageId, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Inserts a new page at the specified position\&.
+.LP
+Return: true if successful, false otherwise\&.
+.LP
+Remark: Do not delete the page, it will be deleted by the book control\&.
+.LP
+See: \fIaddPage/4\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setImageList(This, ImageList) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+ImageList = wxImageList:wxImageList()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the image list to use\&.
+.LP
+It does not take ownership of the image list, you must delete it yourself\&.
+.LP
+See: \fIwxImageList\fR\&, \fIassignImageList/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setPageSize(This, Size) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the width and height of the pages\&.
+.LP
+Note: This method is currently not implemented for wxGTK\&.
+.RE
+.LP
+.nf
+
+.B
+setPageImage(This, Page, Image) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+Page = Image = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the image index for the given page\&.
+.LP
+\fIimage\fR\& is an index into the image list which was set with \fIsetImageList/2\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+setPageText(This, Page, Text) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+Page = integer()
+.br
+Text = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the text for the given page\&.
+.RE
+.LP
+.nf
+
+.B
+setSelection(This, Page) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+Page = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the selection to the given page, returning the previous selection\&.
+.LP
+Notice that the call to this function generates the page changing events, use the \fIchangeSelection/2\fR\& function if you don\&'t want these events to be generated\&.
+.LP
+See: \fIgetSelection/1\fR\& 
+.RE
+.LP
+.nf
+
+.B
+changeSelection(This, Page) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListbook()
+.br
+Page = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Changes the selection to the given page, returning the previous selection\&.
+.LP
+This function behaves as \fIsetSelection/2\fR\& but does \fInot\fR\& generate the page changing events\&.
+.LP
+See overview_events_prog for more information\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxListbook()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

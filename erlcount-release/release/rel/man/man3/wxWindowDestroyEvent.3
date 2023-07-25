@@ -1,0 +1,38 @@
+.TH wxWindowDestroyEvent 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxWindowDestroyEvent \- Functions for wxWindowDestroyEvent class
+.SH DESCRIPTION
+.LP
+This event is sent as early as possible during the window destruction process\&.
+.LP
+For the top level windows, as early as possible means that this is done by \fIwxFrame\fR\& or \fIwxDialog\fR\& destructor, i\&.e\&. after the destructor of the derived class was executed and so any methods specific to the derived class can\&'t be called any more from this event handler\&. If you need to do this, you must call \fIwxWindow::SendDestroyEvent()\fR\& (not implemented in wx) from your derived class destructor\&.
+.LP
+For the child windows, this event is generated just before deleting the window from \fIwxWindow:\&'Destroy\&'/1\fR\& (which is also called when the parent window is deleted) or from the window destructor if operator \fIdelete\fR\& was used directly (which is not recommended for this very reason)\&.
+.LP
+It is usually pointless to handle this event in the window itself but it ca be very useful to receive notifications about the window destruction in the parent window or in any other object interested in this window\&.
+.LP
+See: Overview events, \fIwxWindowCreateEvent\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxCommandEvent\fR\& \fIwxEvent\fR\&
+.LP
+wxWidgets docs: wxWindowDestroyEvent
+.SH DATA TYPES
+.nf
+
+\fBwxWindowDestroyEvent()\fR\& = wx:wx_object()
+.br
+.fi
+.nf
+
+\fBwxWindowDestroy()\fR\& = 
+.br
+    #wxWindowDestroy{type =
+.br
+                         wxWindowDestroyEvent:wxWindowDestroyEventType()}
+.br
+.fi
+.nf
+
+\fBwxWindowDestroyEventType()\fR\& = destroy
+.br
+.fi

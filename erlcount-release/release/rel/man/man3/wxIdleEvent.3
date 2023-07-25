@@ -1,0 +1,151 @@
+.TH wxIdleEvent 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxIdleEvent \- Functions for wxIdleEvent class
+.SH DESCRIPTION
+.LP
+This class is used for idle events, which are generated when the system becomes idle\&. Note that, unless you do something specifically, the idle events are not sent if the system remains idle once it has become it, e\&.g\&. only a single idle event will be generated until something else resulting in more normal events happens and only then is the next idle event sent again\&.
+.LP
+If you need to ensure a continuous stream of idle events, you can either use \fIrequestMore/2\fR\& method in your handler or call ?wxWakeUpIdle() periodically (for example from a timer event handler), but note that both of these approaches (and especially the first one) increase the system load and so should be avoided if possible\&.
+.LP
+By default, idle events are sent to all windows, including even the hidden ones because they may be shown if some condition is met from their \fIwxEVT_IDLE\fR\& (or related \fIwxEVT_UPDATE_UI\fR\&) handler\&. The children of hidden windows do not receive idle events however as they can\&'t change their state in any way noticeable by the user\&. Finally, the global \fIwxApp\fR\& (not implemented in wx) object also receives these events, as usual, so it can be used for any global idle time processing\&.
+.LP
+If sending idle events to all windows is causing a significant overhead in your application, you can call \fIsetMode/1\fR\& with the value wxIDLE_PROCESS_SPECIFIED, and set the wxWS_EX_PROCESS_IDLE extra window style for every window which should receive idle events, all the other ones will not receive them in this case\&.
+.LP
+Delayed Action Mechanism
+.LP
+\fIwxIdleEvent\fR\& can be used to perform some action "at slightly later time"\&. This can be necessary in several circumstances when, for whatever reason, something can\&'t be done in the current event handler\&. For example, if a mouse event handler is called with the mouse button pressed, the mouse can be currently captured and some operations with it - notably capturing it again - might be impossible or lead to undesirable results\&. If you still want to capture it, you can do it from \fIwxEVT_IDLE\fR\& handler when it is called the next time instead of doing it immediately\&.
+.LP
+This can be achieved in two different ways: when using static event tables, you will need a flag indicating to the (always connected) idle event handler whether the desired action should be performed\&. The originally called handler would then set it to indicate that it should indeed be done and the idle handler itself would reset it to prevent it from doing the same action again\&.
+.LP
+Using dynamically connected event handlers things are even simpler as the original event handler can simply \fIwxEvtHandler::Connect()\fR\& (not implemented in wx) or \fIwxEvtHandler::Bind()\fR\& (not implemented in wx) the idle event handler which would only be executed then and could \fIwxEvtHandler::Disconnect()\fR\& (not implemented in wx) or \fIwxEvtHandler::Unbind()\fR\& (not implemented in wx) itself\&.
+.LP
+See: Overview events, \fIwxUpdateUIEvent\fR\&, \fIwxWindow::OnInternalIdle\fR\& (not implemented in wx)
+.LP
+This class is derived (and can use functions) from: \fIwxEvent\fR\&
+.LP
+wxWidgets docs: wxIdleEvent
+.SH "EVENTS"
+
+.LP
+Use \fIwxEvtHandler:connect/3\fR\& with \fIwxIdleEventType\fR\& to subscribe to events of this type\&.
+.SH DATA TYPES
+.nf
+
+\fBwxIdleEvent()\fR\& = wx:wx_object()
+.br
+.fi
+.nf
+
+\fBwxIdle()\fR\& = #wxIdle{type = wxIdleEvent:wxIdleEventType()}
+.br
+.fi
+.nf
+
+\fBwxIdleEventType()\fR\& = idle
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+getMode() -> wx:wx_enum()
+.br
+.fi
+.br
+.RS
+.LP
+Static function returning a value specifying how wxWidgets will send idle events: to all windows, or only to those which specify that they will process the events\&.
+.LP
+See: \fIsetMode/1\fR\& 
+.RE
+.LP
+.nf
+
+.B
+requestMore(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxIdleEvent()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+requestMore(This, Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxIdleEvent()
+.br
+Option = {needMore, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Tells wxWidgets that more processing is required\&.
+.LP
+This function can be called by an OnIdle handler for a window or window event handler to indicate that wxApp::OnIdle should forward the OnIdle event once more to the application windows\&.
+.LP
+If no window calls this function during OnIdle, then the application will remain in a passive event loop (not calling OnIdle) until a new event is posted to the application by the windowing system\&.
+.LP
+See: \fImoreRequested/1\fR\& 
+.RE
+.LP
+.nf
+
+.B
+moreRequested(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxIdleEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the OnIdle function processing this event requested more processing time\&.
+.LP
+See: \fIrequestMore/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setMode(Mode) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Mode = wx:wx_enum()
+.br
+.RE
+.RE
+.RS
+.LP
+Static function for specifying how wxWidgets will send idle events: to all windows, or only to those which specify that they will process the events\&.
+.RE

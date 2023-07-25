@@ -1,0 +1,64 @@
+.TH wxPostScriptDC 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxPostScriptDC \- Functions for wxPostScriptDC class
+.SH DESCRIPTION
+.LP
+This defines the wxWidgets Encapsulated PostScript device context, which can write PostScript files on any platform\&. See \fIwxDC\fR\& for descriptions of the member functions\&.
+.LP
+Starting a document
+.LP
+Document should be started with call to \fIwxDC:startDoc/2\fR\& prior to calling any function to execute a drawing operation\&. However, some functions, like \fIwxDC:setFont/2\fR\&, may be legitimately called even before \fIwxDC:startDoc/2\fR\&\&.
+.LP
+This class is derived (and can use functions) from: \fIwxDC\fR\&
+.LP
+wxWidgets docs: wxPostScriptDC
+.SH DATA TYPES
+.nf
+
+\fBwxPostScriptDC()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxPostScriptDC()
+.br
+.fi
+.br
+.RS
+.RE
+.LP
+.nf
+
+.B
+new(PrintData) -> wxPostScriptDC()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+PrintData = wxPrintData:wxPrintData()
+.br
+.RE
+.RE
+.RS
+.LP
+Constructs a PostScript printer device context from a \fIwxPrintData\fR\& object\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxPostScriptDC()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

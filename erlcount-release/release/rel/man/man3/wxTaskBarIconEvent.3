@@ -1,0 +1,36 @@
+.TH wxTaskBarIconEvent 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxTaskBarIconEvent \- Functions for wxTaskBarIconEvent class
+.SH DESCRIPTION
+.LP
+The event class used by \fIwxTaskBarIcon\fR\&\&. For a list of the event macros meant to be used with \fIwxTaskBarIconEvent\fR\&, please look at \fIwxTaskBarIcon\fR\& description\&.
+.LP
+This class is derived (and can use functions) from: \fIwxEvent\fR\&
+.LP
+wxWidgets docs: wxTaskBarIconEvent
+.SH DATA TYPES
+.nf
+
+\fBwxTaskBarIconEvent()\fR\& = wx:wx_object()
+.br
+.fi
+.nf
+
+\fBwxTaskBarIcon()\fR\& = 
+.br
+    #wxTaskBarIcon{type =
+.br
+                       wxTaskBarIconEvent:wxTaskBarIconEventType()}
+.br
+.fi
+.nf
+
+\fBwxTaskBarIconEventType()\fR\& = 
+.br
+    taskbar_move | taskbar_left_down | taskbar_left_up |
+.br
+    taskbar_right_down | taskbar_right_up | taskbar_left_dclick |
+.br
+    taskbar_right_dclick
+.br
+.fi

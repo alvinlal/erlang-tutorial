@@ -1,0 +1,623 @@
+.TH wxFont 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxFont \- Functions for wxFont class
+.SH DESCRIPTION
+.LP
+A font is an object which determines the appearance of text\&.
+.LP
+Fonts are used for drawing text to a device context, and setting the appearance of a window\&'s text, see \fIwxDC:setFont/2\fR\& and \fIwxWindow:setFont/2\fR\&\&.
+.LP
+The easiest way to create a custom font is to use \fIwxFontInfo\fR\& (not implemented in wx) object to specify the font attributes and then use \fInew/5\fR\& constructor\&. Alternatively, you could start with one of the pre-defined fonts or use \fIwxWindow:getFont/1\fR\& and modify the font, e\&.g\&. by increasing its size using \fIMakeLarger()\fR\& (not implemented in wx) or changing its weight using \fIMakeBold()\fR\& (not implemented in wx)\&.
+.LP
+This class uses reference counting and copy-on-write internally so that assignments between two instances of this class are very cheap\&. You can therefore use actual objects instead of pointers without efficiency problems\&. If an instance of this class is changed it will create its own data internally so that other instances, which previously shared the data using the reference counting, are not affected\&.
+.LP
+You can retrieve the current system font settings with \fIwxSystemSettings\fR\&\&.
+.LP
+Predefined objects (include wx\&.hrl): ?wxNullFont, ?wxNORMAL_FONT, ?wxSMALL_FONT, ?wxITALIC_FONT, ?wxSWISS_FONT
+.LP
+See: Overview font, \fIwxDC:setFont/2\fR\&, \fIwxDC:drawText/3\fR\&, \fIwxDC:getTextExtent/3\fR\&, \fIwxFontDialog\fR\&, \fIwxSystemSettings\fR\& 
+.LP
+wxWidgets docs: wxFont
+.SH DATA TYPES
+.nf
+
+\fBwxFont()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxFont()
+.br
+.fi
+.br
+.RS
+.LP
+Default ctor\&.
+.RE
+.LP
+.nf
+
+.B
+new(NativeInfoString) -> wxFont()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Font) -> wxFont()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Font = wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Copy constructor, uses reference counting\&.
+.RE
+.LP
+.nf
+
+.B
+new(PointSize, Family, Style, Weight) -> wxFont()
+.br
+.fi
+.br
+.nf
+
+.B
+new(PixelSize, Family, Style, Weight) -> wxFont()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+PixelSize = {W :: integer(), H :: integer()}
+.br
+Family = Style = Weight = wx:wx_enum()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(PointSize, Family, Style, Weight, Options :: [Option]) ->
+.B
+       wxFont()
+.br
+.fi
+.br
+.nf
+
+.B
+new(PixelSize, Family, Style, Weight, Options :: [Option]) ->
+.B
+       wxFont()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+PixelSize = {W :: integer(), H :: integer()}
+.br
+Family = Style = Weight = wx:wx_enum()
+.br
+Option = 
+.br
+    {underline, boolean()} |
+.br
+    {faceName, unicode:chardata()} |
+.br
+    {encoding, wx:wx_enum()}
+.br
+.RE
+.RE
+.RS
+.LP
+Creates a font object with the specified attributes and size in pixels\&.
+.LP
+Notice that the use of this constructor is often more verbose and less readable than the use of constructor from \fIwxFontInfo\fR\& (not implemented in wx), consider using that constructor instead\&.
+.LP
+Remark: If the desired font does not exist, the closest match will be chosen\&. Under Windows, only scalable TrueType fonts are used\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxFont()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor\&.
+.LP
+See reference-counted object destruction for more info\&.
+.LP
+Remark: Although all remaining fonts are deleted when the application exits, the application should try to clean up all fonts itself\&. This is because wxWidgets cannot know if a pointer to the font object is stored in an application data structure, and there is a risk of double deletion\&.
+.RE
+.LP
+.nf
+
+.B
+isFixedWidth(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the font is a fixed width (or monospaced) font, false if it is a proportional one or font is invalid\&.
+.LP
+Note that this function under some platforms is different from just testing for the font family being equal to \fIwxFONTFAMILY_TELETYPE\fR\& because native platform-specific functions are used for the check (resulting in a more accurate return value)\&.
+.RE
+.LP
+.nf
+
+.B
+getDefaultEncoding() -> wx:wx_enum()
+.br
+.fi
+.br
+.RS
+.LP
+Returns the current application\&'s default encoding\&.
+.LP
+See: Overview fontencoding, \fIsetDefaultEncoding/1\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getFaceName(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the face name associated with the font, or the empty string if there is no face information\&.
+.LP
+See: \fIsetFaceName/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getFamily(This) -> wx:wx_enum()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the font family if possible\&.
+.LP
+As described in ?wxFontFamily docs the returned value acts as a rough, basic classification of the main font properties (look, spacing)\&.
+.LP
+If the current font face name is not recognized by \fIwxFont\fR\& or by the underlying system, \fIwxFONTFAMILY_DEFAULT\fR\& is returned\&.
+.LP
+Note that currently this function is not very precise and so not particularly useful\&. Font families mostly make sense only for font creation, see \fIsetFamily/2\fR\&\&.
+.LP
+See: \fIsetFamily/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getNativeFontInfoDesc(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the platform-dependent string completely describing this font\&.
+.LP
+Returned string is always non-empty unless the font is invalid (in which case an assert is triggered)\&.
+.LP
+Note that the returned string is not meant to be shown or edited by the user: a typical use of this function is for serializing in string-form a \fIwxFont\fR\& object\&.
+.LP
+See: \fISetNativeFontInfo()\fR\& (not implemented in wx), \fIgetNativeFontInfoUserDesc/1\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getNativeFontInfoUserDesc(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns a user-friendly string for this font object\&.
+.LP
+Returned string is always non-empty unless the font is invalid (in which case an assert is triggered)\&.
+.LP
+The string does not encode all \fIwxFont\fR\& infos under all platforms; e\&.g\&. under wxMSW the font family is not present in the returned string\&.
+.LP
+Some examples of the formats of returned strings (which are platform-dependent) are in \fISetNativeFontInfoUserDesc()\fR\& (not implemented in wx)\&.
+.LP
+See: \fISetNativeFontInfoUserDesc()\fR\& (not implemented in wx), \fIgetNativeFontInfoDesc/1\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getPointSize(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the point size as an integer number\&.
+.LP
+This function is kept for compatibility reasons\&. New code should use \fIGetFractionalPointSize()\fR\& (not implemented in wx) and support fractional point sizes\&.
+.LP
+See: \fIsetPointSize/2\fR\& 
+.LP
+See: \fIGetFractionalPointSize()\fR\& (not implemented in wx)
+.RE
+.LP
+.nf
+
+.B
+getStyle(This) -> wx:wx_enum()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the font style\&.
+.LP
+See ?wxFontStyle for a list of valid styles\&.
+.LP
+See: \fIsetStyle/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getUnderlined(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the font is underlined, false otherwise\&.
+.LP
+See: \fIsetUnderlined/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getWeight(This) -> wx:wx_enum()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the font weight\&.
+.LP
+See ?wxFontWeight for a list of valid weight identifiers\&.
+.LP
+See: \fIsetWeight/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+ok(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+See: \fIisOk/1\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+isOk(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if this object is a valid font, false otherwise\&.
+.RE
+.LP
+.nf
+
+.B
+setDefaultEncoding(Encoding) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Encoding = wx:wx_enum()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the default font encoding\&.
+.LP
+See: Overview fontencoding, \fIgetDefaultEncoding/0\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setFaceName(This, FaceName) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+FaceName = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the facename for the font\&.
+.LP
+Remark: To avoid portability problems, don\&'t rely on a specific face, but specify the font family instead (see ?wxFontFamily and \fIsetFamily/2\fR\&)\&.
+.LP
+Return: true if the given face name exists; if the face name doesn\&'t exist in the user\&'s system then the font is invalidated (so that \fIisOk/1\fR\& will return false) and false is returned\&.
+.LP
+See: \fIgetFaceName/1\fR\&, \fIsetFamily/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setFamily(This, Family) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+Family = wx:wx_enum()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the font family\&.
+.LP
+As described in ?wxFontFamily docs the given \fIfamily\fR\& value acts as a rough, basic indication of the main font properties (look, spacing)\&.
+.LP
+Note that changing the font family results in changing the font face name\&.
+.LP
+See: \fIgetFamily/1\fR\&, \fIsetFaceName/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setPointSize(This, PointSize) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+PointSize = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the font size in points to an integer value\&.
+.LP
+This is a legacy version of the function only supporting integer point sizes\&. It can still be used, but to avoid unnecessarily restricting the font size in points to integer values, consider using the new (added in wxWidgets 3\&.1\&.2) \fISetFractionalPointSize()\fR\& (not implemented in wx) function instead\&.
+.RE
+.LP
+.nf
+
+.B
+setStyle(This, Style) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+Style = wx:wx_enum()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the font style\&.
+.LP
+See: \fIgetStyle/1\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setUnderlined(This, Underlined) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+Underlined = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets underlining\&.
+.LP
+See: \fIgetUnderlined/1\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setWeight(This, Weight) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFont()
+.br
+Weight = wx:wx_enum()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the font weight\&.
+.LP
+See: \fIgetWeight/1\fR\& 
+.RE

@@ -1,0 +1,45 @@
+.TH wxLogNull 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxLogNull \- Functions for wxLogNull class
+.SH DESCRIPTION
+.LP
+This class allows you to temporarily suspend logging\&. All calls to the log functions during the life time of an object of this class are just ignored\&.
+.LP
+In particular, it can be used to suppress the log messages given by wxWidgets itself but it should be noted that it is rarely the best way to cope with this problem as \fIall\fR\& log messages are suppressed, even if they indicate a completely different error than the one the programmer wanted to suppress\&.
+.LP
+For instance, the example of the overview:
+.LP
+would be better written as:
+.LP
+wxWidgets docs: wxLogNull
+.SH DATA TYPES
+.nf
+
+\fBwxLogNull()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxLogNull()
+.br
+.fi
+.br
+.RS
+.LP
+Suspends logging\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxLogNull()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Resumes logging\&.
+.RE

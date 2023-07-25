@@ -1,0 +1,329 @@
+.TH wxSashWindow 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxSashWindow \- Functions for wxSashWindow class
+.SH DESCRIPTION
+.LP
+\fIwxSashWindow\fR\& allows any of its edges to have a sash which can be dragged to resize the window\&. The actual content window will be created by the application as a child of \fIwxSashWindow\fR\&\&.
+.LP
+The window (or an ancestor) will be notified of a drag via a \fIwxSashEvent\fR\& notification\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+See: \fIwxSashEvent\fR\&, \fIwxSashLayoutWindow\fR\&, Overview events 
+.LP
+This class is derived (and can use functions) from: \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxSashWindow
+.SH "EVENTS"
+
+.LP
+Event types emitted from this class: \fIsash_dragged\fR\&
+.SH DATA TYPES
+.nf
+
+\fBwxSashWindow()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxSashWindow()
+.br
+.fi
+.br
+.RS
+.LP
+Default ctor\&.
+.RE
+.LP
+.nf
+
+.B
+new(Parent) -> wxSashWindow()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Options :: [Option]) -> wxSashWindow()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Option = 
+.br
+    {id, integer()} |
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructs a sash window, which can be a child of a frame, dialog or any other non-control window\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxSashWindow()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor\&.
+.RE
+.LP
+.nf
+
+.B
+getSashVisible(This, Edge) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSashWindow()
+.br
+Edge = wx:wx_enum()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if a sash is visible on the given edge, false otherwise\&.
+.LP
+See: \fIsetSashVisible/3\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getMaximumSizeX(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSashWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the maximum window size in the x direction\&.
+.RE
+.LP
+.nf
+
+.B
+getMaximumSizeY(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSashWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the maximum window size in the y direction\&.
+.RE
+.LP
+.nf
+
+.B
+getMinimumSizeX(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSashWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the minimum window size in the x direction\&.
+.RE
+.LP
+.nf
+
+.B
+getMinimumSizeY(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSashWindow()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the minimum window size in the y direction\&.
+.RE
+.LP
+.nf
+
+.B
+setMaximumSizeX(This, Min) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSashWindow()
+.br
+Min = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the maximum window size in the x direction\&.
+.RE
+.LP
+.nf
+
+.B
+setMaximumSizeY(This, Min) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSashWindow()
+.br
+Min = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the maximum window size in the y direction\&.
+.RE
+.LP
+.nf
+
+.B
+setMinimumSizeX(This, Min) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSashWindow()
+.br
+Min = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the minimum window size in the x direction\&.
+.RE
+.LP
+.nf
+
+.B
+setMinimumSizeY(This, Min) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSashWindow()
+.br
+Min = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the minimum window size in the y direction\&.
+.RE
+.LP
+.nf
+
+.B
+setSashVisible(This, Edge, Visible) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSashWindow()
+.br
+Edge = wx:wx_enum()
+.br
+Visible = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+Call this function to make a sash visible or invisible on a particular edge\&.
+.LP
+See: \fIgetSashVisible/2\fR\& 
+.RE

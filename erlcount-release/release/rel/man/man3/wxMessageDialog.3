@@ -1,0 +1,93 @@
+.TH wxMessageDialog 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxMessageDialog \- Functions for wxMessageDialog class
+.SH DESCRIPTION
+.LP
+This class represents a dialog that shows a single or multi-line message, with a choice of OK, Yes, No and Cancel buttons\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+See: Overview cmndlg 
+.LP
+See: \fIwxRichMessageDialog\fR\& (not implemented in wx)
+.LP
+This class is derived (and can use functions) from: \fIwxDialog\fR\& \fIwxTopLevelWindow\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxMessageDialog
+.SH DATA TYPES
+.nf
+
+\fBwxMessageDialog()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new(Parent, Message) -> wxMessageDialog()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Message = unicode:chardata()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Message, Options :: [Option]) -> wxMessageDialog()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Message = unicode:chardata()
+.br
+Option = 
+.br
+    {caption, unicode:chardata()} |
+.br
+    {style, integer()} |
+.br
+    {pos, {X :: integer(), Y :: integer()}}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor specifying the message box properties\&.
+.LP
+Use \fIwxDialog:showModal/1\fR\& to show the dialog\&.
+.LP
+\fIstyle\fR\& may be a bit list of the identifiers described above\&.
+.LP
+Notice that not all styles are compatible: only one of \fIwxOK\fR\& and \fIwxYES_NO\fR\& may be specified (and one of them must be specified) and at most one default button style can be used and it is only valid if the corresponding button is shown in the message box\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxMessageDialog()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

@@ -1,0 +1,146 @@
+.TH wxProgressDialog 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxProgressDialog \- Functions for wxProgressDialog class
+.SH DESCRIPTION
+.LP
+If supported by the platform this class will provide the platform\&'s native progress dialog, else it will simply be the \fIwxGenericProgressDialog\fR\& (not implemented in wx)\&.
+.LP
+This class is derived (and can use functions) from: \fIwxDialog\fR\& \fIwxTopLevelWindow\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxProgressDialog
+.SH DATA TYPES
+.nf
+
+\fBwxProgressDialog()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new(Title, Message) -> wxProgressDialog()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Title = Message = unicode:chardata()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Title, Message, Options :: [Option]) -> wxProgressDialog()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Title = Message = unicode:chardata()
+.br
+Option = 
+.br
+    {maximum, integer()} |
+.br
+    {parent, wxWindow:wxWindow()} |
+.br
+    {style, integer()}
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+resume(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxProgressDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Can be used to continue with the dialog, after the user had clicked the "Abort" button\&.
+.RE
+.LP
+.nf
+
+.B
+update(This, Value) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxProgressDialog()
+.br
+Value = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+update(This, Value, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxProgressDialog()
+.br
+Value = integer()
+.br
+Option = {newmsg, unicode:chardata()}
+.br
+.RE
+.RE
+.RS
+.LP
+Updates the dialog, setting the progress bar to the new value and updating the message if new one is specified\&.
+.LP
+Returns true unless the "Cancel" button has been pressed\&.
+.LP
+If false is returned, the application can either immediately destroy the dialog or ask the user for the confirmation and if the abort is not confirmed the dialog may be resumed with \fIresume/1\fR\& function\&.
+.LP
+If \fIvalue\fR\& is the maximum value for the dialog, the behaviour of the function depends on whether \fIwxPD_AUTO_HIDE\fR\& was used when the dialog was created\&. If it was, the dialog is hidden and the function returns immediately\&. If it was not, the dialog becomes a modal dialog and waits for the user to dismiss it, meaning that this function does not return until this happens\&.
+.LP
+Notice that if \fInewmsg\fR\& is longer than the currently shown message, the dialog will be automatically made wider to account for it\&. However if the new message is shorter than the previous one, the dialog doesn\&'t shrink back to avoid constant resizes if the message is changed often\&. To do this and fit the dialog to its current contents you may call \fIwxWindow:fit/1\fR\& explicitly\&. However the native MSW implementation of this class does make the dialog shorter if the new text has fewer lines of text than the old one, so it is recommended to keep the number of lines of text constant in order to avoid jarring dialog size changes\&. You may also want to make the initial message, specified when creating the dialog, wide enough to avoid having to resize the dialog later, e\&.g\&. by appending a long string of unbreakable spaces (\fIwxString\fR\& (not implemented in wx)(L\&'\\u00a0\&', 100)) to it\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxProgressDialog()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

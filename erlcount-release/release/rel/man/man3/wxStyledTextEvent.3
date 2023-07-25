@@ -1,0 +1,628 @@
+.TH wxStyledTextEvent 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxStyledTextEvent \- Functions for wxStyledTextEvent class
+.SH DESCRIPTION
+.LP
+The type of events sent from \fIwxStyledTextCtrl\fR\&\&.
+.LP
+This class is derived (and can use functions) from: \fIwxCommandEvent\fR\& \fIwxEvent\fR\&
+.LP
+wxWidgets docs: wxStyledTextEvent
+.SH "EVENTS"
+
+.LP
+Use \fIwxEvtHandler:connect/3\fR\& with \fIwxStyledTextEventType\fR\& to subscribe to events of this type\&.
+.SH DATA TYPES
+.nf
+
+\fBwxStyledTextEvent()\fR\& = wx:wx_object()
+.br
+.fi
+.nf
+
+\fBwxStyledText()\fR\& = 
+.br
+    #wxStyledText{type =
+.br
+                      wxStyledTextEvent:wxStyledTextEventType(),
+.br
+                  position = integer(),
+.br
+                  key = integer(),
+.br
+                  modifiers = integer(),
+.br
+                  modificationType = integer(),
+.br
+                  text = unicode:chardata(),
+.br
+                  length = integer(),
+.br
+                  linesAdded = integer(),
+.br
+                  line = integer(),
+.br
+                  foldLevelNow = integer(),
+.br
+                  foldLevelPrev = integer(),
+.br
+                  margin = integer(),
+.br
+                  message = integer(),
+.br
+                  wParam = integer(),
+.br
+                  lParam = integer(),
+.br
+                  listType = integer(),
+.br
+                  x = integer(),
+.br
+                  y = integer(),
+.br
+                  dragText = unicode:chardata(),
+.br
+                  dragAllowMove = boolean(),
+.br
+                  dragResult = wx:wx_enum()}
+.br
+.fi
+.nf
+
+\fBwxStyledTextEventType()\fR\& = 
+.br
+    stc_autocomp_cancelled | stc_autocomp_char_deleted |
+.br
+    stc_autocomp_selection | stc_calltip_click | stc_change |
+.br
+    stc_charadded | stc_do_drop | stc_doubleclick |
+.br
+    stc_drag_over | stc_dwellend | stc_dwellstart |
+.br
+    stc_hotspot_click | stc_hotspot_dclick |
+.br
+    stc_hotspot_release_click | stc_indicator_click |
+.br
+    stc_indicator_release | stc_macrorecord | stc_marginclick |
+.br
+    stc_modified | stc_needshown | stc_painted |
+.br
+    stc_romodifyattempt | stc_savepointleft |
+.br
+    stc_savepointreached | stc_start_drag | stc_styleneeded |
+.br
+    stc_updateui | stc_userlistselection | stc_zoom
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+getPosition(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the zero-based text position associated this event\&.
+.LP
+This method is valid for the following event types:
+.RE
+.LP
+.nf
+
+.B
+getKey(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the key code of the key that generated this event\&.
+.LP
+This method is valid for the following event types:
+.RE
+.LP
+.nf
+
+.B
+getModifiers(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the modifiers of the key press or mouse click for this event\&.
+.LP
+The returned value is a bit list that may contain one or more of the following values:
+.LP
+In addition, the value can be checked for equality with ?wxSTC_KEYMOD_NORM to test if no modifiers are present\&.
+.LP
+This method is valid for the following event types:
+.RE
+.LP
+.nf
+
+.B
+getModificationType(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the modification type for this event\&.
+.LP
+The modification type is a bit list that describes the change that generated this event\&. It may contain one or more of the following values:
+.LP
+This method is valid for \fIwxEVT_STC_MODIFIED\fR\& events\&.
+.RE
+.LP
+.nf
+
+.B
+getText(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Deprecated: Use \fIwxCommandEvent:getString/1\fR\& instead\&.
+.RE
+.LP
+.nf
+
+.B
+getLength(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the length (number of characters) of this event\&.
+.LP
+This method is valid for \fIwxEVT_STC_MODIFIED\fR\& and \fIwxEVT_STC_NEEDSHOWN\fR\& events\&.
+.RE
+.LP
+.nf
+
+.B
+getLinesAdded(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the number of lines added or deleted with this event\&.
+.LP
+This method is valid for \fIwxEVT_STC_MODIFIED\fR\& events when the result of \fIgetModificationType/1\fR\& includes ?wxSTC_MOD_INSERTTEXT or ?wxSTC_MOD_DELETETEXT\&.
+.RE
+.LP
+.nf
+
+.B
+getLine(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns zero-based line number for this event\&.
+.LP
+This method is valid for \fIwxEVT_STC_DOUBLECLICK\fR\& and \fIwxEVT_STC_MODIFIED\fR\& events\&.
+.RE
+.LP
+.nf
+
+.B
+getFoldLevelNow(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the current fold level for the line\&.
+.LP
+This method is valid for \fIwxEVT_STC_MODIFIED\fR\& events when the result of \fIgetModificationType/1\fR\& includes ?wxSTC_MOD_CHANGEFOLD\&.
+.RE
+.LP
+.nf
+
+.B
+getFoldLevelPrev(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns previous fold level for the line\&.
+.LP
+This method is valid for \fIwxEVT_STC_MODIFIED\fR\& events when the result of \fIgetModificationType/1\fR\& includes ?wxSTC_MOD_CHANGEFOLD\&.
+.RE
+.LP
+.nf
+
+.B
+getMargin(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the zero-based index of the margin that generated this event\&.
+.LP
+This method is valid for \fIwxEVT_STC_MARGINCLICK\fR\& and \fIwxEVT_STC_MARGIN_RIGHT_CLICK\fR\& events\&.
+.RE
+.LP
+.nf
+
+.B
+getMessage(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns a message number while a macro is being recorded\&.
+.LP
+Many of the \fIwxStyledTextCtrl\fR\& methods such as \fIwxStyledTextCtrl:insertText/3\fR\& and \fIwxStyledTextCtrl:paste/1\fR\& have an event number associated with them\&. This method returns that number while a macro is being recorded so that the macro can be played back later\&.
+.LP
+This method is valid for \fIwxEVT_STC_MACRORECORD\fR\& events\&.
+.RE
+.LP
+.nf
+
+.B
+getWParam(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns value of the WParam field for this event\&.
+.LP
+This method is valid for \fIwxEVT_STC_MACRORECORD\fR\& events\&.
+.RE
+.LP
+.nf
+
+.B
+getLParam(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the value of the LParam field for this event\&.
+.LP
+This method is valid for \fIwxEVT_STC_MACRORECORD\fR\& events\&.
+.RE
+.LP
+.nf
+
+.B
+getListType(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the list type for this event\&.
+.LP
+The list type is an integer passed to a list when it is created with the \fIwxStyledTextCtrl:userListShow/3\fR\& method and can be used to distinguish lists if more than one is used\&.
+.LP
+This method is valid for \fIwxEVT_STC_AUTOCOMP_SELECTION_CHANGE\fR\& and \fIwxEVT_STC_USERLISTSELECTION\fR\& events\&.
+.RE
+.LP
+.nf
+
+.B
+getX(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the X coordinate of the mouse for this event\&.
+.LP
+This method is valid for the following event types:
+.RE
+.LP
+.nf
+
+.B
+getY(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the Y coordinate of the mouse for this event\&.
+.LP
+This method is valid for the following event types:
+.RE
+.LP
+.nf
+
+.B
+getDragText(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Deprecated: Use \fIwxCommandEvent:getString/1\fR\& instead\&.
+.RE
+.LP
+.nf
+
+.B
+getDragAllowMove(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+getDragResult(This) -> wx:wx_enum()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns drag result for this event\&.
+.LP
+This method is valid for \fIwxEVT_STC_DRAG_OVER\fR\& and \fIwxEVT_STC_DO_DROP\fR\& events\&.
+.RE
+.LP
+.nf
+
+.B
+getShift(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the Shift key is pressed\&.
+.LP
+This method is valid for the following event types:
+.RE
+.LP
+.nf
+
+.B
+getControl(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the Control key is pressed\&.
+.LP
+This method is valid for the following event types:
+.RE
+.LP
+.nf
+
+.B
+getAlt(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStyledTextEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the Alt key is pressed\&.
+.LP
+This method is valid for the following event types:
+.RE

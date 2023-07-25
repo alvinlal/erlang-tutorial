@@ -1,0 +1,217 @@
+.TH erl_error 3 "stdlib 4.3.1" "Ericsson AB" "Erlang Module Definition"
+.SH NAME
+erl_error \- Utilities for reporting errors.
+  
+.SH DESCRIPTION
+.LP
+This module provides functions for pretty-printing errors and exceptions\&. It is used by both the \fIshell\fR\& and by \fIproc_lib\fR\& to print exceptions\&.
+.LP
+It is possible for the module raising an error to provide additional information by calling \fIerror/3\fR\& with extra error information\&. More details about this mechanism is described in EEP-54\&.
+.SH DATA TYPES
+.nf
+
+\fBformat_options()\fR\& = 
+.br
+    #{column => column(),
+.br
+      stack_trim_fun => stack_trim_fun(),
+.br
+      format_fun => format_fun()}
+.br
+.fi
+.RS
+.LP
+A map with formatting options\&.
+.RE
+.nf
+
+\fBstack_trim_fun()\fR\& = 
+.br
+    fun((module(), atom(), arity()) -> boolean())
+.br
+.fi
+.RS
+.LP
+A fun used to trim the end of the stacktrace\&. It is called with module, function, and arity from an entry from the stacktrace\&. The fun is to return \fItrue\fR\& if the entry should be trimmed, and \fIfalse\fR\& otherwise\&. The default value is:
+.LP
+.nf
+
+fun(_, _, _) -> false end
+.fi
+.RE
+.nf
+
+\fBformat_fun()\fR\& = fun((term(), column()) -> iolist())
+.br
+.fi
+.RS
+.LP
+A fun used to format function arguments for BIF and function calls\&. By default the following fun will be used:
+.LP
+.nf
+
+fun(Term, I) -> io_lib:print(Term, I, 80, 30) end
+.fi
+.RE
+.nf
+
+\fBcolumn()\fR\& = integer() >= 1
+.br
+.fi
+.RS
+.LP
+Start column number\&. Default is 1\&.
+.RE
+.SH EXPORTS
+.LP
+.nf
+
+.B
+format_exception(Class, Reason, StackTrace) -> unicode:chardata()
+.br
+.fi
+.br
+.nf
+
+.B
+format_exception(Class, Reason, StackTrace, Options) ->
+.B
+                    unicode:chardata()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Class = error | exit | throw
+.br
+Reason = term()
+.br
+StackTrace = erlang:stacktrace()
+.br
+Options = format_options()
+.br
+.RE
+.RE
+.RS
+.LP
+Format the error reason and stack back-trace caught using \fItry\fR\& \&.\&.\&. \fIcatch\fR\& in the same style as the shell formats them\&.
+.LP
+Example:
+.LP
+.nf
+
+try
+    do_something()
+catch
+    C:R:Stk ->
+        Message = erl_error:format_exception(C, R, Stk),
+        io:format(LogFile, "~ts\\n", [Message])
+end
+.fi
+.LP
+If \fIerror_info\fR\& is provided with the exception, \fIformat_exception\fR\& will use that information to provide additional information about the exception\&.
+.LP
+Example:
+.LP
+.nf
+
+try
+  erlang:raise(badarg,[],[{error_info,#{}}])
+catch
+    C:R:Stk ->
+        Message = erl_error:format_exception(C, R, Stk),
+        io:format(LogFile, "~ts\\n", [Message])
+end
+.fi
+.LP
+See \fIerlang:error/3\fR\& for details on how to raise an exception with \fIerror_info\fR\& included\&.
+.RE
+.SH "CALLBACK FUNCTIONS"
+
+.LP
+The following functions are to be exported from an Error Info handler\&.
+.SH EXPORTS
+.LP
+.B
+Module:format_error(Reason, StackTrace) -> ErrorDescription
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Reason = term()
+.br
+StackTrace = erlang:stacktrace()
+.br
+ArgumentPosition = pos_integer()
+.br
+ErrorDescription = 
+.br
+ #{ ArgumentPosition => unicode:chardata(), 
+.br
+ general => unicode:chardata(),
+.br
+ reason => unicode:chardata() }
+.br
+.RE
+.RE
+.RS
+.LP
+This callback is called when \fI format_exception/4\fR\& or similar functionality wants to provide extra information about an error\&. The \fIModule\fR\&:\fIFunction\fR\& called is the one specificed by the \fIerror_info\fR\& map\&.
+.LP
+The function should return a map with additional information about what have caused the exception\&. The possible keys of the map are:
+.RS 2
+.TP 2
+.B
+\fIArgumentPosition = pos_integer()\fR\&:
+The position of the argument that caused the error starting at 1\&.
+.TP 2
+.B
+\fIgeneral\fR\&:
+An error that is not associated with any argument caused the error\&.
+.TP 2
+.B
+\fIreason\fR\&:
+If the \fIReason\fR\& should be printed differently than the default way\&.
+.RE
+.LP
+If the text returned includes new-lines, \fIformat_exception/4\fR\& will indent the text correctly\&.
+.LP
+Example:
+.LP
+.nf
+
+
+-module(my_error_module).
+-export([atom_to_string/1, format_error/2]).
+
+atom_to_string(Arg) when is_atom(Arg) ->
+  atom_to_list(Arg);
+atom_to_string(Arg) ->
+  erlang:error(badarg,[Arg],
+               [{error_info,#{ module => ?MODULE,
+                               cause => #{ 1 => "should be an atom" }}}]).
+
+format_error(Reason, [{_M,_F,_As,Info}|_]) ->
+  ErrorInfo = proplists:get_value(error_info, Info, #{}),
+  ErrorMap = maps:get(cause, ErrorInfo),
+  ErrorMap#{ general => "optional general information",
+             reason => io_lib:format("~p: ~p",[?MODULE, Reason]) }.
+.fi
+.LP
+.nf
+
+1> c(my_error_module).
+{ok,my_error_module}
+2> my_error_module:atom_to_string(1).
+** exception error: my_error_module: badarg
+     in function  my_error_module:atom_to_string/1
+        called as my_error_module:atom_to_string(1)
+        *** argument 1: should be an atom
+        *** optional general information
+.fi
+.RE

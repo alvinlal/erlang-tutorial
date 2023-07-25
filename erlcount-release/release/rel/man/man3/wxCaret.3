@@ -1,0 +1,412 @@
+.TH wxCaret 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxCaret \- Functions for wxCaret class
+.SH DESCRIPTION
+.LP
+A caret is a blinking cursor showing the position where the typed text will appear\&. Text controls usually have their own caret but \fIwxCaret\fR\& provides a way to use a caret in other windows\&.
+.LP
+Currently, the caret appears as a rectangle of the given size\&. In the future, it will be possible to specify a bitmap to be used for the caret shape\&.
+.LP
+A caret is always associated with a window and the current caret can be retrieved using \fIwxWindow:getCaret/1\fR\&\&. The same caret can\&'t be reused in two different windows\&.
+.LP
+wxWidgets docs: wxCaret
+.SH DATA TYPES
+.nf
+
+\fBwxCaret()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new(Window, Size) -> wxCaret()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Window = wxWindow:wxWindow()
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+new(Window, Width, Height) -> wxCaret()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Window = wxWindow:wxWindow()
+.br
+Width = Height = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Creates a caret with the given size (in pixels) and associates it with the \fIwindow\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+create(This, Window, Size) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCaret()
+.br
+Window = wxWindow:wxWindow()
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+create(This, Window, Width, Height) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCaret()
+.br
+Window = wxWindow:wxWindow()
+.br
+Width = Height = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Creates a caret with the given size (in pixels) and associates it with the \fIwindow\fR\& (same as the equivalent constructors)\&.
+.RE
+.LP
+.nf
+
+.B
+getBlinkTime() -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Returns the blink time which is measured in milliseconds and is the time elapsed between 2 inversions of the caret (blink time of the caret is the same for all carets, so this functions is static)\&.
+.RE
+.LP
+.nf
+
+.B
+getPosition(This) -> {X :: integer(), Y :: integer()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCaret()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+getSize(This) -> {W :: integer(), H :: integer()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCaret()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+getWindow(This) -> wxWindow:wxWindow()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCaret()
+.br
+.RE
+.RE
+.RS
+.LP
+Get the window the caret is associated with\&.
+.RE
+.LP
+.nf
+
+.B
+hide(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCaret()
+.br
+.RE
+.RE
+.RS
+.LP
+Hides the caret, same as Show(false)\&.
+.RE
+.LP
+.nf
+
+.B
+isOk(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCaret()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the caret was created successfully\&.
+.RE
+.LP
+.nf
+
+.B
+isVisible(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCaret()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the caret is visible and false if it is permanently hidden (if it is blinking and not shown currently but will be after the next blink, this method still returns true)\&.
+.RE
+.LP
+.nf
+
+.B
+move(This, Pt) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCaret()
+.br
+Pt = {X :: integer(), Y :: integer()}
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+move(This, X, Y) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCaret()
+.br
+X = Y = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Move the caret to given position (in logical coordinates)\&.
+.RE
+.LP
+.nf
+
+.B
+setBlinkTime(Milliseconds) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Milliseconds = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the blink time for all the carets\&.
+.LP
+Warning: Under Windows, this function will change the blink time for all carets permanently (until the next time it is called), even for carets in other applications\&.
+.LP
+See: \fIgetBlinkTime/0\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setSize(This, Size) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCaret()
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+setSize(This, Width, Height) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCaret()
+.br
+Width = Height = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Changes the size of the caret\&.
+.RE
+.LP
+.nf
+
+.B
+show(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCaret()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+show(This, Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxCaret()
+.br
+Option = {show, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Shows or hides the caret\&.
+.LP
+Notice that if the caret was hidden N times, it must be shown N times as well to reappear on the screen\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxCaret()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

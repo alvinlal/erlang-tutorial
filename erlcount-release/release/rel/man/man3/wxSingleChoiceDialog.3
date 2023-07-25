@@ -1,0 +1,154 @@
+.TH wxSingleChoiceDialog 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxSingleChoiceDialog \- Functions for wxSingleChoiceDialog class
+.SH DESCRIPTION
+.LP
+This class represents a dialog that shows a list of strings, and allows the user to select one\&. Double-clicking on a list item is equivalent to single-clicking and then pressing OK\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+See: Overview cmndlg, \fIwxMultiChoiceDialog\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxDialog\fR\& \fIwxTopLevelWindow\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxSingleChoiceDialog
+.SH DATA TYPES
+.nf
+
+\fBwxSingleChoiceDialog()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new(Parent, Message, Caption, Choices) -> wxSingleChoiceDialog()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Message = Caption = unicode:chardata()
+.br
+Choices = [unicode:chardata()]
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Message, Caption, Choices, Options :: [Option]) ->
+.B
+       wxSingleChoiceDialog()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Message = Caption = unicode:chardata()
+.br
+Choices = [unicode:chardata()]
+.br
+Option = 
+.br
+    {style, integer()} | {pos, {X :: integer(), Y :: integer()}}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor, taking an array of \fIwxString\fR\& (not implemented in wx) choices and optional client data\&.
+.LP
+Remark: Use \fIwxDialog:showModal/1\fR\& to show the dialog\&.
+.RE
+.LP
+.nf
+
+.B
+getSelection(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSingleChoiceDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the index of selected item\&.
+.RE
+.LP
+.nf
+
+.B
+getStringSelection(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSingleChoiceDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the selected string\&.
+.RE
+.LP
+.nf
+
+.B
+setSelection(This, Selection) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxSingleChoiceDialog()
+.br
+Selection = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the index of the initially selected item\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxSingleChoiceDialog()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

@@ -1,0 +1,204 @@
+.TH wxBitmapButton 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxBitmapButton \- Functions for wxBitmapButton class
+.SH DESCRIPTION
+.LP
+A bitmap button is a control that contains a bitmap\&.
+.LP
+Notice that since wxWidgets 2\&.9\&.1 bitmap display is supported by the base \fIwxButton\fR\& class itself and the only tiny advantage of using this class is that it allows specifying the bitmap in its constructor, unlike \fIwxButton\fR\&\&. Please see the base class documentation for more information about images support in \fIwxButton\fR\&\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+See: \fIwxButton\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxButton\fR\& \fIwxControl\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxBitmapButton
+.SH "EVENTS"
+
+.LP
+Event types emitted from this class: \fIcommand_button_clicked\fR\&
+.SH DATA TYPES
+.nf
+
+\fBwxBitmapButton()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxBitmapButton()
+.br
+.fi
+.br
+.RS
+.LP
+Default ctor\&.
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id, Bitmap) -> wxBitmapButton()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Bitmap = wxBitmap:wxBitmap()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id, Bitmap, Options :: [Option]) -> wxBitmapButton()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Bitmap = wxBitmap:wxBitmap()
+.br
+Option = 
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()} |
+.br
+    {validator, wx:wx_object()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor, creating and showing a button\&.
+.LP
+Remark: The bitmap parameter is normally the only bitmap you need to provide, and wxWidgets will draw the button correctly in its different states\&. If you want more control, call any of the functions \fISetBitmapPressed()\fR\& (not implemented in wx), \fIwxButton:setBitmapFocus/2\fR\&, \fIwxButton:setBitmapDisabled/2\fR\&\&.
+.LP
+See: \fIcreate/5\fR\&, \fIwxValidator\fR\& (not implemented in wx)
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id, Bitmap) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmapButton()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Bitmap = wxBitmap:wxBitmap()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id, Bitmap, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBitmapButton()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Bitmap = wxBitmap:wxBitmap()
+.br
+Option = 
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()} |
+.br
+    {validator, wx:wx_object()}
+.br
+.RE
+.RE
+.RS
+.LP
+Button creation function for two-step creation\&.
+.LP
+For more details, see \fInew/4\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+newCloseButton(Parent, Winid) -> wxBitmapButton()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Winid = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Helper function creating a standard-looking "Close" button\&.
+.LP
+To get the best results, platform-specific code may need to be used to create a small, title bar-like "Close" button\&. This function is provided to avoid the need to test for the current platform and creates the button with as native look as possible\&.
+.LP
+Return: The new button\&.
+.LP
+Since: 2\&.9\&.5
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxBitmapButton()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

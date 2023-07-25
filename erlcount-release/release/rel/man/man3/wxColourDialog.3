@@ -1,0 +1,156 @@
+.TH wxColourDialog 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxColourDialog \- Functions for wxColourDialog class
+.SH DESCRIPTION
+.LP
+This class represents the colour chooser dialog\&.
+.LP
+Starting from wxWidgets 3\&.1\&.3 and currently in the MSW port only, this dialog generates wxEVT_COLOUR_CHANGED events while it is being shown, i\&.e\&. from inside its \fIwxDialog:showModal/1\fR\& method, that notify the program about the change of the currently selected colour and allow it to e\&.g\&. preview the effect of selecting this colour\&. Note that if you react to this event, you should also correctly revert to the previously selected colour if the dialog is cancelled by the user\&.
+.LP
+Example of using this class with dynamic feedback for the selected colour:
+.LP
+See: Overview cmndlg, \fIwx_color()\fR\&, \fIwxColourData\fR\&, \fIwxColourDialogEvent\fR\& (not implemented in wx), ?wxGetColourFromUser()
+.LP
+This class is derived (and can use functions) from: \fIwxDialog\fR\& \fIwxTopLevelWindow\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxColourDialog
+.SH DATA TYPES
+.nf
+
+\fBwxColourDialog()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxColourDialog()
+.br
+.fi
+.br
+.RS
+.RE
+.LP
+.nf
+
+.B
+new(Parent) -> wxColourDialog()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Options :: [Option]) -> wxColourDialog()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Option = {data, wxColourData:wxColourData()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor\&.
+.LP
+Pass a parent window, and optionally a pointer to a block of colour data, which will be copied to the colour dialog\&'s colour data\&.
+.LP
+Custom colours from colour data object will be used in the dialog\&'s colour palette\&. Invalid entries in custom colours list will be ignored on some platforms(GTK) or replaced with white colour on platforms where custom colours palette has fixed size (MSW)\&.
+.LP
+See: \fIwxColourData\fR\& 
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxColourDialog()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor\&.
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxColourDialog()
+.br
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxColourDialog()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Option = {data, wxColourData:wxColourData()}
+.br
+.RE
+.RE
+.RS
+.LP
+Same as \fInew/2\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+getColourData(This) -> wxColourData:wxColourData()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxColourDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the colour data associated with the colour dialog\&.
+.RE

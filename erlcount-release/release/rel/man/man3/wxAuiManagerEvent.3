@@ -1,0 +1,338 @@
+.TH wxAuiManagerEvent 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxAuiManagerEvent \- Functions for wxAuiManagerEvent class
+.SH DESCRIPTION
+.LP
+Event used to indicate various actions taken with \fIwxAuiManager\fR\&\&.
+.LP
+See \fIwxAuiManager\fR\& for available event types\&.
+.LP
+See: \fIwxAuiManager\fR\&, \fIwxAuiPaneInfo\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxEvent\fR\&
+.LP
+wxWidgets docs: wxAuiManagerEvent
+.SH "EVENTS"
+
+.LP
+Use \fIwxEvtHandler:connect/3\fR\& with \fIwxAuiManagerEventType\fR\& to subscribe to events of this type\&.
+.SH DATA TYPES
+.nf
+
+\fBwxAuiManagerEvent()\fR\& = wx:wx_object()
+.br
+.fi
+.nf
+
+\fBwxAuiManager()\fR\& = 
+.br
+    #wxAuiManager{type =
+.br
+                      wxAuiManagerEvent:wxAuiManagerEventType(),
+.br
+                  manager = wxAuiManager:wxAuiManager(),
+.br
+                  pane = wxAuiPaneInfo:wxAuiPaneInfo(),
+.br
+                  button = integer(),
+.br
+                  veto_flag = boolean(),
+.br
+                  canveto_flag = boolean(),
+.br
+                  dc = wxDC:wxDC()}
+.br
+.fi
+.nf
+
+\fBwxAuiManagerEventType()\fR\& = 
+.br
+    aui_pane_button | aui_pane_close | aui_pane_maximize |
+.br
+    aui_pane_restore | aui_pane_activated | aui_render |
+.br
+    aui_find_manager
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+setManager(This, Manager) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiManagerEvent()
+.br
+Manager = wxAuiManager:wxAuiManager()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the \fIwxAuiManager\fR\& this event is associated with\&.
+.RE
+.LP
+.nf
+
+.B
+getManager(This) -> wxAuiManager:wxAuiManager()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiManagerEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Return: The \fIwxAuiManager\fR\& this event is associated with\&.
+.RE
+.LP
+.nf
+
+.B
+setPane(This, Pane) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiManagerEvent()
+.br
+Pane = wxAuiPaneInfo:wxAuiPaneInfo()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the pane this event is associated with\&.
+.RE
+.LP
+.nf
+
+.B
+getPane(This) -> wxAuiPaneInfo:wxAuiPaneInfo()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiManagerEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Return: The pane this event is associated with\&.
+.RE
+.LP
+.nf
+
+.B
+setButton(This, Button) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiManagerEvent()
+.br
+Button = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the ID of the button clicked that triggered this event\&.
+.RE
+.LP
+.nf
+
+.B
+getButton(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiManagerEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Return: The ID of the button that was clicked\&.
+.RE
+.LP
+.nf
+
+.B
+setDC(This, Pdc) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiManagerEvent()
+.br
+Pdc = wxDC:wxDC()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+getDC(This) -> wxDC:wxDC()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiManagerEvent()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+veto(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiManagerEvent()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+veto(This, Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiManagerEvent()
+.br
+Option = {veto, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Cancels the action indicated by this event if \fIcanVeto/1\fR\& is true\&.
+.RE
+.LP
+.nf
+
+.B
+getVeto(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiManagerEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Return: true if this event was vetoed\&.
+.LP
+See: \fIveto/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setCanVeto(This, Can_veto) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiManagerEvent()
+.br
+Can_veto = boolean()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets whether or not this event can be vetoed\&.
+.RE
+.LP
+.nf
+
+.B
+canVeto(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiManagerEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Return: true if this event can be vetoed\&.
+.LP
+See: \fIveto/2\fR\& 
+.RE

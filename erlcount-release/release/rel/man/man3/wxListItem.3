@@ -1,0 +1,612 @@
+.TH wxListItem 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxListItem \- Functions for wxListItem class
+.SH DESCRIPTION
+.LP
+This class stores information about a \fIwxListCtrl\fR\& item or column\&.
+.LP
+\fIwxListItem\fR\& is a class which contains information about:
+.LP
+The \fIwxListItem\fR\& object can also contain item-specific colour and font information: for this you need to call one of \fIsetTextColour/2\fR\&, \fIsetBackgroundColour/2\fR\& or \fIsetFont/2\fR\& functions on it passing it the colour/font to use\&. If the colour/font is not specified, the default list control colour/font is used\&.
+.LP
+See: \fIwxListCtrl\fR\& 
+.LP
+wxWidgets docs: wxListItem
+.SH DATA TYPES
+.nf
+
+\fBwxListItem()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxListItem()
+.br
+.fi
+.br
+.RS
+.LP
+Constructor\&.
+.RE
+.LP
+.nf
+
+.B
+new(Item) -> wxListItem()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Item = wxListItem()
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+clear(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+.RE
+.RE
+.RS
+.LP
+Resets the item state to the default\&.
+.RE
+.LP
+.nf
+
+.B
+getAlign(This) -> wx:wx_enum()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the alignment for this item\&.
+.LP
+Can be one of \fIwxLIST_FORMAT_LEFT\fR\&, \fIwxLIST_FORMAT_RIGHT\fR\& or \fIwxLIST_FORMAT_CENTRE\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+getBackgroundColour(This) -> wx:wx_colour4()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the background colour for this item\&.
+.RE
+.LP
+.nf
+
+.B
+getColumn(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the zero-based column; meaningful only in report mode\&.
+.RE
+.LP
+.nf
+
+.B
+getFont(This) -> wxFont:wxFont()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the font used to display the item\&.
+.RE
+.LP
+.nf
+
+.B
+getId(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the zero-based item position\&.
+.RE
+.LP
+.nf
+
+.B
+getImage(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the zero-based index of the image associated with the item into the image list\&.
+.RE
+.LP
+.nf
+
+.B
+getMask(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns a bit mask indicating which fields of the structure are valid\&.
+.LP
+Can be any combination of the following values:
+.RE
+.LP
+.nf
+
+.B
+getState(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns a bit field representing the state of the item\&.
+.LP
+Can be any combination of:
+.RE
+.LP
+.nf
+
+.B
+getText(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the label/header text\&.
+.RE
+.LP
+.nf
+
+.B
+getTextColour(This) -> wx:wx_colour4()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the text colour\&.
+.RE
+.LP
+.nf
+
+.B
+getWidth(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+.RE
+.RE
+.RS
+.LP
+Meaningful only for column headers in report mode\&.
+.LP
+Returns the column width\&.
+.RE
+.LP
+.nf
+
+.B
+setAlign(This, Align) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+Align = wx:wx_enum()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the alignment for the item\&.
+.LP
+See also \fIgetAlign/1\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setBackgroundColour(This, ColBack) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+ColBack = wx:wx_colour()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the background colour for the item\&.
+.RE
+.LP
+.nf
+
+.B
+setColumn(This, Col) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+Col = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the zero-based column\&.
+.LP
+Meaningful only in report mode\&.
+.RE
+.LP
+.nf
+
+.B
+setFont(This, Font) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+Font = wxFont:wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the font for the item\&.
+.RE
+.LP
+.nf
+
+.B
+setId(This, Id) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+Id = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the zero-based item position\&.
+.RE
+.LP
+.nf
+
+.B
+setImage(This, Image) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+Image = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the zero-based index of the image associated with the item into the image list\&.
+.RE
+.LP
+.nf
+
+.B
+setMask(This, Mask) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+Mask = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the mask of valid fields\&.
+.LP
+See \fIgetMask/1\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+setState(This, State) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+State = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the item state flags (note that the valid state flags are influenced by the value of the state mask, see \fIsetStateMask/2\fR\&)\&.
+.LP
+See \fIgetState/1\fR\& for valid flag values\&.
+.RE
+.LP
+.nf
+
+.B
+setStateMask(This, StateMask) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+StateMask = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the bitmask that is used to determine which of the state flags are to be set\&.
+.LP
+See also \fIsetState/2\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+setText(This, Text) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+Text = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the text label for the item\&.
+.RE
+.LP
+.nf
+
+.B
+setTextColour(This, ColText) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+ColText = wx:wx_colour()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the text colour for the item\&.
+.RE
+.LP
+.nf
+
+.B
+setWidth(This, Width) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxListItem()
+.br
+Width = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Meaningful only for column headers in report mode\&.
+.LP
+Sets the column width\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxListItem()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

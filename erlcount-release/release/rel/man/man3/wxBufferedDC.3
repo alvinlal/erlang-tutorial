@@ -1,0 +1,205 @@
+.TH wxBufferedDC 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxBufferedDC \- Functions for wxBufferedDC class
+.SH DESCRIPTION
+.LP
+This class provides a simple way to avoid flicker: when drawing on it, everything is in fact first drawn on an in-memory buffer (a \fIwxBitmap\fR\&) and then copied to the screen, using the associated \fIwxDC\fR\&, only once, when this object is destroyed\&. \fIwxBufferedDC\fR\& itself is typically associated with \fIwxClientDC\fR\&, if you want to use it in your \fIEVT_PAINT\fR\& handler, you should look at \fIwxBufferedPaintDC\fR\& instead\&.
+.LP
+When used like this, a valid \fIDC\fR\& must be specified in the constructor while the \fIbuffer\fR\& bitmap doesn\&'t have to be explicitly provided, by default this class will allocate the bitmap of required size itself\&. However using a dedicated bitmap can speed up the redrawing process by eliminating the repeated creation and destruction of a possibly big bitmap\&. Otherwise, \fIwxBufferedDC\fR\& can be used in the same way as any other device context\&.
+.LP
+Another possible use for \fIwxBufferedDC\fR\& is to use it to maintain a backing store for the window contents\&. In this case, the associated \fIDC\fR\& may be NULL but a valid backing store bitmap should be specified\&.
+.LP
+Finally, please note that GTK+ 2\&.0 as well as macOS provide double buffering themselves natively\&. You can either use \fIwxWindow:isDoubleBuffered/1\fR\& to determine whether you need to use buffering or not, or use \fIwxAutoBufferedPaintDC\fR\& (not implemented in wx) to avoid needless double buffering on the systems which already do it automatically\&.
+.LP
+See: \fIwxDC\fR\&, \fIwxMemoryDC\fR\&, \fIwxBufferedPaintDC\fR\&, \fIwxAutoBufferedPaintDC\fR\& (not implemented in wx)
+.LP
+This class is derived (and can use functions) from: \fIwxMemoryDC\fR\& \fIwxDC\fR\&
+.LP
+wxWidgets docs: wxBufferedDC
+.SH DATA TYPES
+.nf
+
+\fBwxBufferedDC()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxBufferedDC()
+.br
+.fi
+.br
+.RS
+.LP
+Default constructor\&.
+.LP
+You must call one of the \fIinit/4\fR\& methods later in order to use the device context\&.
+.RE
+.LP
+.nf
+
+.B
+new(Dc) -> wxBufferedDC()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Dc = wxDC:wxDC()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Dc, Area) -> wxBufferedDC()
+.br
+.fi
+.br
+.nf
+
+.B
+new(Dc, Area :: [Option]) -> wxBufferedDC()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Dc = wxDC:wxDC()
+.br
+Option = {buffer, wxBitmap:wxBitmap()} | {style, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Creates a buffer for the provided dc\&.
+.LP
+\fIinit/4\fR\& must not be called when using this constructor\&.
+.RE
+.LP
+.nf
+
+.B
+new(Dc, Area, Options :: [Option]) -> wxBufferedDC()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Dc = wxDC:wxDC()
+.br
+Area = {W :: integer(), H :: integer()}
+.br
+Option = {style, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Creates a buffer for the provided \fIdc\fR\&\&.
+.LP
+\fIinit/4\fR\& must not be called when using this constructor\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxBufferedDC()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Copies everything drawn on the DC so far to the underlying DC associated with this object, if any\&.
+.RE
+.LP
+.nf
+
+.B
+init(This, Dc) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBufferedDC()
+.br
+Dc = wxDC:wxDC()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+init(This, Dc, Area) -> ok
+.br
+.fi
+.br
+.nf
+
+.B
+init(This, Dc, Area :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBufferedDC()
+.br
+Dc = wxDC:wxDC()
+.br
+Option = {buffer, wxBitmap:wxBitmap()} | {style, integer()}
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+init(This, Dc, Area, Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxBufferedDC()
+.br
+Dc = wxDC:wxDC()
+.br
+Area = {W :: integer(), H :: integer()}
+.br
+Option = {style, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Initializes the object created using the default constructor\&.
+.LP
+Please see the constructors for parameter details\&.
+.RE

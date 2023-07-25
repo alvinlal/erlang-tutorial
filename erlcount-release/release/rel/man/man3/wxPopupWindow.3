@@ -1,0 +1,158 @@
+.TH wxPopupWindow 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxPopupWindow \- Functions for wxPopupWindow class
+.SH DESCRIPTION
+.LP
+A special kind of top level window used for popup menus, combobox popups and such\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+See: \fIwxDialog\fR\&, \fIwxFrame\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxPopupWindow
+.SH DATA TYPES
+.nf
+
+\fBwxPopupWindow()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxPopupWindow()
+.br
+.fi
+.br
+.RS
+.LP
+Default constructor\&.
+.RE
+.LP
+.nf
+
+.B
+new(Parent) -> wxPopupWindow()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Options :: [Option]) -> wxPopupWindow()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Option = {flags, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor\&.
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPopupWindow()
+.br
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPopupWindow()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Option = {flags, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Create method for two-step creation\&.
+.RE
+.LP
+.nf
+
+.B
+position(This, PtOrigin, SizePopup) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxPopupWindow()
+.br
+PtOrigin = {X :: integer(), Y :: integer()}
+.br
+SizePopup = {W :: integer(), H :: integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Move the popup window to the right position, i\&.e\&. such that it is entirely visible\&.
+.LP
+The popup is positioned at ptOrigin + size if it opens below and to the right (default), at ptOrigin - sizePopup if it opens above and to the left etc\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxPopupWindow()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

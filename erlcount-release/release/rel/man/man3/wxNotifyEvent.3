@@ -1,0 +1,88 @@
+.TH wxNotifyEvent 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxNotifyEvent \- Functions for wxNotifyEvent class
+.SH DESCRIPTION
+.LP
+This class is not used by the event handlers by itself, but is a base class for other event classes (such as \fIwxBookCtrlEvent\fR\&)\&.
+.LP
+It (or an object of a derived class) is sent when the controls state is being changed and allows the program to \fIveto/1\fR\& this change if it wants to prevent it from happening\&.
+.LP
+See: \fIwxBookCtrlEvent\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxCommandEvent\fR\& \fIwxEvent\fR\&
+.LP
+wxWidgets docs: wxNotifyEvent
+.SH DATA TYPES
+.nf
+
+\fBwxNotifyEvent()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+allow(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxNotifyEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+This is the opposite of \fIveto/1\fR\&: it explicitly allows the event to be processed\&.
+.LP
+For most events it is not necessary to call this method as the events are allowed anyhow but some are forbidden by default (this will be mentioned in the corresponding event description)\&.
+.RE
+.LP
+.nf
+
+.B
+isAllowed(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxNotifyEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the change is allowed (\fIveto/1\fR\& hasn\&'t been called) or false otherwise (if it was)\&.
+.RE
+.LP
+.nf
+
+.B
+veto(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxNotifyEvent()
+.br
+.RE
+.RE
+.RS
+.LP
+Prevents the change announced by this event from happening\&.
+.LP
+It is in general a good idea to notify the user about the reasons for vetoing the change because otherwise the applications behaviour (which just refuses to do what the user wants) might be quite surprising\&.
+.RE

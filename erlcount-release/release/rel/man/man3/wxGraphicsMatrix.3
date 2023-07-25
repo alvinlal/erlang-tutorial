@@ -1,0 +1,303 @@
+.TH wxGraphicsMatrix 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxGraphicsMatrix \- Functions for wxGraphicsMatrix class
+.SH DESCRIPTION
+.LP
+A \fIwxGraphicsMatrix\fR\& is a native representation of an affine matrix\&. The contents are specific and private to the respective renderer\&. Instances are ref counted and can therefore be assigned as usual\&. The only way to get a valid instance is via \fIwxGraphicsContext:createMatrix/2\fR\& or \fIwxGraphicsRenderer:createMatrix/2\fR\&\&.
+.LP
+This class is derived (and can use functions) from: \fIwxGraphicsObject\fR\&
+.LP
+wxWidgets docs: wxGraphicsMatrix
+.SH DATA TYPES
+.nf
+
+\fBwxGraphicsMatrix()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+concat(This, T) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = T = wxGraphicsMatrix()
+.br
+.RE
+.RE
+.RS
+.LP
+Concatenates the matrix passed with the current matrix\&.
+.LP
+The effect of the resulting transformation is to first apply the transformation in \fIt\fR\& to the coordinates and then apply the transformation in the current matrix to the coordinates\&.
+.RE
+.LP
+.nf
+
+.B
+get(This) -> Result
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Result = 
+.br
+    {A :: number(),
+.br
+     B :: number(),
+.br
+     C :: number(),
+.br
+     D :: number(),
+.br
+     Tx :: number(),
+.br
+     Ty :: number()}
+.br
+This = wxGraphicsMatrix()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the component values of the matrix via the argument pointers\&.
+.RE
+.LP
+.nf
+
+.B
+invert(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsMatrix()
+.br
+.RE
+.RE
+.RS
+.LP
+Inverts the matrix\&.
+.RE
+.LP
+.nf
+
+.B
+isEqual(This, T) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = T = wxGraphicsMatrix()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns true if the elements of the transformation matrix are equal\&.
+.RE
+.LP
+.nf
+
+.B
+isIdentity(This) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsMatrix()
+.br
+.RE
+.RE
+.RS
+.LP
+Return true if this is the identity matrix\&.
+.RE
+.LP
+.nf
+
+.B
+rotate(This, Angle) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsMatrix()
+.br
+Angle = number()
+.br
+.RE
+.RE
+.RS
+.LP
+Rotates this matrix clockwise (in radians)\&.
+.RE
+.LP
+.nf
+
+.B
+scale(This, XScale, YScale) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsMatrix()
+.br
+XScale = YScale = number()
+.br
+.RE
+.RE
+.RS
+.LP
+Scales this matrix\&.
+.RE
+.LP
+.nf
+
+.B
+translate(This, Dx, Dy) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsMatrix()
+.br
+Dx = Dy = number()
+.br
+.RE
+.RE
+.RS
+.LP
+Translates this matrix\&.
+.RE
+.LP
+.nf
+
+.B
+set(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsMatrix()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+set(This, Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsMatrix()
+.br
+Option = 
+.br
+    {a, number()} |
+.br
+    {b, number()} |
+.br
+    {c, number()} |
+.br
+    {d, number()} |
+.br
+    {tx, number()} |
+.br
+    {ty, number()}
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the matrix to the respective values (default values are the identity matrix)\&.
+.RE
+.LP
+.nf
+
+.B
+transformPoint(This) -> {X :: number(), Y :: number()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsMatrix()
+.br
+.RE
+.RE
+.RS
+.LP
+Applies this matrix to a point\&.
+.RE
+.LP
+.nf
+
+.B
+transformDistance(This) -> {Dx :: number(), Dy :: number()}
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGraphicsMatrix()
+.br
+.RE
+.RE
+.RS
+.LP
+Applies this matrix to a distance (ie\&.
+.LP
+performs all transforms except translations)\&.
+.RE

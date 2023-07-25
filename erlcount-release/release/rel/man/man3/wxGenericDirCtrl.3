@@ -1,0 +1,519 @@
+.TH wxGenericDirCtrl 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxGenericDirCtrl \- Functions for wxGenericDirCtrl class
+.SH DESCRIPTION
+.LP
+This control can be used to place a directory listing (with optional files) on an arbitrary window\&.
+.LP
+The control contains a \fIwxTreeCtrl\fR\& window representing the directory hierarchy, and optionally, a \fIwxChoice\fR\& window containing a list of filters\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+This class is derived (and can use functions) from: \fIwxControl\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxGenericDirCtrl
+.SH "EVENTS"
+
+.LP
+Event types emitted from this class: \fIdirctrl_selectionchanged\fR\&, \fIdirctrl_fileactivated\fR\&
+.SH DATA TYPES
+.nf
+
+\fBwxGenericDirCtrl()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxGenericDirCtrl()
+.br
+.fi
+.br
+.RS
+.LP
+Default constructor\&.
+.RE
+.LP
+.nf
+
+.B
+new(Parent) -> wxGenericDirCtrl()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Options :: [Option]) -> wxGenericDirCtrl()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Option = 
+.br
+    {id, integer()} |
+.br
+    {dir, unicode:chardata()} |
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()} |
+.br
+    {filter, unicode:chardata()} |
+.br
+    {defaultFilter, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Main constructor\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxGenericDirCtrl()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor\&.
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Option = 
+.br
+    {id, integer()} |
+.br
+    {dir, unicode:chardata()} |
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()} |
+.br
+    {filter, unicode:chardata()} |
+.br
+    {defaultFilter, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Create function for two-step construction\&.
+.LP
+See \fInew/2\fR\& for details\&.
+.RE
+.LP
+.nf
+
+.B
+init(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+.RE
+.RE
+.RS
+.LP
+Initializes variables\&.
+.RE
+.LP
+.nf
+
+.B
+collapseTree(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+.RE
+.RE
+.RS
+.LP
+Collapses the entire tree\&.
+.RE
+.LP
+.nf
+
+.B
+expandPath(This, Path) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+Path = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Tries to expand as much of the given \fIpath\fR\& as possible, so that the filename or directory is visible in the tree control\&.
+.RE
+.LP
+.nf
+
+.B
+getDefaultPath(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the default path\&.
+.RE
+.LP
+.nf
+
+.B
+getPath(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the currently-selected directory or filename\&.
+.RE
+.LP
+.nf
+
+.B
+getPath(This, ItemId) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+ItemId = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the path corresponding to the given tree control item\&.
+.LP
+Since: 2\&.9\&.5
+.RE
+.LP
+.nf
+
+.B
+getFilePath(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets selected filename path only (else empty string)\&.
+.LP
+This function doesn\&'t count a directory as a selection\&.
+.RE
+.LP
+.nf
+
+.B
+getFilter(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the filter string\&.
+.RE
+.LP
+.nf
+
+.B
+getFilterIndex(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the current filter index (zero-based)\&.
+.RE
+.LP
+.nf
+
+.B
+getRootId(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the root id for the tree control\&.
+.RE
+.LP
+.nf
+
+.B
+getTreeCtrl(This) -> wxTreeCtrl:wxTreeCtrl()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns a pointer to the tree control\&.
+.RE
+.LP
+.nf
+
+.B
+reCreateTree(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+.RE
+.RE
+.RS
+.LP
+Collapse and expand the tree, thus re-creating it from scratch\&.
+.LP
+May be used to update the displayed directory content\&.
+.RE
+.LP
+.nf
+
+.B
+setDefaultPath(This, Path) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+Path = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the default path\&.
+.RE
+.LP
+.nf
+
+.B
+setFilter(This, Filter) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+Filter = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the filter string\&.
+.RE
+.LP
+.nf
+
+.B
+setFilterIndex(This, N) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+N = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the current filter index (zero-based)\&.
+.RE
+.LP
+.nf
+
+.B
+setPath(This, Path) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGenericDirCtrl()
+.br
+Path = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the current path\&.
+.RE

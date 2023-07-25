@@ -1,0 +1,40 @@
+.TH wxDisplayChangedEvent 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxDisplayChangedEvent \- Functions for wxDisplayChangedEvent class
+.SH DESCRIPTION
+.LP
+A display changed event is sent to top-level windows when the display resolution has changed\&.
+.LP
+This event is currently emitted under Windows only\&.
+.LP
+Only for:wxmsw
+.LP
+See: \fIwxDisplay\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxEvent\fR\&
+.LP
+wxWidgets docs: wxDisplayChangedEvent
+.SH "EVENTS"
+
+.LP
+Use \fIwxEvtHandler:connect/3\fR\& with \fIwxDisplayChangedEventType\fR\& to subscribe to events of this type\&.
+.SH DATA TYPES
+.nf
+
+\fBwxDisplayChangedEvent()\fR\& = wx:wx_object()
+.br
+.fi
+.nf
+
+\fBwxDisplayChanged()\fR\& = 
+.br
+    #wxDisplayChanged{type =
+.br
+                          wxDisplayChangedEvent:wxDisplayChangedEventType()}
+.br
+.fi
+.nf
+
+\fBwxDisplayChangedEventType()\fR\& = display_changed
+.br
+.fi

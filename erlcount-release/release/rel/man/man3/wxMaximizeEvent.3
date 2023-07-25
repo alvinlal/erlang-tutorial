@@ -1,0 +1,36 @@
+.TH wxMaximizeEvent 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxMaximizeEvent \- Functions for wxMaximizeEvent class
+.SH DESCRIPTION
+.LP
+An event being sent when a top level window is maximized\&. Notice that it is not sent when the window is restored to its original size after it had been maximized, only a normal \fIwxSizeEvent\fR\& is generated in this case\&.
+.LP
+Currently this event is only generated in wxMSW, wxGTK and wxOSX/Cocoa ports so portable programs should only rely on receiving \fIwxEVT_SIZE\fR\& and not necessarily this event when the window is maximized\&.
+.LP
+See: Overview events, \fIwxTopLevelWindow:maximize/2\fR\&, \fIwxTopLevelWindow:isMaximized/1\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxEvent\fR\&
+.LP
+wxWidgets docs: wxMaximizeEvent
+.SH "EVENTS"
+
+.LP
+Use \fIwxEvtHandler:connect/3\fR\& with \fIwxMaximizeEventType\fR\& to subscribe to events of this type\&.
+.SH DATA TYPES
+.nf
+
+\fBwxMaximizeEvent()\fR\& = wx:wx_object()
+.br
+.fi
+.nf
+
+\fBwxMaximize()\fR\& = 
+.br
+    #wxMaximize{type = wxMaximizeEvent:wxMaximizeEventType()}
+.br
+.fi
+.nf
+
+\fBwxMaximizeEventType()\fR\& = maximize
+.br
+.fi

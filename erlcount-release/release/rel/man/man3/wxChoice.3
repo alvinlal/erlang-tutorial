@@ -1,0 +1,263 @@
+.TH wxChoice 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxChoice \- Functions for wxChoice class
+.SH DESCRIPTION
+.LP
+A choice item is used to select one of a list of strings\&. Unlike a \fIwxListBox\fR\&, only the selection is visible until the user pulls down the menu of choices\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+See: \fIwxListBox\fR\&, \fIwxComboBox\fR\&, \fIwxCommandEvent\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxControlWithItems\fR\& \fIwxControl\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxChoice
+.SH "EVENTS"
+
+.LP
+Event types emitted from this class: \fIcommand_choice_selected\fR\&
+.SH DATA TYPES
+.nf
+
+\fBwxChoice()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxChoice()
+.br
+.fi
+.br
+.RS
+.LP
+Default constructor\&.
+.LP
+See: \fIcreate/7\fR\&, \fIwxValidator\fR\& (not implemented in wx)
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id) -> wxChoice()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id, Options :: [Option]) -> wxChoice()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Option = 
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {choices, [unicode:chardata()]} |
+.br
+    {style, integer()} |
+.br
+    {validator, wx:wx_object()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor, creating and showing a choice\&.
+.LP
+See: \fIcreate/7\fR\&, \fIwxValidator\fR\& (not implemented in wx)
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxChoice()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor, destroying the choice item\&.
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id, Pos, Size, Choices) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxChoice()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Pos = {X :: integer(), Y :: integer()}
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+Choices = [unicode:chardata()]
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id, Pos, Size, Choices, Options :: [Option]) ->
+.B
+          boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxChoice()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Pos = {X :: integer(), Y :: integer()}
+.br
+Size = {W :: integer(), H :: integer()}
+.br
+Choices = [unicode:chardata()]
+.br
+Option = {style, integer()} | {validator, wx:wx_object()}
+.br
+.RE
+.RE
+.RS
+.RE
+.LP
+.nf
+
+.B
+delete(This, N) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxChoice()
+.br
+N = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Deletes an item from the control\&.
+.LP
+The client data associated with the item will be also deleted if it is owned by the control\&. Note that it is an error (signalled by an assert failure in debug builds) to remove an item with the index negative or greater or equal than the number of items in the control\&.
+.LP
+If there is a currently selected item below the item being deleted, i\&.e\&. if \fIwxControlWithItems:getSelection/1\fR\& returns a valid index greater than or equal to \fIn\fR\&, the selection is invalidated when this function is called\&. However if the selected item appears before the item being deleted, the selection is preserved unchanged\&.
+.LP
+See: \fIwxControlWithItems:clear/1\fR\& 
+.RE
+.LP
+.nf
+
+.B
+getColumns(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxChoice()
+.br
+.RE
+.RE
+.RS
+.LP
+Gets the number of columns in this choice item\&.
+.LP
+Remark: This is implemented for GTK and Motif only and always returns 1 for the other platforms\&.
+.RE
+.LP
+.nf
+
+.B
+setColumns(This) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxChoice()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+setColumns(This, Options :: [Option]) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxChoice()
+.br
+Option = {n, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the number of columns in this choice item\&.
+.LP
+Remark: This is implemented for GTK and Motif only and doesn’t do anything under other platforms\&.
+.RE

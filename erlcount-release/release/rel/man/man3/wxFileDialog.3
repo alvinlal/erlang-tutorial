@@ -1,0 +1,423 @@
+.TH wxFileDialog 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxFileDialog \- Functions for wxFileDialog class
+.SH DESCRIPTION
+.LP
+This class represents the file chooser dialog\&.
+.LP
+The path and filename are distinct elements of a full file pathname\&. If path is ?wxEmptyString, the current directory will be used\&. If filename is ?wxEmptyString, no default filename will be supplied\&. The wildcard determines what files are displayed in the file selector, and file extension supplies a type extension for the required filename\&.
+.LP
+The typical usage for the open file dialog is:
+.LP
+The typical usage for the save file dialog is instead somewhat simpler:
+.LP
+Remark: All implementations of the \fIwxFileDialog\fR\& provide a wildcard filter\&. Typing a filename containing wildcards (*, ?) in the filename text item, and clicking on Ok, will result in only those files matching the pattern being displayed\&. The wildcard may be a specification for multiple types of file with a description for each, such as: It must be noted that wildcard support in the native Motif file dialog is quite limited: only one file type is supported, and it is displayed without the descriptive test; "BMP files (*\&.bmp)|*\&.bmp" is displayed as "*\&.bmp", and both "BMP files (*\&.bmp)|*\&.bmp|GIF files (*\&.gif)|*\&.gif" and "Image files|*\&.bmp;*\&.gif" are errors\&. On Mac macOS in the open file dialog the filter choice box is not shown by default\&. Instead all given wildcards are appplied at the same time: So in the above example all bmp, gif and png files are displayed\&. To enforce the display of the filter choice set the corresponding \fIwxSystemOptions\fR\& before calling the file open dialog: But in contrast to Windows and Unix, where the file type choice filters only the selected files, on Mac macOS even in this case the dialog shows all files matching all file types\&. The files which does not match the currently selected file type are greyed out and are not selectable\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+See: Overview cmndlg, ?wxFileSelector()
+.LP
+This class is derived (and can use functions) from: \fIwxDialog\fR\& \fIwxTopLevelWindow\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxFileDialog
+.SH DATA TYPES
+.nf
+
+\fBwxFileDialog()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new(Parent) -> wxFileDialog()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Options :: [Option]) -> wxFileDialog()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Option = 
+.br
+    {message, unicode:chardata()} |
+.br
+    {defaultDir, unicode:chardata()} |
+.br
+    {defaultFile, unicode:chardata()} |
+.br
+    {wildCard, unicode:chardata()} |
+.br
+    {style, integer()} |
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {sz, {W :: integer(), H :: integer()}}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor\&.
+.LP
+Use \fIwxDialog:showModal/1\fR\& to show the dialog\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxFileDialog()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destructor\&.
+.RE
+.LP
+.nf
+
+.B
+getDirectory(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the default directory\&.
+.RE
+.LP
+.nf
+
+.B
+getFilename(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the default filename\&.
+.LP
+Note: This function can\&'t be used with dialogs which have the \fIwxFD_MULTIPLE\fR\& style, use \fIgetFilenames/1\fR\& instead\&.
+.RE
+.LP
+.nf
+
+.B
+getFilenames(This) -> [unicode:charlist()]
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Fills the array \fIfilenames\fR\& with the names of the files chosen\&.
+.LP
+This function should only be used with the dialogs which have \fIwxFD_MULTIPLE\fR\& style, use \fIgetFilename/1\fR\& for the others\&.
+.LP
+Note that under Windows, if the user selects shortcuts, the filenames include paths, since the application cannot determine the full path of each referenced file by appending the directory containing the shortcuts to the filename\&.
+.RE
+.LP
+.nf
+
+.B
+getFilterIndex(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the index into the list of filters supplied, optionally, in the wildcard parameter\&.
+.LP
+Before the dialog is shown, this is the index which will be used when the dialog is first displayed\&.
+.LP
+After the dialog is shown, this is the index selected by the user\&.
+.RE
+.LP
+.nf
+
+.B
+getMessage(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the message that will be displayed on the dialog\&.
+.RE
+.LP
+.nf
+
+.B
+getPath(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the full path (directory and filename) of the selected file\&.
+.LP
+Note: This function can\&'t be used with dialogs which have the \fIwxFD_MULTIPLE\fR\& style, use \fIgetPaths/1\fR\& instead\&.
+.RE
+.LP
+.nf
+
+.B
+getPaths(This) -> [unicode:charlist()]
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Fills the array \fIpaths\fR\& with the full paths of the files chosen\&.
+.LP
+This function should only be used with the dialogs which have \fIwxFD_MULTIPLE\fR\& style, use \fIgetPath/1\fR\& for the others\&.
+.RE
+.LP
+.nf
+
+.B
+getWildcard(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDialog()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the file dialog wildcard\&.
+.RE
+.LP
+.nf
+
+.B
+setDirectory(This, Directory) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDialog()
+.br
+Directory = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the default directory\&.
+.RE
+.LP
+.nf
+
+.B
+setFilename(This, Setfilename) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDialog()
+.br
+Setfilename = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the default filename\&.
+.LP
+In wxGTK this will have little effect unless a default directory has previously been set\&.
+.RE
+.LP
+.nf
+
+.B
+setFilterIndex(This, FilterIndex) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDialog()
+.br
+FilterIndex = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the default filter index, starting from zero\&.
+.RE
+.LP
+.nf
+
+.B
+setMessage(This, Message) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDialog()
+.br
+Message = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the message that will be displayed on the dialog\&.
+.RE
+.LP
+.nf
+
+.B
+setPath(This, Path) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDialog()
+.br
+Path = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the path (the combined directory and filename that will be returned when the dialog is dismissed)\&.
+.RE
+.LP
+.nf
+
+.B
+setWildcard(This, WildCard) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxFileDialog()
+.br
+WildCard = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the wildcard, which can contain multiple file types, for example: "BMP files (*\&.bmp)|*\&.bmp|GIF files (*\&.gif)|*\&.gif"\&.
+.LP
+Note that the native Motif dialog has some limitations with respect to wildcards; see the Remarks section above\&.
+.RE

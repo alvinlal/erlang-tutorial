@@ -1,0 +1,213 @@
+.TH wxStaticBitmap 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxStaticBitmap \- Functions for wxStaticBitmap class
+.SH DESCRIPTION
+.LP
+A static bitmap control displays a bitmap\&. Native implementations on some platforms are only meant for display of the small icons in the dialog boxes\&.
+.LP
+If you want to display larger images portably, you may use generic implementation wxGenericStaticBitmap declared in <wx/generic/statbmpg\&.h>\&.
+.LP
+Notice that for the best results, the size of the control should be the same as the size of the image displayed in it, as happens by default if it\&'s not resized explicitly\&. Otherwise, behaviour depends on the platform: under MSW, the bitmap is drawn centred inside the control, while elsewhere it is drawn at the origin of the control\&. You can use \fISetScaleMode()\fR\& (not implemented in wx) to control how the image is scaled inside the control\&.
+.LP
+See: \fIwxBitmap\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxControl\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxStaticBitmap
+.SH DATA TYPES
+.nf
+
+\fBwxStaticBitmap()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxStaticBitmap()
+.br
+.fi
+.br
+.RS
+.LP
+Default constructor\&.
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id, Label) -> wxStaticBitmap()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Label = wxBitmap:wxBitmap()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id, Label, Options :: [Option]) -> wxStaticBitmap()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Label = wxBitmap:wxBitmap()
+.br
+Option = 
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Constructor, creating and showing a static bitmap control\&.
+.LP
+See: \fIcreate/5\fR\& 
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id, Label) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStaticBitmap()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Label = wxBitmap:wxBitmap()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id, Label, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStaticBitmap()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Label = wxBitmap:wxBitmap()
+.br
+Option = 
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Creation function, for two-step construction\&.
+.LP
+For details see \fInew/4\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+getBitmap(This) -> wxBitmap:wxBitmap()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStaticBitmap()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the bitmap currently used in the control\&.
+.LP
+Notice that this method can be called even if \fISetIcon()\fR\& (not implemented in wx) had been used\&.
+.LP
+See: \fIsetBitmap/2\fR\& 
+.RE
+.LP
+.nf
+
+.B
+setBitmap(This, Label) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxStaticBitmap()
+.br
+Label = wxBitmap:wxBitmap()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the bitmap label\&.
+.LP
+See: \fIgetBitmap/1\fR\& 
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxStaticBitmap()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

@@ -1,0 +1,236 @@
+.TH scheduler 3 "runtime_tools 1.19" "Ericsson AB" "Erlang Module Definition"
+.SH NAME
+scheduler \- Measure scheduler utilization
+.SH DESCRIPTION
+.LP
+This module contains utility functions for easy measurement and calculation of scheduler utilization\&. It act as a wrapper around the more primitive API \fIerlang:statistics(scheduler_wall_time)\fR\&\&.
+.LP
+The simplest usage is to call the blocking \fIscheduler:utilization(Seconds)\fR\&\&.
+.LP
+For non blocking and/or continuous calculation of scheduler utilization, the recommended usage is:
+.RS 2
+.TP 2
+*
+First call \fIerlang:system_flag(scheduler_wall_time,true)\fR\& to enable scheduler wall time measurements\&.
+.LP
+.TP 2
+*
+Call \fIget_sample/0\fR\& to collect samples with some time in between\&.
+.LP
+.TP 2
+*
+Call \fIutilization/2\fR\& to calculate the scheduler utilization in the interval between two samples\&.
+.LP
+.TP 2
+*
+When done call \fIerlang:system_flag(scheduler_wall_time,false)\fR\& to disable scheduler wall time measurements and avoid unecessary cpu overhead\&.
+.LP
+.RE
+
+.LP
+To get correct values from \fIutilization/2\fR\&, it is important that \fIscheduler_wall_time\fR\& is kept enabled during the entire interval between the two samples\&. To ensure this, the process that called \fIerlang:system_flag(scheduler_wall_time,true)\fR\& must be kept alive, as \fIscheduler_wall_time\fR\& will automatically be disabled if it terminates\&.
+.SH DATA TYPES
+.nf
+
+\fBsched_sample()\fR\&
+.br
+.fi
+.nf
+
+\fBsched_type()\fR\& = normal | cpu | io
+.br
+.fi
+.nf
+
+\fBsched_id()\fR\& = integer()
+.br
+.fi
+.nf
+
+\fBsched_util_result()\fR\& = 
+.br
+    [{sched_type(), sched_id(), float(), string()} |
+.br
+     {total, float(), string()} |
+.br
+     {weighted, float(), string()}]
+.br
+.fi
+.RS
+.LP
+A list of tuples containing results for individual schedulers as well as aggregated averages\&. \fIUtil\fR\& is the scheduler utilization as a floating point value between 0\&.0 and 1\&.0\&. \fIPercent\fR\& is the same utilization as a more human readable string expressed in percent\&.
+.RS 2
+.TP 2
+.B
+\fI{normal, SchedulerId, Util, Percent}\fR\&:
+Scheduler utilization of a normal scheduler with number \fISchedulerId\fR\&\&. Schedulers that are not online will also be included\&. Online schedulers have the lowest \fISchedulerId\fR\&\&.
+.TP 2
+.B
+\fI{cpu, SchedulerId, Util, Percent}\fR\&:
+Scheduler utilization of a dirty-cpu scheduler with number \fISchedulerId\fR\&\&.
+.TP 2
+.B
+\fI{io, SchedulerId, Util, Percent}\fR\&:
+Scheduler utilization of a dirty-io scheduler with number \fISchedulerId\fR\&\&. This tuple will only exist if both samples were taken with \fIsample_all/0\fR\&\&.
+.TP 2
+.B
+\fI{total, Util, Percent}\fR\&:
+Total utilization of all normal and dirty-cpu schedulers\&.
+.TP 2
+.B
+\fI{weighted, Util, Percent}\fR\&:
+Total utilization of all normal and dirty-cpu schedulers, weighted against maximum amount of available CPU time\&.
+.RE
+.RE
+.SH EXPORTS
+.LP
+.nf
+
+.B
+get_sample() -> sched_sample() | undefined
+.br
+.fi
+.br
+.RS
+.LP
+Returns a scheduler utilization sample for normal and dirty-cpu schedulers\&. Returns \fIundefined\fR\& if system flag \fIscheduler_wall_time\fR\& has not been enabled\&.
+.RE
+.LP
+.nf
+
+.B
+get_sample_all() -> sched_sample() | undefined
+.br
+.fi
+.br
+.RS
+.LP
+Return a scheduler utilization sample for all schedulers, including dirty-io schedulers\&. Returns \fIundefined\fR\& if system flag \fIscheduler_wall_time\fR\& has not been enabled\&.
+.RE
+.LP
+.nf
+
+.B
+sample() -> sched_sample()
+.br
+.fi
+.br
+.RS
+.LP
+Return a scheduler utilization sample for normal and dirty-cpu schedulers\&. Will call \fIerlang:system_flag(scheduler_wall_time,true)\fR\& first if not already already enabled\&.
+.LP
+
+.RS -4
+.B
+Note:
+.RE
+This function is \fInot recommended\fR\& as there is no way to detect if \fIscheduler_wall_time\fR\& already was enabled or not\&. If \fIscheduler_wall_time\fR\& has been disabled between two samples, passing them to \fIutilization/2\fR\& will yield invalid results\&.
+.LP
+Instead use \fIget_sample/0\fR\& together with \fIerlang:system_flag(scheduler_wall_time,_)\fR\&\&.
+
+.RE
+.LP
+.nf
+
+.B
+sample_all() -> sched_sample()
+.br
+.fi
+.br
+.RS
+.LP
+Return a scheduler utilization sample for all schedulers, including dirty-io schedulers\&. Will call \fIerlang:system_flag(scheduler_wall_time,true)\fR\& first if not already already enabled\&.
+.LP
+
+.RS -4
+.B
+Note:
+.RE
+This function is \fInot recommended\fR\& for same reason as \fIsample/0\fR\&\&. Instead use \fIget_sample_all/0\fR\& together with \fIerlang:system_flag(scheduler_wall_time,_)\fR\&\&.
+
+.RE
+.LP
+.nf
+
+.B
+utilization(Seconds) -> sched_util_result()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Seconds = integer() >= 1
+.br
+.RE
+.RE
+.RS
+.LP
+Measure utilization for normal and dirty-cpu schedulers during \fISeconds\fR\& seconds, and then return the result\&.
+.LP
+Will automatically first enable and then disable \fIscheduler_wall_time\fR\&\&.
+.RE
+.LP
+.nf
+
+.B
+utilization(Sample) -> sched_util_result()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Sample = sched_sample()
+.br
+.RE
+.RE
+.RS
+.LP
+Calculate scheduler utilizations for the time interval from when \fISample\fR\& was taken and "now"\&. The same as calling \fIscheduler:utilization(Sample, scheduler:sample_all())\fR\&\&.
+.LP
+
+.RS -4
+.B
+Note:
+.RE
+This function is \fInot recommended\fR\& as it\&'s so easy to get invalid results without noticing\&. In particular do not do this:
+.LP
+.nf
+
+scheduler:utilization(scheduler:sample()). % DO NOT DO THIS!
+
+.fi
+.LP
+The above example takes two samples in rapid succession and calculates the scheduler utilization between them\&. The resulting values will probably be more misleading than informative\&.
+.LP
+Instead use \fIscheduler:utilization/2\fR\& and call \fIget_sample/0\fR\& to get samples with some time in between\&.
+
+.RE
+.LP
+.nf
+
+.B
+utilization(Sample1, Sample2) -> sched_util_result()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Sample1 = Sample2 = sched_sample()
+.br
+.RE
+.RE
+.RS
+.LP
+Calculates scheduler utilizations for the time interval between the two samples obtained from calling \fIget_sample/0\fR\& or \fIget_sample_all/0\fR\&\&.
+.LP
+This function itself, does not need \fIscheduler_wall_time\fR\& to be enabled\&. However, for a correct result, \fIscheduler_wall_time\fR\& must have been enabled during the entire interval between the two samples\&.
+.RE

@@ -1,0 +1,96 @@
+.TH wxGridCellChoiceEditor 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxGridCellChoiceEditor \- Functions for wxGridCellChoiceEditor class
+.SH DESCRIPTION
+.LP
+Grid cell editor for string data providing the user a choice from a list of strings\&.
+.LP
+See: \fIwxGridCellEditor\fR\&, \fIwxGridCellAutoWrapStringEditor\fR\& (not implemented in wx), \fIwxGridCellBoolEditor\fR\&, \fIwxGridCellEnumEditor\fR\& (not implemented in wx), \fIwxGridCellFloatEditor\fR\&, \fIwxGridCellNumberEditor\fR\&, \fIwxGridCellTextEditor\fR\&, \fIwxGridCellDateEditor\fR\& (not implemented in wx)
+.LP
+This class is derived (and can use functions) from: \fIwxGridCellEditor\fR\&
+.LP
+wxWidgets docs: wxGridCellChoiceEditor
+.SH DATA TYPES
+.nf
+
+\fBwxGridCellChoiceEditor()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new(Choices) -> wxGridCellChoiceEditor()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Choices = [unicode:chardata()]
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Choices, Options :: [Option]) -> wxGridCellChoiceEditor()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Choices = [unicode:chardata()]
+.br
+Option = {allowOthers, boolean()}
+.br
+.RE
+.RE
+.RS
+.LP
+Choice cell renderer ctor\&.
+.RE
+.LP
+.nf
+
+.B
+setParameters(This, Params) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGridCellChoiceEditor()
+.br
+Params = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Parameters string format is "item1[,item2[\&.\&.\&.,itemN]]"\&.
+.LP
+This method can be called before the editor is used for the first time, or later, in which case it replaces the previously specified strings with the new ones\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxGridCellChoiceEditor()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

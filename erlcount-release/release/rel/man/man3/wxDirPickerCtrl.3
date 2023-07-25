@@ -1,0 +1,213 @@
+.TH wxDirPickerCtrl 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxDirPickerCtrl \- Functions for wxDirPickerCtrl class
+.SH DESCRIPTION
+.LP
+This control allows the user to select a directory\&. The generic implementation is a button which brings up a \fIwxDirDialog\fR\& when clicked\&. Native implementation may differ but this is usually a (small) widget which give access to the dir-chooser dialog\&. It is only available if \fIwxUSE_DIRPICKERCTRL\fR\& is set to 1 (the default)\&.
+.LP
+Styles
+.LP
+This class supports the following styles:
+.LP
+See: \fIwxDirDialog\fR\&, \fIwxFileDirPickerEvent\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxPickerBase\fR\& \fIwxControl\fR\& \fIwxWindow\fR\& \fIwxEvtHandler\fR\&
+.LP
+wxWidgets docs: wxDirPickerCtrl
+.SH "EVENTS"
+
+.LP
+Event types emitted from this class: \fIcommand_dirpicker_changed\fR\&
+.SH DATA TYPES
+.nf
+
+\fBwxDirPickerCtrl()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxDirPickerCtrl()
+.br
+.fi
+.br
+.RS
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id) -> wxDirPickerCtrl()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+new(Parent, Id, Options :: [Option]) -> wxDirPickerCtrl()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Option = 
+.br
+    {path, unicode:chardata()} |
+.br
+    {message, unicode:chardata()} |
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()} |
+.br
+    {validator, wx:wx_object()}
+.br
+.RE
+.RE
+.RS
+.LP
+Initializes the object and calls \fIcreate/4\fR\& with all the parameters\&.
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxDirPickerCtrl()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+.RE
+.RE
+.LP
+.nf
+
+.B
+create(This, Parent, Id, Options :: [Option]) -> boolean()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxDirPickerCtrl()
+.br
+Parent = wxWindow:wxWindow()
+.br
+Id = integer()
+.br
+Option = 
+.br
+    {path, unicode:chardata()} |
+.br
+    {message, unicode:chardata()} |
+.br
+    {pos, {X :: integer(), Y :: integer()}} |
+.br
+    {size, {W :: integer(), H :: integer()}} |
+.br
+    {style, integer()} |
+.br
+    {validator, wx:wx_object()}
+.br
+.RE
+.RE
+.RS
+.LP
+Creates the widgets with the given parameters\&.
+.LP
+Return: true if the control was successfully created or false if creation failed\&.
+.RE
+.LP
+.nf
+
+.B
+getPath(This) -> unicode:charlist()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxDirPickerCtrl()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the absolute path of the currently selected directory\&.
+.RE
+.LP
+.nf
+
+.B
+setPath(This, Dirname) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxDirPickerCtrl()
+.br
+Dirname = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the absolute path of the currently selected directory\&.
+.LP
+If the control uses \fIwxDIRP_DIR_MUST_EXIST\fR\& and does not use \fIwxDIRP_USE_TEXTCTRL\fR\& style, the \fIdirname\fR\& must be a name of an existing directory and will be simply ignored by the native wxGTK implementation if this is not the case\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxDirPickerCtrl()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

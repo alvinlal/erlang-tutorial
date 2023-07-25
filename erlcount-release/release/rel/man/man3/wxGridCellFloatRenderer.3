@@ -1,0 +1,177 @@
+.TH wxGridCellFloatRenderer 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxGridCellFloatRenderer \- Functions for wxGridCellFloatRenderer class
+.SH DESCRIPTION
+.LP
+This class may be used to format floating point data in a cell\&.
+.LP
+See: \fIwxGridCellRenderer\fR\&, \fIwxGridCellAutoWrapStringRenderer\fR\& (not implemented in wx), \fIwxGridCellBoolRenderer\fR\&, \fIwxGridCellDateTimeRenderer\fR\& (not implemented in wx), \fIwxGridCellEnumRenderer\fR\& (not implemented in wx), \fIwxGridCellNumberRenderer\fR\&, \fIwxGridCellStringRenderer\fR\& 
+.LP
+This class is derived (and can use functions) from: \fIwxGridCellStringRenderer\fR\& \fIwxGridCellRenderer\fR\&
+.LP
+wxWidgets docs: wxGridCellFloatRenderer
+.SH DATA TYPES
+.nf
+
+\fBwxGridCellFloatRenderer()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+new() -> wxGridCellFloatRenderer()
+.br
+.fi
+.br
+.LP
+.nf
+
+.B
+new(Options :: [Option]) -> wxGridCellFloatRenderer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+Option = 
+.br
+    {width, integer()} |
+.br
+    {precision, integer()} |
+.br
+    {format, integer()}
+.br
+.RE
+.RE
+.RS
+.LP
+Float cell renderer ctor\&.
+.RE
+.LP
+.nf
+
+.B
+getPrecision(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGridCellFloatRenderer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the precision\&.
+.RE
+.LP
+.nf
+
+.B
+getWidth(This) -> integer()
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGridCellFloatRenderer()
+.br
+.RE
+.RE
+.RS
+.LP
+Returns the width\&.
+.RE
+.LP
+.nf
+
+.B
+setParameters(This, Params) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGridCellFloatRenderer()
+.br
+Params = unicode:chardata()
+.br
+.RE
+.RE
+.RS
+.LP
+The parameters string format is "width[,precision[,format]]" where \fIformat\fR\& should be chosen between f|e|g|E|G (f is used by default)
+.RE
+.LP
+.nf
+
+.B
+setPrecision(This, Precision) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGridCellFloatRenderer()
+.br
+Precision = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the precision\&.
+.RE
+.LP
+.nf
+
+.B
+setWidth(This, Width) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxGridCellFloatRenderer()
+.br
+Width = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the width\&.
+.RE
+.LP
+.nf
+
+.B
+destroy(This :: wxGridCellFloatRenderer()) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Destroys the object\&.
+.RE

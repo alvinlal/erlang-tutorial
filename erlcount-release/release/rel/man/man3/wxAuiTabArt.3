@@ -1,0 +1,165 @@
+.TH wxAuiTabArt 3 "wx 2.2.2" "wxWidgets team." "Erlang Module Definition"
+.SH NAME
+wxAuiTabArt \- Functions for wxAuiTabArt class
+.SH DESCRIPTION
+.LP
+Tab art provider defines all the drawing functions used by \fIwxAuiNotebook\fR\&\&.
+.LP
+This allows the \fIwxAuiNotebook\fR\& to have a pluggable look-and-feel\&.
+.LP
+By default, a \fIwxAuiNotebook\fR\& uses an instance of this class called \fIwxAuiDefaultTabArt\fR\& (not implemented in wx) which provides bitmap art and a colour scheme that is adapted to the major platforms\&' look\&. You can either derive from that class to alter its behaviour or write a completely new tab art class\&.
+.LP
+Another example of creating a new \fIwxAuiNotebook\fR\& tab bar is \fIwxAuiSimpleTabArt\fR\&\&.
+.LP
+Call \fIwxAuiNotebook:setArtProvider/2\fR\& to make use of this new tab art\&.
+.LP
+wxWidgets docs: wxAuiTabArt
+.SH DATA TYPES
+.nf
+
+\fBwxAuiTabArt()\fR\& = wx:wx_object()
+.br
+.fi
+.SH EXPORTS
+.LP
+.nf
+
+.B
+setFlags(This, Flags) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiTabArt()
+.br
+Flags = integer()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets flags\&.
+.RE
+.LP
+.nf
+
+.B
+setMeasuringFont(This, Font) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiTabArt()
+.br
+Font = wxFont:wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the font used for calculating measurements\&.
+.RE
+.LP
+.nf
+
+.B
+setNormalFont(This, Font) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiTabArt()
+.br
+Font = wxFont:wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the normal font for drawing labels\&.
+.RE
+.LP
+.nf
+
+.B
+setSelectedFont(This, Font) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiTabArt()
+.br
+Font = wxFont:wxFont()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the font for drawing text for selected UI elements\&.
+.RE
+.LP
+.nf
+
+.B
+setColour(This, Colour) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiTabArt()
+.br
+Colour = wx:wx_colour()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the colour of the inactive tabs\&.
+.LP
+Since: 2\&.9\&.2
+.RE
+.LP
+.nf
+
+.B
+setActiveColour(This, Colour) -> ok
+.br
+.fi
+.br
+.RS
+.LP
+Types:
+
+.RS 3
+This = wxAuiTabArt()
+.br
+Colour = wx:wx_colour()
+.br
+.RE
+.RE
+.RS
+.LP
+Sets the colour of the selected tab\&.
+.LP
+Since: 2\&.9\&.2
+.RE
