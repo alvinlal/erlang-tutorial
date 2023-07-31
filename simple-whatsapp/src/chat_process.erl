@@ -4,9 +4,9 @@
 
 -export([start_link/1,init/1,handle_call/3,handle_cast/2,handle_info/2,code_change/3,terminate/2]).
 
-% user_id - unique id of the user connected
+% userid - unique id of the user connected
 % socket - socket descriptor of the current tcp connection
--record(state,{user_id,socket}).
+-record(state,{userid,socket}).
 
 
 start_link(Socket) ->
@@ -31,23 +31,40 @@ handle_cast(accept,S = #state{socket = ListenSocket}) ->
     chat_sup:spawn_chat_process(), % a new acceptor is created, so that we always have a standby connection handler
     inet:setopts(AcceptSocket, [{active, once}]), % for receiving messages in active mode (as process messages) 
     % one by one in the mailbox
-    {noreply,S#state{socket=AcceptSocket}}.
+    {noreply,S#state{socket=AcceptSocket}};
+
+% called when a message is received from another chat_process
+handle_cast({newmessage,SenderId,Message},S = #state{socket = Socket}) ->
+    gen_tcp:send(Socket,SenderId ++ Message),
+    {noreply,S}.
 
 % all messages send by the client will handled by handle_info
-handle_info({tcp,_Socket,Str},S = #state{socket = Socket}) ->
-    io:format("Got new message from ~p, :- ~s~n",[_Socket,Str]),
-    % convert str to json and switch on event type
+handle_info({tcp,_Socket,Data},S = #state{socket = Socket, userid = CurrentUserId}) ->
     inet:setopts(Socket, [{active, once}]),
-    {noreply,S};
+    case protocol:decode(Data) of
+        % online event
+        {online,UserId} ->
+            UserIdAtom = binary_to_atom(UserId,utf8),
+            register(UserIdAtom,self()), % oops, Dynamically created atoms !
+            {noreply,S#state{userid = binary_to_list(UserId)}};
+        {newmessage,RecipientId,Message} ->
+            RecipientIdAtom = binary_to_atom(RecipientId,utf8),
+            case whereis(RecipientIdAtom) of
+                Pid -> 
+                    gen_server:cast(Pid,{newmessage,CurrentUserId,binary_to_list(Message)})
+            end,
+            {noreply,S}
+    end;
+
 
 % called when tcp connection is closed
-handle_info({tcp_closed,_Socket},S) ->
-    io:format("tcp connection ~p have been closed~n",[_Socket]),
+handle_info({tcp_closed,Socket},S) ->
+    io:format("tcp connection ~p have been closed~n",[Socket]),
     {stop,normal,S};
 
 % called on tcp connection error
-handle_info({tcp_error,_Socket,_},S) ->
-    io:format("tcp connection ~p errored out!~n",[_Socket]),
+handle_info({tcp_error,Socket,_},S) ->
+    io:format("tcp connection ~p errored out!~n",[Socket]),
     {stop,normal,S};
 
 % called on unrecognized messages
@@ -61,7 +78,12 @@ code_change(_OldVsn,State,_Extra) ->
 
 % terminations
 terminate(normal, #state{socket = Socket} = S) ->
-    io:format("tcp connection ~p terminated normally~n",[Socket]),
+    gen_tcp:close(Socket),
+    io:format("tcp process ~p terminated normally~n",[Socket]),
     ok;
-terminate(_Reason, #state{socket = Socket} = S) ->
-    io:format("tcp connection ~p terminated for reason ~p~n", [Socket,_Reason]).
+
+terminate(Reason, #state{socket = Socket} = S) ->
+    gen_tcp:close(Socket),
+    io:format("tcp process ~p terminated for reason ~p~n", [Socket,Reason]).
+
+

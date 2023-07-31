@@ -7,8 +7,9 @@ start_link() ->
     supervisor:start_link({local,?MODULE},?MODULE,[]).
 
 init([]) ->
-    % Start listening on port 8000
-    {ok,ListenSocket} = gen_tcp:listen(8000,[{active,once}]),
+    % Starts a tcp listener on a port
+    {ok,Port} = application:get_env(port),
+    {ok,ListenSocket} = gen_tcp:listen(Port,[binary,{packet,0},{active,once}]),
     % Spawns 20 standby chat processes, this is for minimizing accept latency and make the application
     % to be able to serve queries as soon as possible
     spawn_link(fun create_standby_processes/0),
