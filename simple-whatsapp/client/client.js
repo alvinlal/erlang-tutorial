@@ -13,7 +13,7 @@ client.connect(PORT, HOST, () => {
 });
 
 client.on('data', data => {
-  const senderId = data.toString('utf8', 0, 7);
+  const senderId = data.toString('utf8', 0, 8);
   const message = data.toString('utf8', 8, data.byteLength);
   console.log(`you have 1 new message from ${senderId} : ${message}`);
 });
